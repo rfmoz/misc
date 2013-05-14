@@ -4,7 +4,7 @@
 ### BEGIN INIT INFO
 # Provides:          noip
 # Required-Start:    $local_fs $syslog $named $network $time
-# Required-Stop:
+# Required-Stop:     $local_fs $syslog $named $network $time
 # Should-Start:
 # Default-Start:     2 3 4 5
 # Default-Stop:	     0 1 6
