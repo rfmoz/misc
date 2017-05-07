@@ -169,7 +169,7 @@ Options:
 Por ejemplo, para simular 15 jugadores, 20 tiradas, ninguno real y velocidad rápida:
 ```
 # chapas -j 15 -t 20 -r 0 -x
-´´´
+```
 
 
 ### Requisitos
