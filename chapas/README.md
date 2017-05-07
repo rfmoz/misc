@@ -177,8 +177,9 @@ Por ejemplo, para simular 15 jugadores, 20 tiradas, ninguno real y velocidad rá
 
 - Linux, OSX o Windows
 - Python 3 o posterior
+- Archivo "chapas.py"
 
-Sólo se necesita tener instalado el intérprete de Python. El programa como tal no necesita instalación, funciona sólo con bajar el archivo "chapas.py" y ejecutarlo. 
+Se necesita tener instalado el intérprete de Python. El programa como tal no necesita instalación, funciona sólo con bajar el archivo "chapas.py" y ejecutarlo. 
 
 En sistemas Linux, es muy probable que Python ya se encuentre instalado, sino es recomendable realizar la instalación desde el gestor de paquetes de la distribución.
 
