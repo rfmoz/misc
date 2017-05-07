@@ -166,9 +166,10 @@ Options:
   -x            Juego modo rápido
   -v            Verbose
 
-Por ejemplo, para 15 jugadores, 20 tiradas, ninguno real y velocidad rápida:
+Por ejemplo, para simular 15 jugadores, 20 tiradas, ninguno real y velocidad rápida:
+```
 # chapas -j 15 -t 20 -r 0 -x
-
+´´´
 
 
 ### Requisitos
@@ -182,6 +183,4 @@ Sólo se necesita tener instalado el intérprete de Python. El programa como tal
 En sistemas Linux, es muy probable que Python ya se encuentre instalado, sino es recomendable realizar la instalación desde el gestor de paquetes de la distribución.
 
 Para sistemas Windows, Python se puede descargar aquí:
-
-
-
+https://www.python.org/downloads/windows/
