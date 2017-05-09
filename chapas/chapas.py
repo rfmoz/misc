@@ -203,7 +203,7 @@ def print_tabla(jgo, tipo):
     # Tabla tipo resumen
     if tipo == 'resumen':
         side_spaces = 2  # Espacios entre columnas
-        tbl.append(['Nombre', 'Tiradas', 'Gan', 'Perd', 'Rep', 'Catera inicial', 'Catera final', 'Total juego'])  # Titulo
+        tbl.append(['Nombre', 'Tiradas', 'Gan', 'Perd', 'Rep', 'Ctra inicial', 'Ctra final', 'Total juego'])  # Titulo
         tbl.append([''] * len(tbl[0]))
         jgocp.insert(-1, {'nombre': '', 'tiradas': '', 'tganadas': '', 'tperdidas': '', 'repetidas': '', 'cartinicial': '', 'cartfinal': '', 'totaljuego': ''})  # Espacio antes de baratero
 

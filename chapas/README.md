@@ -130,16 +130,16 @@ Se puede dar el caso que el baratero o los jugadores se arruinen. En ese caso el
 ```
 ---------------------------------------------------
 
-Nombre     Tiradas  Gan  Perd  Rep  Catera inicial  Catera final  Total juego
+Nombre     Tiradas  Gan  Perd  Rep  Ctra inicial  Ctra final  Total juego
                                                                              
-Jugador 1        7    2     2    3            50.0          20.0        -30.0
-Jugador 2        7    2     2    3            30.0          12.5        -17.5
-Jugador 3        7    2     2    3            50.0          76.5        +26.5
-Jugador 4        7    2     2    3             5.0           4.5         -0.5
-Jugador 5        7    2     2    3           200.0         231.5        +31.5
-Ricardo          7    2     2    3            55.0          50.0         -5.0
-                                                                             
-Baratero         7    2     2    3           900.0         895.0         -5.0
+Jugador 1        7    2     2    3          50.0        20.0        -30.0
+Jugador 2        7    2     2    3          30.0        12.5        -17.5
+Jugador 3        7    2     2    3          50.0        76.5        +26.5
+Jugador 4        7    2     2    3           5.0         4.5         -0.5
+Jugador 5        7    2     2    3         200.0       231.5        +31.5
+Ricardo          7    2     2    3          55.0        50.0         -5.0
+                                                                           
+Baratero         7    2     2    3         900.0       895.0         -5.0
 
 ---------------------------------------------------
 
