@@ -19,7 +19,7 @@
 
 import sys, os, optparse, logging, random, time
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 def get_arguments():
@@ -586,12 +586,11 @@ def main():
                             seguir_jugando = False
                             print_linea(tipo=1)
                             print('')
-                            break
 
                 # Actualizar importe de cartera al resultante de la tirada
                 jgo[q]['cartera'] = jgo[q]['total']
 
-                # Sumar las carteras de todos los jugadores
+                # Comprobar ruina de todos los jugadores
                 if jgo[q]['nombre'] == 'Baratero':
                     continue
                 else:
@@ -607,12 +606,16 @@ def main():
                     print('\n### Baratero arruinado...')
 
                 seguir_jugando = False  # Salir de partida
+
+            # Salir del proceso de tirada
+            if seguir_jugando is False:
                 print_linea(tipo=1)
                 print('')
                 print_tabla(resumen, tipo='resumen')
                 print_linea(tipo=1)
                 _ = input('\nFin del juego.')
                 break
+
 
         # Si se han acabado las tiradas, preguntar para seguir jugando
         # (se seguirá la partida con las carteras resultantes de la tirada anterior)
@@ -643,11 +646,6 @@ def main():
                 if scmb == 'n':
                     jgo, resumen = asignar_carteras(jgo, resumen)
             print_linea(tipo=1)
-
-        # Salir del proceso de tirada
-        if seguir_jugando is False:
-            print('')
-            break
 
 if __name__ == "__main__":
     try:
