@@ -430,7 +430,7 @@ def main():
 
             # Tiempo de espera entre apuestas
             if tirada > 1:
-                time.sleep(arg.velocidad * 2)
+                time.sleep(arg.velocidad / 2)
             else:
                 print('\n¡Hagan sus apuestas!')
 
