@@ -376,7 +376,6 @@ def main():
     resumen = []  # Lista para resumen final
     seguir_jugando = True  # Para salir del bucle del juego
 
-
     # Crear entrada y asignar nombre a cada jugador virtual
     for j in range(1, arg.jugadores + 1):
         jgo.append({'nombre': "Jugador " + str(j), 'cartera': '', 'tiradas': '', 'total': '', 'ruina': '', 'virtual': True})
@@ -422,6 +421,8 @@ def main():
     # Repetir juego hasta que se diga lo contrario
     while seguir_jugando is True:
 
+        pareja = True  # Resultado de monedas emparejado
+
         # Proceso de tirada...
         for tirada in range(1, arg.tiradas + 1):
 
@@ -435,7 +436,11 @@ def main():
                 print('\n¡Hagan sus apuestas!')
 
             # Asignar apuestas
-            jgo, resumen = asignar_apuestas(jgo, resumen)
+            if pareja is True:
+                # Solo si el resultado es pareja o la 1º vez
+                jgo, resumen = asignar_apuestas(jgo, resumen)
+            else:
+                time.sleep(arg.velocidad / 2)  # Tiempo espera
             cls()
 
             # Asignar apuesta al baratero
@@ -462,6 +467,7 @@ def main():
             # Si las monedas no son iguales, repetir
             if monedas[0] != monedas[1]:
                 print('\"`-._,-\'\"`-._,-\'     ¡Repetir!     \'-,_.´\"\'-,_.-´\"\n')
+                pareja = False
 
                 time.sleep(arg.velocidad / 2)  # Tiempo espera
 
@@ -492,6 +498,7 @@ def main():
                 # Baratero gana si las monedas son iguales
                 if baratero == monedas[0] == monedas[1]:
                     print('-- -- -- -- --    ¡Gana Baratero!    -- -- -- -- --\n')
+                    pareja = True
 
                     time.sleep(arg.velocidad / 2)  # Tiempo espera
 
@@ -521,6 +528,7 @@ def main():
                     jgo[-1]['total'] = round(jgo[-1]['cartera'] + apuesta_total, 1)
                 else:
                     print('= = = = = = = =  ¡Ganan Jugadores!  = = = = = = = =\n')
+                    pareja = True
 
                     time.sleep(arg.velocidad / 2)  # Tiempo espera
 
