@@ -142,7 +142,7 @@ def flush_input():
 def progreso(tirada, velocidad, tiradatot):
     """Barra progreso"""
 
-    ancho = 45
+    ancho = 47
 
     # Añadir un caracter más si lo tiene el n. de tirada
     ancho += len(str(tirada))
@@ -315,6 +315,7 @@ def asignar_apuestas(jgo, resumen):
             tir = 0
         else:
             resumen[q]['tiradas'] = resumen[q]['tiradas'] + 1  # Contador tiradas
+            print(resumen[q]['tiradas'])
 
             # Proceso de asignación de apuesta a usuarios reales/virtuales
             if jgo[q]['virtual'] is False:
@@ -391,7 +392,6 @@ def asignar_nreal(jugadorr, jgo, jreales, resumen):
                 print('\nERROR: Nombre no válido, introduce otro nombre')
             else:
                 jrepetido = False
-                print(jreales)
                 for jr in jreales:
                     if rnombre.lower() == jr.lower():
                         print('\nERROR: Nombre repetido, introduce otro nombre')
@@ -424,7 +424,7 @@ def main():
     if arg.reales:
         print('')
         print_linea(tipo=2)
-        jgo, jreales, resumen = asignar_nreal(arg.jugadores, jgo, jreales, resumen)
+        jgo, jreales, resumen = asignar_nreal(arg.reales, jgo, jreales, resumen)
 
     # Asignar baratero
     jgo.append({'nombre': 'Baratero', 'cartera': '', 'tiradas': '', 'total': '', 'ruina': '', 'virtual': True})
@@ -435,8 +435,6 @@ def main():
 
     # Repetir juego hasta que se diga lo contrario
     while seguir_jugando is True:
-
-        pareja = True  # Resultado de monedas emparejado
 
         # Proceso de tirada...
         for tirada in range(1, arg.tiradas + 1):
@@ -451,15 +449,11 @@ def main():
                 print('\n¡Hagan sus apuestas!')
 
             # Asignar apuestas
-            if pareja is True:
-                # Solo si el resultado es pareja o la 1º vez
-                jgo, resumen = asignar_apuestas(jgo, resumen)
-            else:
-                time.sleep(arg.velocidad / 2)  # Tiempo espera
+            jgo, resumen = asignar_apuestas(jgo, resumen)
             cls()
 
             # Asignar apuesta al baratero
-            baratero = random.choice(['Cara', 'Lis'])
+            baratero = 'Cara'
             resumen[-1]['tiradas'] = resumen[-1]['tiradas'] + 1  # Contador tiradas baratero
 
 
@@ -468,7 +462,7 @@ def main():
 
 
             # Imprimir tirada, apuesta baratero y resultado monedas
-            print('\nTirada ' + str(tirada) + ' de ' + str(arg.tiradas) +  ' <' + '-' * 32 + ' ' + baratero)
+            print('\nTirada ' + str(tirada) + ' de ' + str(arg.tiradas) +  ' <' + '-' * 34)
             progreso(tirada, arg.velocidad, arg.tiradas)  # Barra progreso
             print('')
 
@@ -482,12 +476,12 @@ def main():
             # Si las monedas no son iguales, repetir
             if monedas[0] != monedas[1]:
                 print('\"`-._,-\'\"`-._,-\'     ¡Repetir!     \'-,_.´\"\'-,_.-´\"\n')
-                pareja = False
 
                 time.sleep(arg.velocidad / 2)  # Tiempo espera
 
                 # Recorrer jugadores para calcular valores
                 for q, _ in enumerate(jgo):
+                    resumen[q]['tiradas'] = resumen[q]['tiradas'] + 1  # Contador tiradas
 
                     # Contabilizar tiradas repetidas
                     if jgo[q]['ruina'] != 'Arruinado':
@@ -513,7 +507,6 @@ def main():
                 # Baratero gana si las monedas son iguales
                 if baratero == monedas[0] == monedas[1]:
                     print('-- -- -- -- --    ¡Gana Baratero!    -- -- -- -- --\n')
-                    pareja = True
 
                     time.sleep(arg.velocidad / 2)  # Tiempo espera
 
@@ -543,7 +536,6 @@ def main():
                     jgo[-1]['total'] = round(jgo[-1]['cartera'] + apuesta_total, 1)
                 else:
                     print('= = = = = = = =  ¡Ganan Jugadores!  = = = = = = = =\n')
-                    pareja = True
 
                     time.sleep(arg.velocidad / 2)  # Tiempo espera
 
@@ -573,71 +565,71 @@ def main():
                     jgo[-1]['total'] = round(jgo[-1]['cartera'] - apuesta_total, 1)
 
 
-            # Tareas post tirada previas a imprimir tabla
-            for q, _ in enumerate(jgo):
-
-                # Añadir info a jugadores que se acaban de arruinar
-                if (jgo[q]['cartera'] != 0) and (jgo[q]['total'] <= 0):
-                    jgo[q]['ruina'] = str('Arruinado')
-
-                # Cartera final es el total de la ultima tirada
-                resumen[q]['cartfinal'] = jgo[q]['total']
-
-                # Total juego es la perdida o ganancia entre la cartera inicial y la final
-                resumen[q]['totaljuego'] = format(resumen[q]['cartfinal'] - resumen[q]['cartinicial'], '+.01f')
-
-            # Imprimir tabla del juego
-            print_tabla(jgo, tipo='juego')
-
-            print_linea(tipo=1)
-
-            # Tareas post tirada posteriores a imprimir tabla
-            for q, _ in enumerate(jgo):
-
-                # Avisar a jugadores reales que se acaban de arruinar
-                if (jgo[q]['cartera'] != 0) and (jgo[q]['total'] <= 0):
-                    if jgo[q]['virtual'] is False:
-                        print('¡Te has arruinado ' + jgo[q]['nombre'] + '!')
-                        print('')
-                        flush_input()
-                        sjp = input("Terminar juego y salir (s/n): ")
-                        while sjp.lower() not in ('s', 'n'):
+                # Tareas post tirada previas a imprimir tabla
+                for q, _ in enumerate(jgo):
+    
+                    # Añadir info a jugadores que se acaban de arruinar
+                    if (jgo[q]['cartera'] != 0) and (jgo[q]['total'] <= 0):
+                        jgo[q]['ruina'] = str('Arruinado')
+    
+                    # Cartera final es el total de la ultima tirada
+                    resumen[q]['cartfinal'] = jgo[q]['total']
+    
+                    # Total juego es la perdida o ganancia entre la cartera inicial y la final
+                    resumen[q]['totaljuego'] = format(resumen[q]['cartfinal'] - resumen[q]['cartinicial'], '+.01f')
+    
+                # Imprimir tabla del juego
+                print_tabla(jgo, tipo='juego')
+    
+                print_linea(tipo=1)
+    
+                # Tareas post tirada posteriores a imprimir tabla
+                for q, _ in enumerate(jgo):
+    
+                    # Avisar a jugadores reales que se acaban de arruinar
+                    if (jgo[q]['cartera'] != 0) and (jgo[q]['total'] <= 0):
+                        if jgo[q]['virtual'] is False:
+                            print('¡Te has arruinado ' + jgo[q]['nombre'] + '!')
+                            print('')
                             flush_input()
-                            print('')
                             sjp = input("Terminar juego y salir (s/n): ")
-                        if sjp == 's':
-                            seguir_jugando = False
-                            print_linea(tipo=1)
-                            print('')
-
-                # Actualizar importe de cartera al resultante de la tirada
-                jgo[q]['cartera'] = jgo[q]['total']
-
-                # Comprobar ruina de todos los jugadores
-                if jgo[q]['nombre'] == 'Baratero':
-                    continue
-                else:
-                    if jgo[q]['ruina'] != 'Arruinado':
-                        jugadores_ruina = False
-
-            # Comprobar ruinas
-            if (jgo[-1]['cartera'] <= 0) or jugadores_ruina:
- 
-                if jugadores_ruina:
-                    print('\n### Jugadores arruinados...')
-                else:
-                    print('\n### Baratero arruinado...')
-
-                seguir_jugando = False  # Salir de partida
-
-            # Salir del proceso de tirada
-            if seguir_jugando is False:
-                print_linea(tipo=1)
-                print('')
-                print_tabla(resumen, tipo='resumen')
-                print_linea(tipo=1)
-                _ = input('\nFin del juego.')
-                break
+                            while sjp.lower() not in ('s', 'n'):
+                                flush_input()
+                                print('')
+                                sjp = input("Terminar juego y salir (s/n): ")
+                            if sjp == 's':
+                                seguir_jugando = False
+                                print_linea(tipo=1)
+                                print('')
+    
+                    # Actualizar importe de cartera al resultante de la tirada
+                    jgo[q]['cartera'] = jgo[q]['total']
+    
+                    # Comprobar ruina de todos los jugadores
+                    if jgo[q]['nombre'] == 'Baratero':
+                        continue
+                    else:
+                        if jgo[q]['ruina'] != 'Arruinado':
+                            jugadores_ruina = False
+    
+                # Comprobar ruinas
+                if (jgo[-1]['cartera'] <= 0) or jugadores_ruina:
+     
+                    if jugadores_ruina:
+                        print('\n### Jugadores arruinados...')
+                    else:
+                        print('\n### Baratero arruinado...')
+    
+                    seguir_jugando = False  # Salir de partida
+    
+                # Salir del proceso de tirada
+                if seguir_jugando is False:
+                    print_linea(tipo=1)
+                    print('')
+                    print_tabla(resumen, tipo='resumen')
+                    print_linea(tipo=1)
+                    _ = input('\nFin del juego.')
+                    break
 
 
         # Si se han acabado las tiradas, preguntar para seguir jugando
