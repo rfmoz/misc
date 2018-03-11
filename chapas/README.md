@@ -22,13 +22,13 @@ El juego se lleva a cabo en lugares públicos, habitualmente un bar. Se habilita
 
 En el centro se encuentra el baratero (a veces el baratero y un tirador) que es la persona encargada de lanzar las monedas y hacer la apuesta. Para el lance sólo se utilizan dos monedas de 10 céntimos, de la épica de Alfonso XIII.
 
-Los jugadores depositan en el suelo, delante suyo, la apuesta de dinero. El baratero elige en voz alta si va a caras o lises, coloca las monedas lis contra lis y las lanza al aire. Ahora pueden darse tres casos:
+Los jugadores depositan en el suelo, delante suyo, la apuesta de dinero. El baratero coloca las monedas lis contra lis y las lanza al aire. Ahora pueden darse tres casos:
 
-1.- Las monedas no caen iguales, lis-cara o viceversa. Tirada nula, se vuelve a apostar y tirar.
+1.- Las monedas no caen iguales, lis-cara o viceversa. Tirada nula, se vuelve a tirar con la misma apuesta.
 
-2.- Las monedas caen iguales, como había apostado el baratero. Los jugadores pierden y el baratero recoge todo el dinero del suelo.
+2.- Las monedas caen iguales, cara-cara. Los jugadores pierden y el baratero recoge todo el dinero del suelo.
 
-3.- Las monedas caen iguales, pero el baratero falla la apuesta. Los jugadores ganan y el baratero tiene que poner, a cada jugador, la misma cantidad de dinero que éstos han apostado.
+3.- Las monedas caen iguales, lis-lis. Los jugadores ganan y el baratero tiene que poner, a cada jugador, la misma cantidad de dinero que ha apostado.
 
 Así se repite todo el tiempo mientras dura el juego. El baratero puede  abandonar (siempre pagando en caso de pérdida), se puede cambiar la persona de baratero por otra persona que siga en esa función, los jugadores pueden entrar y salir en cualquier momento.
 
@@ -83,19 +83,19 @@ Apuesta Ricardo: 5
 
 #### Desarrollo
 
-Automaticamente comienza la tirada, a la derecha de la primera línea se ve la apuesta que ha realizado el baratero.
+Automaticamente comienza la tirada con la barra de progreso.
 
 Seguidamente se indica cómo han caído las monedas.
 
 A continuación el resultado de la tirada, pueden ganar los jugadores, el baratero o toca volver a tirar.
 
-Se imprime la tabla con la cartera que tienen en ese momento, la apuesta realizada y el total de cómo han quedado tras la tirada.
+Si alguna de las partes ha ganado, se imprime la tabla con la cartera que tienen en ese momento, la apuesta realizada y el total de cómo han quedado tras la tirada.
 
 Al final, en el caso de jugar con algún jugador real, se solicita la apuesta para la siguiente tirada.
 
 ```
-Tirada 1 de 7 <-------------------------------- Lis
-***********************************************
+Tirada 1 de 7 <------------------------------------
+***************************************************
 
 Moneda 1: Cara
 Moneda 2: Cara
