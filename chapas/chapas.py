@@ -19,7 +19,7 @@
 
 import sys, os, optparse, logging, random, time
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 
 def get_arguments():
@@ -142,7 +142,7 @@ def flush_input():
 def progreso(tirada, velocidad, tiradatot):
     """Barra progreso"""
 
-    ancho = 47
+    ancho = 49
 
     # Añadir un caracter más si lo tiene el n. de tirada
     ancho += len(str(tirada))
@@ -288,7 +288,7 @@ def asignar_carteras(jgo, resumen):
     return jgo, resumen
 
 
-def asignar_apuestas(jgo, resumen):
+def asignar_apuestas(jgo, resumen, parejas):
     """Asignar apuestas"""
 
     # Apuestas [cantidad] * probabilidad
@@ -315,7 +315,10 @@ def asignar_apuestas(jgo, resumen):
             tir = 0
         else:
             resumen[q]['tiradas'] = resumen[q]['tiradas'] + 1  # Contador tiradas
-            print(resumen[q]['tiradas'])
+
+            # Sólo se hacen apuestas si es la primera tirada o si son parejas
+            if parejas < 0:
+                continue
 
             # Proceso de asignación de apuesta a usuarios reales/virtuales
             if jgo[q]['virtual'] is False:
@@ -416,6 +419,8 @@ def main():
     jreales = []  # Lista de nombres de jugadores reales
     resumen = []  # Lista para resumen final
     seguir_jugando = True  # Para salir del bucle del juego
+    parejas = 0  # Controlar resultado monedas
+
 
     # Asignar jugadores virtuales
     jgo, resumen = asignar_nvirtual(arg.jugadores, jgo, resumen)
@@ -449,7 +454,7 @@ def main():
                 print('\n¡Hagan sus apuestas!')
 
             # Asignar apuestas
-            jgo, resumen = asignar_apuestas(jgo, resumen)
+            jgo, resumen = asignar_apuestas(jgo, resumen, parejas)
             cls()
 
             # Asignar apuesta al baratero
@@ -462,7 +467,7 @@ def main():
 
 
             # Imprimir tirada, apuesta baratero y resultado monedas
-            print('\nTirada ' + str(tirada) + ' de ' + str(arg.tiradas) +  ' <' + '-' * 34)
+            print('\nTirada ' + str(tirada) + ' de ' + str(arg.tiradas) +  ' <' + '-' * 36)
             progreso(tirada, arg.velocidad, arg.tiradas)  # Barra progreso
             print('')
 
@@ -475,13 +480,13 @@ def main():
 
             # Si las monedas no son iguales, repetir
             if monedas[0] != monedas[1]:
+                parejas = -1
                 print('\"`-._,-\'\"`-._,-\'     ¡Repetir!     \'-,_.´\"\'-,_.-´\"\n')
 
                 time.sleep(arg.velocidad / 2)  # Tiempo espera
 
                 # Recorrer jugadores para calcular valores
                 for q, _ in enumerate(jgo):
-                    resumen[q]['tiradas'] = resumen[q]['tiradas'] + 1  # Contador tiradas
 
                     # Contabilizar tiradas repetidas
                     if jgo[q]['ruina'] != 'Arruinado':
@@ -504,6 +509,7 @@ def main():
                 jgo[-1]['total'] = round(jgo[-1]['cartera'], 1)
 
             else:
+                parejas = 1
                 # Baratero gana si las monedas son iguales
                 if baratero == monedas[0] == monedas[1]:
                     print('-- -- -- -- --    ¡Gana Baratero!    -- -- -- -- --\n')
@@ -660,6 +666,9 @@ def main():
                     scmb = input("¿Mantener importe de las carteras actuales? (s/n): ")
                 if scmb == 'n':
                     jgo, resumen = asignar_carteras(jgo, resumen)
+                    # Volver a asignar apuestas
+                    parejas = 0
+
             print_linea(tipo=1)
 
 if __name__ == "__main__":
