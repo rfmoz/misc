@@ -367,55 +367,70 @@ def asignar_apuestas(jgo, resumen):
     return jgo, resumen
 
 
+def asignar_nvirtual(jugadorv, jgo, resumen):
+    """Asignar nombre a cada jugador virtual"""
+
+    for j in range(1, jugadorv + 1):
+        jgo.append({'nombre': "Jugador " + str(j), 'cartera': '', 'tiradas': '', 'total': '', 'ruina': '', 'virtual': True})
+        resumen.append({'nombre': "Jugador " + str(j), 'tiradas': 0, 'tganadas': 0, 'tperdidas': 0, 'repetidas': 0, 'cartinicial': '', 'cartfinal': '', 'totaljuego': ''})
+
+    return jgo, resumen
+
+
+def asignar_nreal(jugadorr, jgo, jreales, resumen):
+    """Asignar nombre a cada jugador real"""
+
+    # Por cada jugador real...
+    for i in range(1, jugadorr + 1):
+
+        # Leer nombre jugador real
+        while True:
+            flush_input()
+            rnombre = input('\nNombre jugador real ' + str(i) + ': ')
+            if rnombre.lower() == 'baratero' or rnombre == '':
+                print('\nERROR: Nombre no válido, introduce otro nombre')
+            else:
+                jrepetido = False
+                print(jreales)
+                for jr in jreales:
+                    if rnombre.lower() == jr.lower():
+                        print('\nERROR: Nombre repetido, introduce otro nombre')
+                        jrepetido = True
+
+                if jrepetido is False:
+                    jreales.append(rnombre)
+                    break
+
+        # Añadir valores a la tabla de juego y a la del resumen final
+        jgo.append({'nombre': str(rnombre), 'cartera': '', 'tiradas': '', 'total': '', 'ruina': '', 'virtual': False})
+        resumen.append({'nombre': str(rnombre), 'tiradas': 0, 'tganadas': 0, 'tperdidas': 0, 'repetidas': 0, 'cartinicial': '', 'cartfinal': '', 'totaljuego': ''})
+
+    return jgo, jreales, resumen
+
+
 def main():
     """Lógica principal"""
 
-    arg = get_arguments()  # Coger argumentos
+    arg = get_arguments()  # Arg
     jgo = []  # Lista con la informacion del juego para cada jugador
     jreales = []  # Lista de nombres de jugadores reales
     resumen = []  # Lista para resumen final
     seguir_jugando = True  # Para salir del bucle del juego
 
-    # Crear entrada y asignar nombre a cada jugador virtual
-    for j in range(1, arg.jugadores + 1):
-        jgo.append({'nombre': "Jugador " + str(j), 'cartera': '', 'tiradas': '', 'total': '', 'ruina': '', 'virtual': True})
-        resumen.append({'nombre': "Jugador " + str(j), 'tiradas': 0, 'tganadas': 0, 'tperdidas': 0, 'repetidas': 0, 'cartinicial': '', 'cartfinal': '', 'totaljuego': ''})
+    # Asignar jugadores virtuales
+    jgo, resumen = asignar_nvirtual(arg.jugadores, jgo, resumen)
 
-    # Crear entrada y asignar nombre a cada jugador real
+    # Asignar jugadores reales
     if arg.reales:
         print('')
         print_linea(tipo=2)
+        jgo, jreales, resumen = asignar_nreal(arg.jugadores, jgo, jreales, resumen)
 
-        # Por cada jugador real...
-        for i in range(1, arg.reales + 1):
-
-            # Leer nombre jugador real
-            while True:
-                flush_input()
-                rnombre = input('\nNombre jugador real ' + str(i) + ': ')
-                if rnombre.lower() == 'baratero' or rnombre == '':
-                    print('\nERROR: Nombre no válido, introduce otro nombre')
-                else:
-                    jrepetido = False
-                    for jr in jreales:
-                        if rnombre.lower() == jr.lower():
-                            print('\nERROR: Nombre repetido, introduce otro nombre')
-                            jrepetido = True
-
-                    if jrepetido is False:
-                        jreales.append(rnombre)
-                        break
-
-
-            # Añadir valores a la tabla de juego y a la del resumen final
-            jgo.append({'nombre': str(rnombre), 'cartera': '', 'tiradas': '', 'total': '', 'ruina': '', 'virtual': False})
-            resumen.append({'nombre': str(rnombre), 'tiradas': 0, 'tganadas': 0, 'tperdidas': 0, 'repetidas': 0, 'cartinicial': '', 'cartfinal': '', 'totaljuego': ''})
-
-
-    # Crear entrada y añadir nombre Baratero a la tabla de juego y a la del resumen final
+    # Asignar baratero
     jgo.append({'nombre': 'Baratero', 'cartera': '', 'tiradas': '', 'total': '', 'ruina': '', 'virtual': True})
     resumen.append({'nombre': 'Baratero', 'tiradas': 0, 'tganadas': 0, 'tperdidas': 0, 'repetidas': 0, 'cartinicial': '', 'cartfinal': '', 'totaljuego': ''})
 
+    # Asignar carteras
     jgo, resumen = asignar_carteras(jgo, resumen)
 
     # Repetir juego hasta que se diga lo contrario
