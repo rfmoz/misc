@@ -1,0 +1,2 @@
+Clear linux kernel config and patches:
+https://github.com/clearlinux-pkgs/linux
