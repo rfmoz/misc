@@ -1,2 +1,5 @@
 Clear linux kernel config and patches:
 https://github.com/clearlinux-pkgs/linux
+
+Photon linux kernel config for esx:
+https://github.com/vmware/photon/blob/master/SPECS/linux/config-esx
