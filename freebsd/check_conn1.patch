@@ -1,0 +1,62 @@
+--- freebsd-update.sh	2019-02-03 20:33:24.000000000 +0100
++++ freebsd-update.sh_modified	2019-02-05 12:03:20.000000000 +0100
+@@ -969,6 +969,19 @@
+ #
+ # We ignore the Port field, since we are always going to use port 80.
+ 
++# Check connectivity to the server and loop until it works. On
++# non-interactive shell, run once only to avoid getting stuck.
++fetch_check_connection () {
++	while ! fetch ${QUIETFLAG} -o /dev/null \
++	    http://${SERVERNAME}/${FETCHDIR}/latest.ssl 2>${QUIETREDIR}; do
++                echo -n "failed. Waiting 60 seconds to retry... "
++                sleep 60
++                if [ ! -t 0 -a $NOTTYOK -eq 0 ]; then
++                        break
++                fi
++        done
++}
++
+ # Fetch the mirror list, but do not pick a mirror yet.  Returns 1 if
+ # no mirrors are available for any reason.
+ fetch_pick_server_init () {
+@@ -1350,6 +1363,7 @@
+ 		# Attempt to fetch metadata patches
+ 		echo -n "Fetching `wc -l < patchlist | tr -d ' '` "
+ 		echo ${NDEBUG} "metadata patches.${DDSTATS}"
++		fetch_check_connection
+ 		tr '|' '-' < patchlist |
+ 		    lam -s "${FETCHDIR}/tp/" - -s ".gz" |
+ 		    xargs ${XARGST} ${PHTTPGET} ${SERVERNAME}	\
+@@ -1402,6 +1416,7 @@
+ 	if [ -s filelist ]; then
+ 		echo -n "Fetching `wc -l < filelist | tr -d ' '` "
+ 		echo ${NDEBUG} "metadata files... "
++		fetch_check_connection
+ 		lam -s "${FETCHDIR}/m/" - -s ".gz" < filelist |
+ 		    xargs ${XARGST} ${PHTTPGET} ${SERVERNAME}	\
+ 		    2>${QUIETREDIR}
+@@ -1790,6 +1805,7 @@
+ 		done < files.wanted > filelist
+ 
+ 		# Actually fetch them
++		fetch_check_connection
+ 		lam -s "${OLDFETCHDIR}/f/" - -s ".gz" < filelist |
+ 		    xargs ${XARGST} ${PHTTPGET} ${SERVERNAME}	\
+ 		    2>${QUIETREDIR}
+@@ -1889,6 +1905,7 @@
+ 	if [ -s patchlist ]; then
+ 		echo -n "Fetching `wc -l < patchlist | tr -d ' '` "
+ 		echo ${NDEBUG} "patches.${DDSTATS}"
++		fetch_check_connection
+ 		tr '|' '-' < patchlist |
+ 		    lam -s "${PATCHDIR}/" - |
+ 		    xargs ${XARGST} ${PHTTPGET} ${SERVERNAME}	\
+@@ -1923,6 +1940,7 @@
+ 	if [ -s filelist ]; then
+ 		echo -n "Fetching `wc -l < filelist | tr -d ' '` "
+ 		echo ${NDEBUG} "files... "
++		fetch_check_connection
+ 		lam -s "${FETCHDIR}/f/" - -s ".gz" < filelist |
+ 		    xargs ${XARGST} ${PHTTPGET} ${SERVERNAME}	\
+ 			2>${STATSREDIR} | fetch_progress
