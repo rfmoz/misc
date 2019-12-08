@@ -1,0 +1,162 @@
+--- freebsd-update.sh	2019-12-08 14:58:51.309197551 +0100
++++ freebsd-update.sh_modified	2019-12-08 15:03:34.475819482 +0100
+@@ -55,6 +55,8 @@
+                   (default: root)
+   --not-running-from-cron
+                -- Run without a tty, for use by automated tools
++  --fast
++               -- Run without checking hashes and with low compression rate.
+   --currently-running release
+                -- Update as if currently running this release
+ Commands:
+@@ -441,6 +443,9 @@
+ 	# Run without a TTY
+ 	NOTTYOK=0
+ 
++	# Run without check hash and with low compression rate
++	FAST=0
++
+ 	# Fetched first in a chain of commands
+ 	ISFETCHED=0
+ }
+@@ -461,6 +466,9 @@
+ 		--not-running-from-cron)
+ 			NOTTYOK=1
+ 			;;
++		--fast)
++			FAST=1
++			;;
+ 		--currently-running)
+ 			shift
+ 			config_SourceRelease $1 || usage
+@@ -1393,7 +1401,11 @@
+ 
+ 			if [ `${SHA256} -q diff-NEW` = ${Y} ]; then
+ 				mv diff-NEW files/${Y}
+-				gzip -n files/${Y}
++				if [ $FAST -eq 0 ]; then
++					gzip -n files/${Y}
++				else
++					gzip -1 -n files/${Y}
++				fi
+ 			else
+ 				mv diff-NEW ${Y}.bad
+ 			fi
+@@ -1424,12 +1436,16 @@
+ 				echo "failed."
+ 				return 1
+ 			fi
+-			if [ `gunzip -c < ${Y}.gz |
+-			    ${SHA256} -q` = ${Y} ]; then
+-				mv ${Y}.gz files/${Y}.gz
++			if [ $FAST -eq 0 ]; then
++				if [ `gunzip -c < ${Y}.gz |
++				    ${SHA256} -q` = ${Y} ]; then
++					mv ${Y}.gz files/${Y}.gz
++				else
++					echo "metadata is corrupt."
++					return 1
++				fi
+ 			else
+-				echo "metadata is corrupt."
+-				return 1
++				mv ${Y}.gz files/${Y}.gz
+ 			fi
+ 		done < filelist
+ 		echo "done."
+@@ -1813,12 +1829,16 @@
+ 				echo "failed."
+ 				return 1
+ 			fi
+-			if [ `gunzip -c < ${Y}.gz |
+-			    ${SHA256} -q` = ${Y} ]; then
+-				mv ${Y}.gz files/${Y}.gz
++			if [ $FAST -eq 0 ]; then
++				if [ `gunzip -c < ${Y}.gz |
++				    ${SHA256} -q` = ${Y} ]; then
++					mv ${Y}.gz files/${Y}.gz
++				else
++					echo "${Y} has incorrect hash."
++					return 1
++				fi
+ 			else
+-				echo "${Y} has incorrect hash."
+-				return 1
++				mv ${Y}.gz files/${Y}.gz
+ 			fi
+ 		done < filelist
+ 		echo "done."
+@@ -1877,7 +1897,11 @@
+ 		fi
+ 
+ 		# Place the file into storage.
+-		gzip -c < tmpfile > files/${HASH}.gz
++		if [ $FAST -eq 0 ]; then
++	 		gzip -c < tmpfile > files/${HASH}.gz
++		else
++	 		gzip -1 -c < tmpfile > files/${HASH}.gz
++		fi
+ 		rm tmpfile
+ 	done < $2.hashes
+ 
+@@ -1919,7 +1943,11 @@
+ 
+ 			if [ `${SHA256} -q NEW` = ${Y} ]; then
+ 				mv NEW files/${Y}
+-				gzip -n files/${Y}
++				if [ $FAST -eq 0 ]; then
++					gzip -n files/${Y}
++				else
++					gzip -1 -n files/${Y}
++				fi
+ 			fi
+ 			rm -f diff OLD NEW ${X}-${Y}
+ 		done 2>${QUIETREDIR}
+@@ -1945,12 +1973,16 @@
+ 				echo "failed."
+ 				return 1
+ 			fi
+-			if [ `gunzip -c < ${Y}.gz |
+-			    ${SHA256} -q` = ${Y} ]; then
+-				mv ${Y}.gz files/${Y}.gz
++			if [ $FAST -eq 0 ]; then
++				if [ `gunzip -c < ${Y}.gz |
++			     	    ${SHA256} -q` = ${Y} ]; then
++					mv ${Y}.gz files/${Y}.gz
++				else
++					echo "${Y} has incorrect hash."
++					return 1
++				fi
+ 			else
+-				echo "${Y} has incorrect hash."
+-				return 1
++				mv ${Y}.gz files/${Y}.gz
+ 			fi
+ 		done < filelist
+ 		echo "done."
+@@ -2357,8 +2389,10 @@
+ # Helper for upgrade_merge: Return zero true iff the two files differ only
+ # in the contents of their RCS tags.
+ samef () {
+-	X=`sed -E 's/\\$FreeBSD.*\\$/\$FreeBSD\$/' < $1 | ${SHA256}`
+-	Y=`sed -E 's/\\$FreeBSD.*\\$/\$FreeBSD\$/' < $2 | ${SHA256}`
++	MD5=/sbin/md5
++
++	X=`sed -E 's/\\$FreeBSD.*\\$/\$FreeBSD\$/' < $1 | ${MD5}`
++	Y=`sed -E 's/\\$FreeBSD.*\\$/\$FreeBSD\$/' < $2 | ${MD5}`
+ 
+ 	if [ $X = $Y ]; then
+ 		return 0;
+@@ -2514,7 +2548,11 @@
+ 			if [ -f merge/new/${F} ]; then
+ 				V=`${SHA256} -q merge/new/${F}`
+ 
+-				gzip -c < merge/new/${F} > files/${V}.gz
++				if [ $FAST -eq 0 ]; then
++					gzip -c < merge/new/${F} > files/${V}.gz
++				else
++					gzip -1 -c < merge/new/${F} > files/${V}.gz
++				fi
+ 				echo "${F}|${V}"
+ 			fi
+ 		done < $1-paths > newhashes
