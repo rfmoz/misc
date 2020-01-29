@@ -1,0 +1,53 @@
+diff --git a/linux.bash b/linux.bash
+index 7c2c002..1715354 100755
+--- a/linux.bash
++++ b/linux.bash
+@@ -16,6 +16,7 @@ INTERFACE=""
+ ADDRESSES=( )
+ MTU=""
+ DNS=( )
++DNS_SEARCH=( )
+ TABLE=""
+ PRE_UP=( )
+ POST_UP=( )
+@@ -57,6 +58,7 @@ parse_options() {
+ 			Address) ADDRESSES+=( ${value//,/ } ); continue ;;
+ 			MTU) MTU="$value"; continue ;;
+ 			DNS) DNS+=( ${value//,/ } ); continue ;;
++			DNSSearch) DNS_SEARCH=${value//,/}; continue ;;
+ 			Table) TABLE="$value"; continue ;;
+ 			PreUp) PRE_UP+=( "$value" ); continue ;;
+ 			PreDown) PRE_DOWN+=( "$value" ); continue ;;
+@@ -150,7 +152,11 @@ resolvconf_iface_prefix() {
+ HAVE_SET_DNS=0
+ set_dns() {
+ 	[[ ${#DNS[@]} -gt 0 ]] || return 0
+-	printf 'nameserver %s\n' "${DNS[@]}" | cmd resolvconf -a "$(resolvconf_iface_prefix)$INTERFACE" -m 0 -x
++	if [[ -n $DNS_SEARCH ]]; then
++		(printf 'nameserver %s\n' "${DNS[@]}" && printf 'search %s\n' "$DNS_SEARCH") | cmd resolvconf -a "$(resolvconf_iface_prefix)$INTERFACE" -m 0 -x
++	else
++		printf 'nameserver %s\n' "${DNS[@]}" | cmd resolvconf -a "$(resolvconf_iface_prefix)$INTERFACE" -m 0 -x
++	fi
+ 	HAVE_SET_DNS=1
+ }
+ 
+@@ -253,8 +259,9 @@ save_config() {
+ 	for address in ${BASH_REMATCH[1]}; do
+ 		new_config+="Address = $address"$'\n'
+ 	done
+-	while read -r address; do
+-		[[ $address =~ ^nameserver\ ([a-zA-Z0-9_=+:%.-]+)$ ]] && new_config+="DNS = ${BASH_REMATCH[1]}"$'\n'
++	while read -r line; do
++		[[ $line =~ ^nameserver\ ([a-zA-Z0-9_=+:%.-]+)$ ]] && new_config+="DNS = ${BASH_REMATCH[1]}"$'\n'
++		[[ $line =~ ^search\ (.+)$ ]] && new_config+="DNSSearch = ${BASH_REMATCH[1]/ /, }"$'\n'
+ 	done < <(resolvconf -l "$(resolvconf_iface_prefix)$INTERFACE" 2>/dev/null || cat "/etc/resolvconf/run/interface/$(resolvconf_iface_prefix)$INTERFACE" 2>/dev/null)
+ 	[[ -n $MTU && $(ip link show dev "$INTERFACE") =~ mtu\ ([0-9]+) ]] && new_config+="MTU = ${BASH_REMATCH[1]}"$'\n'
+ 	[[ -n $TABLE ]] && new_config+="Table = $TABLE"$'\n'
+@@ -304,6 +311,7 @@ cmd_usage() {
+ 	  - Address: may be specified one or more times and contains one or more
+ 	    IP addresses (with an optional CIDR mask) to be set for the interface.
+ 	  - DNS: an optional DNS server to use while the device is up.
++	  - DNSSearch: Search list for host-name lookup to use while the device is up.
+ 	  - MTU: an optional MTU for the interface; if unspecified, auto-calculated.
+ 	  - Table: an optional routing table to which routes will be added; if
+ 	    unspecified or \`auto', the default table is used. If \`off', no routes

@@ -1,0 +1,53 @@
+diff --git a/freebsd.bash b/freebsd.bash
+index c390dcc..a108323 100755
+--- a/freebsd.bash
++++ b/freebsd.bash
+@@ -16,6 +16,7 @@ INTERFACE=""
+ ADDRESSES=( )
+ MTU=""
+ DNS=( )
++DNS_SEARCH=( )
+ TABLE=""
+ PRE_UP=( )
+ POST_UP=( )
+@@ -85,6 +86,7 @@ parse_options() {
+ 			Address) ADDRESSES+=( ${value//,/ } ); continue ;;
+ 			MTU) MTU="$value"; continue ;;
+ 			DNS) DNS+=( ${value//,/ } ); continue ;;
++			DNSSearch) DNS_SEARCH+=( ${value//,/ } ); continue ;;
+ 			Table) TABLE="$value"; continue ;;
+ 			PreUp) PRE_UP+=( "$value" ); continue ;;
+ 			PreDown) PRE_DOWN+=( "$value" ); continue ;;
+@@ -297,7 +299,11 @@ monitor_daemon() {
+ HAVE_SET_DNS=0
+ set_dns() {
+ 	[[ ${#DNS[@]} -gt 0 ]] || return 0
+-	printf 'nameserver %s\n' "${DNS[@]}" | cmd resolvconf -a "$INTERFACE" -x
++	if [[ -n $DNS_SEARCH ]]; then
++		(printf 'nameserver %s\n' "${DNS[@]}" && printf 'search %s\n' "$DNS_SEARCH") | cmd resolvconf -a "$INTERFACE" -x
++	else
++		printf 'nameserver %s\n' "${DNS[@]}" | cmd resolvconf -a "$INTERFACE" -x
++	fi
+ 	HAVE_SET_DNS=1
+ }
+ 
+@@ -342,8 +348,9 @@ save_config() {
+ 	{ read -r _; while read -r _ _ _ address _; do
+ 		new_config+="Address = $address"$'\n'
+ 	done } < <(netstat -I "$INTERFACE" -n -W -f inet6)
+-	while read -r address; do
+-		[[ $address =~ ^nameserver\ ([a-zA-Z0-9_=+:%.-]+)$ ]] && new_config+="DNS = ${BASH_REMATCH[1]}"$'\n'
++	while read -r line; do
++		[[ $line =~ ^nameserver\ ([a-zA-Z0-9_=+:%.-]+)$ ]] && new_config+="DNS = ${BASH_REMATCH[1]}"$'\n'
++		[[ $line =~ ^search\ (.+)$ ]] && new_config+="DNSSearch = ${BASH_REMATCH[1]/ /, }"$'\n'
+ 	done < <(resolvconf -l "$INTERFACE" 2>/dev/null)
+ 	[[ -n $MTU ]] && new_config+="MTU = $MTU"$'\n'
+ 	[[ -n $TABLE ]] && new_config+="Table = $TABLE"$'\n'
+@@ -395,6 +402,7 @@ cmd_usage() {
+ 	  - Address: may be specified one or more times and contains one or more
+ 	    IP addresses (with an optional CIDR mask) to be set for the interface.
+ 	  - DNS: an optional DNS server to use while the device is up.
++	  - DNSSearch: Search list for host-name lookup to use while the device is up.
+ 	  - MTU: an optional MTU for the interface; if unspecified, auto-calculated.
+ 	  - Table: an optional routing table to which routes will be added; if
+ 	    unspecified or \`auto', the default table is used. If \`off', no routes
