@@ -1,7 +1,23 @@
                        ---------------------------
                          wg-quick with DNSSearch
                        ---------------------------
-                              29/Jan/2020
+                              11/May/2020
+
+
+___
+
+> **The functionality provided here was finally implemented on wireguard-tools v1.0.20200510**
+>
+> https://lists.zx2c4.com/pipermail/wireguard/2020-May/005415.html
+>
+>  * wg-quick: support dns search domains
+>  
+>  If DNS= has a non-IP in it, it is now treated as a search domain in
+>  resolv.conf.  This new feature will be rolling out across our various GUI
+>  clients in the next week or so.
+>
+>  DNS=8.8.8.8,8.8.4.4,mycorp.net
+___
 
 
 
