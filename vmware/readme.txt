@@ -1,5 +1,6 @@
 # Installation vmware-view-client in Debian 8 Jessie
 
+
 dpkg --add-architecture i386
 apt-get update
 apt-get install gdebi
