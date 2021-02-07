@@ -68,6 +68,7 @@ Opciones:
         	                nº referencia despacho
 	  -m MENSAJE, --mensaje MENSAJE
         	                texto del mensaje entre ' '
+	  --batch               sólo imprime mensaje
 	  -v, --verbose         debug
 	  -z {0,1}              servicio a ejecutar -> (auto) | 0 codificar | 1
 	                        descodificar
