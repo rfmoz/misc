@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import argparse, string, time, re, logging, sys, unidecode
+
+# Tamaño máximo de texto a codificar
+MAX_TXT = 250
+
+def get_arguments(msg, lencript):
+    '''obtener argumentos'''
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'], help='prioridad -> 0 ordinario | 4 urgente | 8 urgentísimo')
+    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '3', '6'], help='tipo -> 3 vigilancia | 6 recepción | 0 n/a')
+    parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
+    parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
+    parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
+    parser.add_argument('-r', '--referencia', default=msg['referencia'], action='store', type=int, metavar='referencia', help='nº referencia despacho')
+    parser.add_argument('-m', '--mensaje', default=msg['mensaje'], action='store', type=str, help='texto del mensaje entre \' \'')
+    parser.add_argument('--batch', default=msg['batch'], action='store_true', help='sólo imprime mensaje')
+    parser.add_argument('-v', '--verbose', default=False, action='store_true', help='debug')
+    parser.add_argument('-z', dest='zcodif', default=msg['zcodif'], type=int, choices=[0, 1], help='servicio a ejecutar -> (auto) | 0 codificar | 1 descodificar')
+
+    arg = parser.parse_args()
+
+    if arg.verbose:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
+    logging.info('Argumentos raw:\t %s', str(vars(arg)))
+
+    if arg.diccionario:
+        print('Nº-Valor')
+        print('--------')
+        for pos, val in enumerate(lencript):  # Siempre < 100
+            print(f'{str(pos).zfill(2)} - {val}')
+        sys.exit(0)
+
+    # Asignar descodificación / codificación automaticamente. Si comienza por ~ */*/* -> descodificar
+    if arg.zcodif is None:
+        if re.match(r'^\d/(.+?)/(.+?)', arg.mensaje) is None:
+            arg.zcodif = 0
+            logging.info('Auto codificar = 0')
+        else:
+            arg.zcodif = 1
+            logging.info('Auto descodificar = 1')
+
+    # En codificacion, comprobar requisitos y eliminar new line siempre
+    if arg.zcodif == 0:
+        if arg.mensaje and len(arg.mensaje) > MAX_TXT:
+            logging.warning('Mensaje demasiado grande. Acortado a %s caracteres', str(MAX_TXT))
+            arg.mensaje = arg.mensaje[:MAX_TXT]
+    arg.mensaje = arg.mensaje.replace('\n', ' ').lstrip()
+
+    # Asignar los valores de los argumentos como strings
+    for key in vars(arg):
+        msg[key] = str(vars(arg)[key])
+
+    # Rellenar hora y dia
+    msg['horadia'] = str(time.strftime("%H%M%d"))
+
+    # Unificar con ceros. 3 para origen y destino. 2 para referencia
+    msg['origen'] = msg['origen'][:3].zfill(3)
+    msg['destino'] = msg['destino'][:3].zfill(3)
+    msg['referencia'] = msg['referencia'].zfill(2)
+
+    logging.info('Argumentos txt:\t %s', str(msg))
+
+    return msg
+
+
+def zcodif_codificar(msg, lencript):
+    '''codificar mensaje'''
+
+    if msg['tipo'] == '0':  # Ordinario
+
+        logging.info('Texto raw:\t\t %s', str(msg['mensaje']))
+
+        # Recorrer los digitos del mensaje para codificar cada uno
+        txt = ''
+        for _, elem in enumerate(msg['mensaje']):
+            if elem not in lencript:  # si el carácter no se encuentra en la lista
+                elem = unidecode.unidecode(elem)  # pasar a unicode, quita acentos y similar
+                if elem not in lencript:  #  finalmente si sigue sin encontrarlo, lo sustituye por #
+                    elem = '#'
+
+            # Asignar valor de la posicion del caracter, siempre con dos digitos '00'
+            txt += str(lencript.index(elem)).zfill(2)
+
+        # Reasignar mensaje codificado
+        codmsg = txt
+        logging.info('Texto cod:\t\t %s', str(codmsg))
+
+        # Calcular novenales en base al tamaño del mensaje
+        cociente = int(len(codmsg) / 9)
+        resto = int(len(codmsg) % 9)
+        cociente = cociente + 1 if resto > 0 else cociente  # El resto añade un novenal
+        msg['novenales'] = str(cociente).zfill(2) + str(resto)
+
+        # Insertar arriadas en mensaje
+        codmsg = re.sub(r'(.{9})', r'\1/', codmsg)
+
+        # Insertar cifra prioridad mensaje al final. Borrar último '/' del mensaje si lo tuviera
+        codmsg = re.sub(r'/$', r'', codmsg) + '/' + msg['prioridad']
+
+        # Mensaje formateado
+        msgfmt = str(msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + '/' + msg['novenales'] + '/' + codmsg)
+
+    else:
+        if msg['tipo'] == '3':  # Control
+            final = msg['prioridad']
+        elif msg['tipo'] == '6':  # Acuse
+            final = '0x'
+        else:
+            logging.error('Sin tipo de mensaje')
+
+        # Mensaje formateado
+        msgfmt = str(msg['tipo'] + '/' + msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + '/' + final)
+
+    logging.info('Mensaje raw:\t %s', msgfmt)
+
+    # Salida final. Sustituir caracteres repteidos por x
+    msg['codmensaje'] = re.sub(r'(\w{1})\1', r'\1x', msgfmt)
+
+    imprimir(msg)
+
+
+
+def zcodif_descodificar(msg, lencript):
+    '''descodificar mensaje'''
+
+    # Reconstruir caracteres repteidos
+    codmsg = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
+
+    # Extraer cabecera del mensaje - https://regex101.com/r/ZQeJFV/6/
+    search = re.search(r'^([036])?/?(\d)/(.+?)/(.+?)/(.{0,3})', codmsg)
+
+    # Procesar telegrama con mensaje
+    if re.match(r'^([^36])/', codmsg) is not None:
+        # 0/0x10x5/232x040x/016/757575/0
+
+        # Calcular tamaño del texto en base a los novenales
+        long_nov = (int(search.group(5)[:2]) * 9) - (9 - int(search.group(5)[2:]))
+
+        # Eliminar la cabecera del preámbulo del telegrama, quitar '/' y extraer longitud del texto
+        codmsg = codmsg.replace(search.group(0), '').replace('/', '')[:long_nov]
+
+        # Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
+        txt = ''
+        for i, k in zip(codmsg[0::2], codmsg[1::2]):
+            txt += txt.join(lencript[int(i + k)])
+
+        logging.info("Mensaje raw:\t %s", codmsg)
+        msg['codmensaje'] = txt
+    else:
+        msg['codmensaje'] = None
+
+    # Asignar valores
+    if search.group(1):
+        msg['tipo'] = search.group(1)
+    else:
+        msg['tipo'] = '0'
+    msg['prioridad'] = search.group(2)
+    msg['origen'] = search.group(3)[:3]
+    msg['destino'] = search.group(3)[3:]
+    msg['horadia'] = search.group(4)[:6]
+    msg['referencia'] = search.group(4)[6:]
+    msg['novenales'] = search.group(5)
+
+    imprimir(msg)
+
+
+
+def imprimir(msg):
+    '''salida por pantalla'''
+
+    if msg['batch'] != 'None':
+        print(msg['codmensaje'])
+
+    else:
+        print('-' * 80)
+        if msg['tipo'] == '0' or msg['tipo'] is None:
+            print(f"Tipo:\t\t 0 Telegrama ordinario")
+        if msg['tipo'] == '3':
+            print(f"Tipo:\t\t 3 Control")
+        if msg['tipo'] == '6':
+            print(f"Tipo:\t\t 6 Acuse de recibo")
+        print(f"Prioridad:\t {msg['prioridad']}")
+        print(f"Origen:\t\t {msg['origen']}")
+        print(f"Destino:\t {msg['destino']}")
+        print(f"Día y Hora:\t {msg['horadia'][4:6]} {msg['horadia'][:2]}:{msg['horadia'][2:4]}")
+        print(f"Referencia:\t {msg['referencia']}")
+        if msg['codmensaje'] is not None:
+            if msg['tipo'] == '0':
+                print(f"Novenales:\t {msg['novenales'][:2]}.{msg['novenales'][2:]}")
+                print(f"Mensaje txt:\t {msg['mensaje']}")
+            print('-' * 80)
+            print('')
+            print(f"Mensaje:\t {msg['codmensaje']}")
+            print('')
+        print('-' * 80)
+
+
+
+def main():
+    '''Inicio'''
+
+    # Los caracteres del mensaje se sustituyen por la posición que ocupan en la lista
+    lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ']
+
+    # Diccionario de mensaje. Valores por defecto
+    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 5, 'horadia': None, 'referencia': 0, 'novenales': '000',
+           'mensaje': '...', 'batch': None, 'zcodif': None, 'codmensaje': None}
+
+    msg = get_arguments(msg, lencript)
+
+    if msg['zcodif'] == '0':
+        zcodif_codificar(msg, lencript)
+    elif msg['zcodif'] == '1':
+        zcodif_descodificar(msg, lencript)
+    else:
+        logging.error('Fallo en la selección de tarea. Codificar / Descodificar')
+
+
+if __name__ == "__main__":
+    main()
