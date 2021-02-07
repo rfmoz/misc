@@ -93,10 +93,10 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 
 	  0/0x10x5/2341040x/023/252730141/1x0/0
-	  |    |       |     |      |      |  |
+	  |    |       |     |     \ /     |  |
 	  |    |       |     |      |      |  - prioridad(1)
 	  |    |       |     |      ----------- novenales de mensaje
-	  |    |       |     ------------------ nº de novenales(2) y nº de digitos en el último novenal(1)
+	  |    |       |     ------------------ sufijo nº de novenales(2) y nº de digitos en el último novenal(1)
 	  |    |       ------------------------ hora(2) + minutos(2) + dia(2) + referencia(2)
 	  |    -------------------------------- torre de origen(3) + torre de destino(3)
 	  ------------------------------------- prioridad(1)
@@ -104,7 +104,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 	3/0/0x10x5/2341040x/0
 	| |    |      |     |
-	| |    |      |     - prioridad(0)
+	| |    |      |     - sufijo prioridad(0)
 	| |    |      ------- hora(2) + minutos(2) + dia(2) + referencia(2)
 	| |    -------------- torre de origen(3) + torre de destino(3)
 	| ------------------- prioridad(1)
