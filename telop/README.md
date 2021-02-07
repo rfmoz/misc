@@ -8,6 +8,7 @@ Telop (TELégrafoÓPtico) es una utilidad para codificar y descodificar mensajes
 
 Codificar mensaje:
 
+	```
 	$ telop --mensaje 'Telegrama de prueba'
 	--------------------------------------------------------------------------------
 	Tipo:		 0 Telegrama ordinario
@@ -22,10 +23,12 @@ Codificar mensaje:
 	Mensaje:	 0/0x10x5/23x2040x/052/5x1421x41/627102x10/971314972/52730141x/10/0
 	
 	--------------------------------------------------------------------------------
+	```
 
 
 Descodificar mensaje:
 
+	```
 	$ telop --mensaje '0/0x10x5/23x2040x/052/5x1421x41/627102x10/971314972/52730141x/10/0'
 	--------------------------------------------------------------------------------
 	Tipo:		 0 Telegrama ordinario
@@ -40,10 +43,12 @@ Descodificar mensaje:
 	Mensaje:	 Telegrama de prueba
 	
 	--------------------------------------------------------------------------------
+	```
 
 
 Opciones:
 
+	```
 	$ telop -h
 	usage: telop [-h] [-p {0,4,8}] [-t {0,3,6}] [-o origen] [-d destino]
 	             [--diccionario] [-r referencia] [-m MENSAJE] [-v] [-z {0,1}]
@@ -66,7 +71,7 @@ Opciones:
 	  -v, --verbose         debug
 	  -z {0,1}              servicio a ejecutar -> (auto) | 0 codificar | 1
 	                        descodificar
-
+	```
 
 
 
@@ -124,61 +129,63 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 ### Más información
 
-> Título:		Historia de la telegrafía
-> Fecha de pub.:	2012
-> Autor:		Fernando Fernández de Villegas / Amateur radio club Orense
-> Url:		http://www.ea1uro.com/eb3emd/Telegrafia_hist/Telegrafia_hist.htm
+```   
+Título:		Historia de la telegrafía
+Fecha de pub.:	2012
+Autor:		Fernando Fernández de Villegas / Amateur radio club Orense
+Url:		http://www.ea1uro.com/eb3emd/Telegrafia_hist/Telegrafia_hist.htm
 
-> Título:		Historia de la telegrafía óptica en España
-> Autor:		Olivé Roig, Sebastián
-> Fecha de pub.:	1990
-> Páginas: 		101
-> Fuente:		Foro Histórico de las Telecomunicaciones
+Título:		Historia de la telegrafía óptica en España
+Autor:		Olivé Roig, Sebastián
+Fecha de pub.:	1990
+Páginas: 	101
+Fuente:		Foro Histórico de las Telecomunicaciones
 
-> Título:		Estudio de la red de telegrafía óptica en España
-> Autor:		Capdevila Montes, Enrique. Slepoy Benites, Paula
-> Fecha de pub.:	2012
-> Páginas: 		456
-> Fuente:		Internet
+Título:		Estudio de la red de telegrafía óptica en España
+Autor:		Capdevila Montes, Enrique. Slepoy Benites, Paula
+Fecha de pub.:	2012
+Páginas: 	456
+Fuente:		Internet
 
-> Título:		Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares
-> Autor:		José Maria Mathé
-> Fecha de pub.:	1849
-> Páginas:		25
-> Fuente:		Biblioteca Virtual de Defensa
+Título:		Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares
+Autor:		José Maria Mathé
+Fecha de pub.:	1849
+Páginas:	25
+Fuente:		Biblioteca Virtual de Defensa
 
-> Título:		Tratado de telegrafía
-> Autor:		Suárez Saavedra, Antonino  
-> Fecha de pub.:	1880-1882
-> Páginas:		665 tomo 1 (interesantes 148-153)
-> Fuente:		Biblioteca Digital Hispánica
+Título:		Tratado de telegrafía
+Autor:		Suárez Saavedra, Antonino  
+Fecha de pub.:	1880-1882
+Páginas:	665 tomo 1 (interesantes 148-153)
+Fuente:		Biblioteca Digital Hispánica
 
-> Título:		Tratado de telegrafía y nociones suficientes de la posta 
-> Autor:		Suárez Saavedra, Antonino  
-> Fecha de pub.:	1870
-> Páginas:		605 (interesantes 51-55)
-> Fuente:		Biblioteca Digital Hispánica
+Título:		Tratado de telegrafía y nociones suficientes de la posta 
+Autor:		Suárez Saavedra, Antonino  
+Fecha de pub.:	1870
+Páginas:	605 (interesantes 51-55)
+Fuente:		Biblioteca Digital Hispánica
 
-> Título:		Instrucción general para el servicio de transmisión 
-> Autor:		José Maria Mathé
-> Fecha de pub.:	1850
-> Páginas:		24
-> Fuente:		Biblioteca Museo Postal y Telegráfico
+Título:		Instrucción general para el servicio de transmisión 
+Autor:		José Maria Mathé
+Fecha de pub.:	1850
+Páginas:	24
+Fuente:		Biblioteca Museo Postal y Telegráfico
 
-> Título:		Diccionario y tablas de transmisión para el telégrafo militar de noche y día
-> Autor:		José Maria Mathé
-> Fecha de pub.:	1849
-> Páginas:		47
-> Fuente:		Biblioteca Nacional
+Título:		Diccionario y tablas de transmisión para el telégrafo militar de noche y día
+Autor:		José Maria Mathé
+Fecha de pub.:	1849
+Páginas:	47
+Fuente:		Biblioteca Nacional
 
-> Título:		Diccionario de Telégrafos (diccionario frasológico)
-> Autor:		Dirección General de Telégrafos
-> Fecha de pub.:	1858
-> Páginas:		415
-> Fuente:		Universidad Complutense / Google Books
+Título:		Diccionario de Telégrafos (diccionario frasológico)
+Autor:		Dirección General de Telégrafos
+Fecha de pub.:	1858
+Páginas:	415
+Fuente:		Universidad Complutense / Google Books
 
-> Título:		De torre en torre: Mensajes codificados en los cielos de la meseta
-> Autor:		Pasquale de Dato / Yolanda Hernández Navarro
-> Fecha de pub.:	2015
-> Páginas:		18
-> Fuente:		Revista Oleana Nº 30 - Ayuntamiento de Requena
+Título:		De torre en torre: Mensajes codificados en los cielos de la meseta
+Autor:		Pasquale de Dato / Yolanda Hernández Navarro
+Fecha de pub.:	2015
+Páginas:	18
+Fuente:		Revista Oleana Nº 30 - Ayuntamiento de Requena
+```   
