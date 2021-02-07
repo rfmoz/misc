@@ -51,7 +51,7 @@ Opciones:
 	```
 	$ telop -h
 	usage: telop [-h] [-p {0,4,8}] [-t {0,3,6}] [-o origen] [-d destino]
-	             [--diccionario] [-r referencia] [-m MENSAJE] [-v] [-z {0,1}]
+	             [--diccionario] [-r referencia] [-m MENSAJE] [--batch] [-v] [-z {0,1}]
 	
 	optional arguments:
 	  -h, --help            show this help message and exit
