@@ -8,7 +8,6 @@ Telop (TELégrafoÓPtico) es una utilidad para codificar y descodificar mensajes
 
 Codificar mensaje:
 
-	```
 	$ telop --mensaje 'Telegrama de prueba'
 	--------------------------------------------------------------------------------
 	Tipo:		 0 Telegrama ordinario
@@ -23,12 +22,10 @@ Codificar mensaje:
 	Mensaje:	 0/0x10x5/23x2040x/052/5x1421x41/627102x10/971314972/52730141x/10/0
 	
 	--------------------------------------------------------------------------------
-	```
 
 
 Descodificar mensaje:
 
-	```
 	$ telop --mensaje '0/0x10x5/23x2040x/052/5x1421x41/627102x10/971314972/52730141x/10/0'
 	--------------------------------------------------------------------------------
 	Tipo:		 0 Telegrama ordinario
@@ -43,12 +40,10 @@ Descodificar mensaje:
 	Mensaje:	 Telegrama de prueba
 	
 	--------------------------------------------------------------------------------
-	```
 
 
 Opciones:
 
-	```
 	$ telop -h
 	usage: telop [-h] [-p {0,4,8}] [-t {0,3,6}] [-o origen] [-d destino]
 	             [--diccionario] [-r referencia] [-m MENSAJE] [--batch] [-v] [-z {0,1}]
@@ -72,7 +67,6 @@ Opciones:
 	  -v, --verbose         debug
 	  -z {0,1}              servicio a ejecutar -> (auto) | 0 codificar | 1
 	                        descodificar
-	```
 
 
 
