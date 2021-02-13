@@ -11,7 +11,7 @@ def get_arguments(msg, lencript):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'], help='prioridad -> 0 ordinario | 4 urgente | 8 urgentísimo')
-    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['3', '6'], help='tipo de indicación -> 3 vigilancia | 6 recepción')
+    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '3', '6'], help='tipo de indicación -> 3 vigilancia | 6 recepción')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
@@ -161,7 +161,7 @@ def zcodif_descodificar(arg, msg, lencript):
             msg['codmensaje'] = None
 
         else:
-            raise Exception(f'Tipo de mensaje sin identificar')
+            raise Exception('Tipo de mensaje sin identificar')
     
         # Asignar valores
         if search.group(1):

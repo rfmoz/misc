@@ -126,6 +126,8 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 ### Más información
 
 ```   
+Wikiepdia:	https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico
+
 Título:		Historia de la telegrafía
 Fecha de pub.:	2012
 Autor:		Fernando Fernández de Villegas / Amateur radio club Orense
