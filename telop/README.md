@@ -93,11 +93,11 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	--------------------- tipo de servicio(1)	
 
 
-	  0/0x10x5/2341040x/023/252730141/1x0/0
+	  0/0x10x5/2341040x/013/252730141/1x0/0
 	  |    |       |     |   \         /  |
 	  |    |       |     |    \       /   - prioridad(1)
 	  |    |       |     |     ------------ novenales de mensaje
-	  |    |       |     ------------------ sufijo nº de novenales(2) y nº de digitos en el último novenal(1)
+	  |    |       |     ------------------ sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
 	  |    |       ------------------------ hora(2) + minutos(2) + dia(2) + referencia(2)
 	  |    -------------------------------- torre de origen(3) + torre de destino(3)
 	  ------------------------------------- prioridad(1)

@@ -92,7 +92,6 @@ def zcodif_codificar(arg, msg, lencript):
         # Calcular novenales en base al tamaño del mensaje
         cociente = int(len(codmsg) / 9)
         resto = int(len(codmsg) % 9)
-        cociente = cociente + 1 if resto > 0 else cociente  # El resto añade un novenal
         msg['novenales'] = str(cociente).zfill(2) + str(resto)
 
         # Insertar arriadas en mensaje y borar la última si coincide
@@ -140,10 +139,10 @@ def zcodif_descodificar(arg, msg, lencript):
 
         # Procesar tipo 0 . Telegrama con mensaje
         if re.match(r'^[048]/.{6}/', codmsg) is not None:
-            # 0/0x10x5/232x040x/016/757575/0
+            # 0/0x10x5/232x040x/006/757575/0
     
             # Calcular tamaño del texto en base a los novenales
-            long_nov = (int(search.group(5)[:2]) * 9) - (9 - int(search.group(5)[2:]))
+            long_nov = (int(search.group(5)[:2]) * 9) + (int(search.group(5)[2:]))
     
             # Eliminar la cabecera del preámbulo del telegrama, quitar '/' y extraer longitud del texto
             codmsg = codmsg.replace(search.group(0), '').replace('/', '')[:long_nov]
