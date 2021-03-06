@@ -97,26 +97,26 @@ def zcodif_codificar(arg, msg, lencript):
         # Insertar arriadas en mensaje y borar la última si coincide
         codmsg = str(re.sub(r'(.{9})', r'\1/', codmsg)).rstrip('/')
 
-        inicio = ''
-        final = msg['novenales'] + '/' + codmsg + '/' + msg['prioridad']
+        prefijo = ''
+        sufijo = msg['novenales'] + '/' + codmsg + '/' + msg['prioridad']
 
     else:
-        inicio = msg['tipo'] + '/'
+        prefijo = msg['tipo'] + '/'
 
         if msg['tipo'] == '3':  # Control
             # 3/0/0x1052/1917090x/0
-            final = msg['prioridad']
+            sufijo = msg['prioridad']
 
         elif msg['tipo'] == '6':  # Acuse
             # 6/0/0x1052/1917090x/0x
-            final = '0x'
+            sufijo = '0x'
 
         else:
             logging.error('Sin tipo de mensaje')
             sys.exit(-1)
 
     # Mensaje formateado
-    msgfmt = str(inicio + msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + '/' + final)
+    msgfmt = str(prefijo + msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + '/' + sufijo)
 
     logging.info('Mensaje raw:\t %s', msgfmt)
 
