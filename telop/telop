@@ -30,8 +30,9 @@ def get_arguments(msg, lencript):
     logging.info('Argumentos raw:\t %s', str(vars(arg)))
 
     if arg.diccionario:
-        print('Nº-Valor')
-        print('--------')
+        print('-' * 10)
+        print('Nº - Valor')
+        print('-' * 10)
         for pos, val in enumerate(lencript):  # Siempre < 100
             print(f'{str(pos).zfill(2)} - {val}')
         sys.exit(0)
