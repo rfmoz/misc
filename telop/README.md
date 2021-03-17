@@ -174,6 +174,7 @@ Diccionario codificación:
         95 - ñ
         96 - ¿
         97 -  
+        98 - €
 
 
 ### Instalación
