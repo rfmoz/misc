@@ -19,7 +19,7 @@ def get_arguments(msg, lencript):
     parser.add_argument('-m', '--mensaje', default=msg['mensaje'], action='store', type=str, help='texto del mensaje entre \' \'')
     parser.add_argument('--batch', default=False, action='store_true', help='sólo imprime mensaje resultante')
     parser.add_argument('-v', '--verbose', default=False, action='store_true', help='debug')
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+    parser.add_argument('--version', action='version', version='%(prog)s 1.1')
     parser.add_argument('-z', dest='zcodif', default=None, type=int, choices=[0, 1], help='servicio a ejecutar -> (auto) | 0 codificar | 1 descodificar')
 
     arg = parser.parse_args()
