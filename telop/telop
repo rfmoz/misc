@@ -1,6 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""telop - Codifica y descodifica mensajes telegráficos del sistema Mathé"""
+# Copyright (C) 2021 - Ricardo F.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import argparse, string, time, re, logging, sys, unidecode
 
 # Tamaño máximo de texto a codificar
@@ -141,15 +156,15 @@ def zcodif_descodificar(arg, msg, lencript):
         # Procesar tipo 0 . Telegrama con mensaje
         if re.match(r'^[048]/.{6}/', codmsg) is not None:
             # 0/0x10x5/232x040x/006/757575/0
-    
+
             # Calcular tamaño del texto en base a los novenales
             long_nov = (int(search.group(5)[:2]) * 9) + (int(search.group(5)[2:]))
-    
+
             # Eliminar la cabecera del preámbulo del telegrama, quitar '/' y extraer longitud del texto
             codmsg = codmsg.replace(search.group(0), '').replace('/', '')[:long_nov]
-    
+
             logging.info("Mensaje raw:\t %s", codmsg)
-    
+
             # Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
             msg['codmensaje'] = ''
             for i, k in zip(codmsg[0::2], codmsg[1::2]):
@@ -162,7 +177,7 @@ def zcodif_descodificar(arg, msg, lencript):
 
         else:
             raise Exception('Tipo de mensaje sin identificar')
-    
+
         # Asignar valores
         if search.group(1):
             msg['tipo'] = search.group(1)
