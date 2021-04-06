@@ -167,9 +167,12 @@ def zcodif_descodificar(arg, msg, lencript):
 
             # Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
             msg['codmensaje'] = ''
-            for i, k in zip(codmsg[0::2], codmsg[1::2]):
-                #msg['codmensaje'] += msg['codmensaje'].join(lencript[int(i + k)])
-                msg['codmensaje'] += lencript[int(i + k)]
+            #for i, k in zip(codmsg[0::2], codmsg[1::2]):
+               ##msg['codmensaje'] += msg['codmensaje'].join(lencript[int(i + k)])
+               #msg['codmensaje'] += lencript[int(i + k)]
+            for i in range(0, len(codmsg) , 2):
+                msg['codmensaje'] += lencript[int(codmsg[i] + codmsg[i+1])]
+
 
         # Procesar tipo 3 o 6
         elif re.match(r'^[36]/\d/', codmsg) is not None:
