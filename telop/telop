@@ -97,7 +97,7 @@ def zcodif_codificar(arg, msg, lencript):
         for _, elem in enumerate(msg['mensaje']):
             if elem not in lencript:  # si el carácter no se encuentra en la lista
                 elem = unidecode.unidecode(elem)  # pasar a unicode, quita acentos y similar
-                if elem not in lencript:  #  finalmente si sigue sin encontrarlo, lo sustituye por #
+                if elem not in lencript:  #  finalmente sustituir por '#' si no existe
                     elem = '#'
 
             # Asignar valor de la posicion del caracter, siempre con dos digitos '00'
@@ -136,7 +136,7 @@ def zcodif_codificar(arg, msg, lencript):
 
     logging.info('Mensaje raw:\t %s', msgfmt)
 
-    # Salida final. Sustituir caracteres repteidos por x
+    # Salida final. Sustituir caracteres repetidos por x
     msg['codmensaje'] = re.sub(r'(\w{1})\1', r'\1x', msgfmt)
 
     imprimir(arg, msg)
@@ -146,7 +146,7 @@ def zcodif_codificar(arg, msg, lencript):
 def zcodif_descodificar(arg, msg, lencript):
     '''descodificar mensaje'''
 
-    # Reconstruir caracteres repteidos
+    # Reconstruir caracteres repetidos
     codmsg = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
