@@ -25,7 +25,7 @@ def get_arguments(msg, lencript):
     '''obtener argumentos'''
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'], help='prioridad -> 0 ordinario | 4 urgente | 8 urgentísimo')
+    parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'], help='prioridad -> 0 normal | 4 urgente | 8 urgentísimo')
     parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '3', '6'], help='tipo de indicación -> 3 vigilancia | 6 recepción')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
@@ -155,7 +155,7 @@ def zcodif_descodificar(arg, msg, lencript):
 
         # Procesar tipo 0 . Telegrama con mensaje
         if re.match(r'^[048]/.{6}/', codmsg) is not None:
-            # 0/0x10x5/232x040x/006/757575/0
+            # 0/0x10x5/232x040x/0x6/757575/0
 
             # Calcular tamaño del texto en base a los novenales
             long_nov = (int(search.group(5)[:2]) * 9) + (int(search.group(5)[2:]))
@@ -165,14 +165,14 @@ def zcodif_descodificar(arg, msg, lencript):
 
             logging.info("Mensaje raw:\t %s", codmsg)
 
-            # Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
-            msg['codmensaje'] = ''
-            #for i, k in zip(codmsg[0::2], codmsg[1::2]):
-               ##msg['codmensaje'] += msg['codmensaje'].join(lencript[int(i + k)])
-               #msg['codmensaje'] += lencript[int(i + k)]
-            for i in range(0, len(codmsg) , 2):
-                msg['codmensaje'] += lencript[int(codmsg[i] + codmsg[i+1])]
-
+            # Comprobar integridad
+            if long_nov != len(codmsg):
+                raise Exception('Extension mensaje incorrecta')
+            else:
+                # Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
+                msg['codmensaje'] = ''
+                for i in range(0, long_nov - 1, 2):
+                    msg['codmensaje'] += lencript[int(codmsg[i] + codmsg[i+1])]
 
         # Procesar tipo 3 o 6
         elif re.match(r'^[36]/\d/', codmsg) is not None:
