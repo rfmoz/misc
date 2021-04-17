@@ -26,7 +26,7 @@ def get_arguments(msg, lencript):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'], help='prioridad -> 0 normal | 4 urgente | 8 urgentísimo')
-    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '3', '6'], help='tipo de indicación -> 3 vigilancia | 6 recepción')
+    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '3', '6'], help='tipo de indicación -> 3 control | 6 recepción')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
@@ -210,11 +210,11 @@ def imprimir(arg, msg):
     else:
         print('-' * 80)
         if msg['tipo'] == '0':
-            print(f"Tipo:\t\t 0 Telegrama ordinario")
+            print(f"Tipo:\t\t 0 - Ordinario")
         if msg['tipo'] == '3':
-            print(f"Tipo:\t\t 3 Control")
+            print(f"Tipo:\t\t 3 - Control")
         if msg['tipo'] == '6':
-            print(f"Tipo:\t\t 6 Acuse de recibo")
+            print(f"Tipo:\t\t 6 - Acuse recibo")
         print(f"Prioridad:\t {msg['prioridad']}")
         print(f"Origen:\t\t {msg['origen']}")
         print(f"Destino:\t {msg['destino']}")
