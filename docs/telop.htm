@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="keywords" content="telégrafo, óptico, Mathé, código, mensaje, sistema, transmisión, telecomunicación" />
+    <meta name="description" content="Conversor Telégrafo Óptico sistema Mathé" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>Conversor Telégrafo Óptico</title>
+    <style>
+	body {
+	    font-family: "courier new", courier, monospace;
+	    margin: 0px;
+	    padding: 0px;
+	    height: 100%;
+	}
+	div#content {
+	    border-style: none;
+	    border-left: dashed #e6e6e6 5px;
+	    border-right: dashed #e6e6e6 5px;
+	    background: linen;
+	    width: 50em;
+	    min-height: 100vh;
+	    margin: 0px auto 0px auto;
+	    text-align: center;
+	    font-size: 110%;
+	}
+	div#title {
+	    padding-top: 2em;
+	    margin-bottom: 1.1em;
+	    font-size: 2em;
+	}
+	div#title img {
+	    border: 1px lightgrey solid;
+	    width: 90px;
+	    margin-right: 0.7em;
+	    border-radius: 50%;
+	    display: inline-block;
+	    vertical-align: middle;
+	}
+	textarea {
+	    color: maroon;
+	    height: 6em;
+	    padding: 7px;
+	    text-align: center;
+	    line-height: 1.5;
+	    letter-spacing: 1px;
+	    box-sizing: border-box;
+	}
+	div#codops {
+	    display: none;
+	    margin: 10px auto 15px auto;
+	}
+	div#codops table {
+	    border: none;
+	    text-align: left;
+	}
+	div#codops select, div#codops input {
+	    padding: 2px;
+	    margin: 2px;
+	}
+	div#codops input[type="number"] {
+	    width: 5em;
+	}
+	pre {
+	    text-align: left;
+	    margin: 1.5em auto 1.5em auto;
+	    word-break: normal;
+	    overflow-wrap: break-word;
+	    white-space: pre-wrap;
+	    line-height: 2;
+	}
+	pre p {
+	    font-weight: bold;
+	    text-align: center;
+	}
+	img#transgif{
+	    width: 310px;
+	    height: 300px;
+	    display: none;
+	}
+	.info {
+	    opacity: 0.7;
+	    font-size: small;
+	    padding: 1em 0px 1em 0px;
+	}
+	button {
+	    padding: 5px;
+	    letter-spacing: 1px;
+	    color: #303030;
+	}
+	.info a{ color: maroon; }
+	textarea { margin-bottom: 5px; }
+	pre, button, textarea, div#codops { width: 85%; }
+	span#destgif img{ box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
+
+	@media only screen and (max-width: 725px) {
+		div#title img {
+		    display: block;
+		    margin-left: auto;
+		    margin-right: auto;
+		    margin-bottom: 0.2em;
+		}
+		div#title {
+		    padding-top: 0.5em;
+		    margin-bottom: 0.7em;
+	    	    font-size: 1.6em;
+		}
+		div#content { width: 98%; }
+		pre, button, textarea, div#codops { width: 95%; }
+		textarea { font-size: 0.9em; }
+	}
+    </style>
+</head>
+
+<body>
+<div id="content"> 
+    <div id="title"><img src="https://pbs.twimg.com/profile_images/1358477372572459008/Ly5iF45v_400x400.jpg" alt="Telégrafo" >Conversor Telégrafo Óptico</div>
+    <div id="formulario">
+        <textarea id="form1" maxlength="600"></textarea>
+
+        <div id="codops">
+            <table>
+                <tr>
+                    <td>Tipo:</td>
+                    <td><select id="mrecep" onchange="txtformat()">
+                        <option value="0">0 - Ordinario</option>
+                        <option value="3">3 - Control</option>
+                        <option value="6">6 - Acuse recibo</option>
+                        </select>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>Prioridad:</td>
+                    <td><select id="mprio">
+                        <option value="0">0 - Normal</option>
+                        <option value="4">4 - Urgente</option>
+                        <option value="8">8 - Urgent&iacute;simo</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Torre origen:</td>
+                    <td><input type="number" id="morig" min="1" max="999" pattern="\d{3}" /></td>
+                </tr>
+                <tr>
+                    <td>Torre destino:</td>
+                    <td><input type="number" id="mdest" min="1" max="999" pattern="\d{3}" /></td>
+                </tr>
+                <tr>
+                    <td>Referencia:</td>
+                    <td><input type="number" id="mref" min="1" max="99" pattern="\d{3}" /></td>
+                </tr>
+            </table>
+        </div>
+    <button id="btn1" onclick="procesar()">CONVERTIR</button>
+    </div>
+    <pre id="salida"></pre>
+    <div class="info">&rtrif; más información: 
+    <a class="info" target="_blank" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> - 
+    <a class="info" target="_blank" href="https://twitter.com/telegrafoptico">twitter</a> -
+    <a class="info" target="_blank" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a></div>
+</div>
+
+    <script src="static/gifshot.js"></script>
+    <script>
+
+    function txtformat() {
+
+            if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 0 ) {
+                document.getElementById("form1").style.textDecoration = "none";
+            } else {
+                document.getElementById("form1").style.textDecoration = "line-through";
+            }
+    }
+
+
+    function codificar_ops(msg, lencript) {
+        console.log('Codificar Opciones');
+
+        function selectElement(id, valueToSelect) {
+            let element = document.getElementById(id);
+            element.value = valueToSelect;
+        }
+
+        var prioridades = ['0','4','8'];
+        var destinos = ['18','27','36','50','52'];
+
+        selectElement('mprio', prioridades[Math.floor(Math.random() * prioridades.length)]);
+        selectElement('morig', '1');
+        selectElement('mdest', (destinos[Math.floor(Math.random() * destinos.length)]));
+        selectElement('mref', (Math.floor(Math.random() * 99) + 1));
+
+        document.getElementById("codops").style.display = "block";
+        document.querySelector('pre#salida').innerHTML = '';
+    }
+
+    
+    function codificar(msg, lencript) {
+        console.log('Codificar');
+
+        var d = new Date();
+        msg['tipo'] = document.getElementById("mrecep").options[mrecep.selectedIndex].value;
+        msg['prioridad'] = document.getElementById("mprio").value;
+        msg['origen'] = document.getElementById("morig").value.toString().substring(0,3).padStart(3, '0');
+        msg['destino'] = document.getElementById("mdest").value.toString().substring(0,3).padStart(3, '0');
+        msg['referencia'] = document.getElementById("mref").value.toString().substring(0,2).padStart(2, '0');
+        msg['horadia'] = d.getHours().toString().padStart(2, '0') + d.getMinutes().toString().padStart(2, '0') + d.getDate().toString().padStart(2, '0');
+
+        switch (msg['tipo']) {
+            case '0':
+                // Recorrer los digitos del mensaje para codificar cada uno
+                var codmsg = '';
+                for (let i = 0; i < msg['mensaje'].length; i++) {
+                    let elem = msg['mensaje'][i];
+                    if (!lencript.includes(elem)) {  // si el carácter no se encuentra en la lista
+                        elem = elem.normalize('NFKD').replace(/[^\w]/g, '');  // pasar a unicode, quita acentos y similar
+                        if (!lencript.includes(elem)) {  // finalmente sustituir por '#' si no existe
+                            elem = '#';
+                        }
+                    }
+                    // Asignar valor de la posicion del caracter, siempre con dos digitos '00'
+                    codmsg += lencript.indexOf(elem).toString().padStart(2, '0');
+                }
+                console.log('Texto cod: ' + codmsg);
+        
+                // Calcular novenales en base al tamaño del mensaje
+                var cociente = Math.floor(codmsg.length / 9);
+                var resto = Math.floor(codmsg.length % 9);
+                msg['novenales'] = cociente.toString().padStart(2, '0') + resto.toString();
+        
+                // Insertar arriadas en mensaje y borar la última si coincide
+                codmsg = codmsg.replace(/(.{9})/g, "$1/").replace(/\/$/, '');
+        
+                var prefijo = ''
+                var sufijo = msg['novenales'] + "/" + codmsg + "/" + msg['prioridad'];
+                break;
+
+            case '3':
+            case '6':
+                var prefijo = msg['tipo'] + '/';
+
+            case '3':
+                sufijo = msg['prioridad'];
+                break;
+
+            case '6':
+                sufijo = '0x';
+        }
+
+        // Mensaje formateado
+        var msgfmt = prefijo + msg['prioridad'] + "/" + msg['origen'] + msg['destino'] + "/" + msg['horadia'] + msg['referencia'] + "/" + sufijo;
+
+        console.log('Mensaje raw: ' + msgfmt);
+        console.log('Mensaje txt: "' + msg['mensaje'] + '\"');
+
+        // Salida final. Sustituir caracteres reptidos por x
+        msg['codmensaje'] = msgfmt.replace(/(\w{1})\1/g, "$1x");
+
+        imprimir(msg);
+    }
+
+
+    function descodificar(msg, lencript) {
+        console.log('Descodificar');
+
+        // Ocultar opciones parámetros y limpiar formato caja texto
+        document.getElementById("codops").style.display = "none";
+        document.getElementById("form1").style.textDecoration = "none";
+
+        // Reconstruir caracteres repetidos
+        codmsg = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
+
+        // Extraer cabecera del mensaje
+        search = (/^([36])?\/?(\d)\/(.+?)\/(.+?)\/(.{0,3})/g).exec(codmsg);
+
+        // Procesar tipo 0 . Telegrama con mensaje
+        if ((/^[048]\/.{6}\//g).test(codmsg)) {
+            // 0/0x10x5/232x040x/0x6/757575/0
+
+            // Calcular tamaño del texto en base a los novenales
+            let long_nov = (parseInt(search[5].substring(0,2)) * 9) + (parseInt(search[5].substring(2)));
+
+            // Eliminar la cabecera del preámbulo del telegrama y extraer longitud del texto
+            codmsg = codmsg.replace(search[0], '').replace(/\//g, '').substring(0, long_nov);
+
+            console.log("Mensaje raw: " + codmsg);
+
+            // Comprobar integridad
+            if (long_nov != codmsg.length) {
+                msg['codmensaje'] = 'ERROR - Extensión mensaje incorrecta'
+
+            } else {
+                // Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
+                msg['codmensaje'] = '';
+                for (let i=0; i < long_nov - 1; i+=2) {
+                    let posicion = (codmsg[i] + codmsg[(i + 1)]);
+                    msg['codmensaje'] += lencript[parseInt(posicion)];
+                }
+            }
+
+        // Procesar tipo 3 o 6
+        } else if ((/^[36]\/\d\//).test(codmsg)) {
+            msg['codmensaje'] = null
+        } else {
+            msg['codmensaje'] = 'ERROR - Tipo de mensaje sin identificar'
+        }
+
+        // Asignar valores
+        if (search[1]) {
+            msg['tipo'] = search[1]
+        } else {
+                msg['tipo'] = '0'
+        }
+        msg['prioridad'] = search[2];
+        msg['origen'] = search[3].substring(0,3);
+        msg['destino'] = search[3].substring(3);
+        msg['horadia'] = search[4].substring(0,6);
+        msg['referencia'] = search[4].substring(6);
+        msg['novenales'] = search[5];
+
+        imprimir(msg);
+    }
+
+
+    function imprimir(msg) {
+
+        var salida = '<hr>';
+
+        switch (msg['tipo']) {
+            case '0':
+                salida += "<i>Tipo:</i>\t\t 0 - Ordinario<br>";
+                break;
+            case '3':
+                salida += "<i>Tipo:</i>\t\t 3 - Control<br>";
+                break;
+            case '6':
+                salida += "<i>Tipo:</i>\t\t 6 - Acuse recibo<br>";
+         }
+
+        salida += "<i>Prioridad:</i>\t " + msg['prioridad'] + "<br>";
+        salida += "<i>Torre origen:</i>\t " + msg['origen'] + "<br>";
+        salida += "<i>Torre destino:</i>\t " + msg['destino'] + "<br>";
+        salida += "<i>Día y Hora:</i>\t " + msg['horadia'].substring(4,6) + ' ' +  msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + "<br>";
+        salida += "<i>Referencia:</i>\t " + msg['referencia'] + "<br>";
+
+        if (msg['codmensaje']) {
+            if (msg['tipo'] == '0') {
+                salida += "<i>Novenales:</i>\t " + msg['novenales'].substring(0,2) + '.' + msg['novenales'].substring(2) + "<br>";
+            }
+            salida += "<i>Mensaje:</i>\t &#8628;<hr><p id='codmensaje'>" + msg['codmensaje'] + '</p>';
+        }
+        if (!(/^ERROR/g).test(msg['codmensaje']) && (/^\d\/(.+?)\/(.+?)/).test(msg['codmensaje'])) {
+            salida += "<hr><p>";
+            salida += "<button id='btn2' onclick='gengif()'>&nbsp;&nbsp;Generar GIF Transmisión&nbsp;&nbsp;</button>";
+            salida += "<span id='destgif'><img id='transgif' src='static/loading.gif'></span></p>";
+        }
+        salida += '<hr>';
+
+        document.querySelector('pre#salida').innerHTML = salida;
+    }
+
+
+    function gengif() {
+
+        // Ocultar botón y mostrar loading
+        document.getElementById("btn2").style.display = "none";
+        document.getElementById("transgif").style.display = "inline-block";
+        document.getElementById("transgif").scrollIntoView();
+
+        // Recoger texto mensaje sustituyendo '/' por 'b'
+        var codtxt = document.getElementById("codmensaje").innerHTML.toLowerCase();
+
+        // Validar, convertir error en 'e'
+        codtxt = codtxt.replace(/\//g, 'b').replace(/[^0-9,x,m,b]/gi, 'e');
+        if (codtxt.length == 0) { codtxt = 'e'; };
+
+        console.log('A gif: ' + codtxt);
+
+        var lista = [];
+        for (let i = 0; i < codtxt.length; i++) {
+            //lista.push('static/' + codtxt[i] + '.gif');
+            lista.push({src:"static/" + codtxt[i] + ".gif", text:(i + 1) + "/" + codtxt.length + " "});
+        }
+
+        gifshot.createGIF({
+            gifWidth: 310,
+            gifHeight: 300,
+            images: lista,
+            interval: 5,
+            numFrames: 1,
+            frameDuration: 1,
+            sampleInterval: 10,
+            fontColor: 'grey',
+            textAlign: 'right',
+            textBaseline: 'top',
+            fontSize: '14px',
+            fontFamily: 'monospace',
+            numWorkers: 2
+        }, function (obj) {
+            if (!obj.error) {
+                // Sustituir loading por gif final
+                document.getElementById("transgif").setAttribute("src", obj.image);
+                //var image = obj.image, animatedImage = document.createElement('img');
+                //animatedImage.src = image;
+                //document.getElementById("destgif").appendChild(animatedImage);
+            }
+        });
+    }
+
+
+    function procesar() {
+
+        var msg = {}; // Diccionario de mensaje
+        msg['mensaje'] = document.querySelector('textarea#form1').value;  // Asignar entrada
+        msg['mensaje'] = msg['mensaje'].replace(/(\r\n|\n|\r)/gm, " ").replace(/[\&\<\>\`]/gm, '#').trim();  // Limpiar /n, html tags y espacios
+        var lencript = ['0','1','2','3','4','5','6','7','8','9',
+                'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+                'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                '!','"','#','$','%','&',"'",'(',')','*','+',',','-','.','/',':',';','<','=','>','?','@','[','\\',']','^','_','`','{','|','}','~',
+                'Ñ','ñ','¿',' ','€'];  // Los caracteres del mensaje se sustituyen por la posición que ocupan en la lista
+
+        // Asignar descodificación / codificación automaticamente. Si comienza por ~ */*/* -> descodificar
+        if ((/^\d\/(.+?)\/(.+?)/).test(msg['mensaje'])) {
+            descodificar(msg, lencript);
+        } else {
+            if (msg['mensaje'].length > 250) {
+                document.querySelector('pre#salida').innerHTML = '<hr><p>ERROR - Mensaje mayor de 250 caracteres</p><hr>';
+            } else {
+                if (document.getElementById("codops").style.display == 'block') {
+                    codificar(msg, lencript);
+                } else {
+                    codificar_ops(msg, lencript);
+                }
+            }
+        }
+    }
+
+    </script>
+</body>
+</html>
