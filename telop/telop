@@ -89,6 +89,7 @@ def zcodif_codificar(arg, msg, lencript):
     '''codificar mensaje'''
 
     if msg['tipo'] == '0':  # Sin tipo, mensaje ordinario
+        # 0/0x10x5/232x040x/0x6/757575/0
 
         logging.info('Texto raw:\t\t %s', str(msg['mensaje']))
 
@@ -150,12 +151,15 @@ def zcodif_descodificar(arg, msg, lencript):
     codmsg = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer cabecera del mensaje - https://regex101.com/r/uukkZ9/2
-        search = re.search(r'^([36])?/?(\d)/(.+?)/(.+?)/(.{0,3})', codmsg)
+        # Extraer cabecera del mensaje - https://regex101.com/r/uukkZ9/3
+        search = re.search(r'^([36])?/?(\d)/(\d+?)/(\d+?)/(\d{0,3})', codmsg)
+
+        if not search:
+            raise Exception('Codificación de mensaje incorrecta')
 
         # Procesar tipo 0 . Telegrama con mensaje
-        if re.match(r'^[048]/.{6}/', codmsg) is not None:
-            # 0/0x10x5/232x040x/0x6/757575/0
+        if re.match(r'^[048]/\d{6}/', codmsg) is not None:
+            # 0/001005/23220400/006/757575/0
 
             # Calcular tamaño del texto en base a los novenales
             long_nov = (int(search.group(5)[:2]) * 9) + (int(search.group(5)[2:]))
