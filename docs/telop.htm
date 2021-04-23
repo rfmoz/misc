@@ -157,9 +157,10 @@
     </div>
     <pre id="salida"></pre>
     <div class="info">&rtrif; más información: 
-    <a class="info" target="_blank" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> - 
-    <a class="info" target="_blank" href="https://twitter.com/telegrafoptico">twitter</a> -
-    <a class="info" target="_blank" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a></div>
+    <a class="info" target="_blank" title="GitHub telop" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> - 
+    <a class="info" target="_blank" title="Twitter telegrafoptico" href="https://twitter.com/telegrafoptico">twitter</a> -
+    <a class="info" target="_blank" title="Wikipedia Telégrafo Óptico" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a> -
+    <a class="info" target="_blank" title="Foro Histórico de las Comunicaciones C.O.I.T." href="https://forohistorico.coit.es/index.php/sendas/tecnologica-en-espana/wiki-telegrafia-optica">fht-coit</a></div>
 </div>
 
     <script src="static/gifshot.js"></script>
@@ -272,53 +273,67 @@
         codmsg = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
 
         // Extraer cabecera del mensaje
-        search = (/^([36])?\/?(\d)\/(.+?)\/(.+?)\/(.{0,3})/g).exec(codmsg);
+        search = (/^([36])?\/?(\d)\/(\d+?)\/(\d+?)\/(\d{0,3})/g).exec(codmsg);
 
-        // Procesar tipo 0 . Telegrama con mensaje
-        if ((/^[048]\/.{6}\//g).test(codmsg)) {
-            // 0/0x10x5/232x040x/0x6/757575/0
-
-            // Calcular tamaño del texto en base a los novenales
-            let long_nov = (parseInt(search[5].substring(0,2)) * 9) + (parseInt(search[5].substring(2)));
-
-            // Eliminar la cabecera del preámbulo del telegrama y extraer longitud del texto
-            codmsg = codmsg.replace(search[0], '').replace(/\//g, '').substring(0, long_nov);
-
-            console.log("Mensaje raw: " + codmsg);
-
-            // Comprobar integridad
-            if (long_nov != codmsg.length) {
-                msg['codmensaje'] = 'ERROR - Extensión mensaje incorrecta'
-
-            } else {
-                // Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
-                msg['codmensaje'] = '';
-                for (let i=0; i < long_nov - 1; i+=2) {
-                    let posicion = (codmsg[i] + codmsg[(i + 1)]);
-                    msg['codmensaje'] += lencript[parseInt(posicion)];
-                }
+        try {
+            if (!search) {
+                throw "ERROR - Codificación incorrecta del mensaje";
             }
 
-        // Procesar tipo 3 o 6
-        } else if ((/^[36]\/\d\//).test(codmsg)) {
-            msg['codmensaje'] = null
-        } else {
-            msg['codmensaje'] = 'ERROR - Tipo de mensaje sin identificar'
-        }
+            // Procesar tipo 0 . Telegrama con mensaje
+            if ((/^[048]\/\d{6}\//g).test(codmsg)) {
+                // 0/001005/232x0400/006/757575/0
 
-        // Asignar valores
-        if (search[1]) {
-            msg['tipo'] = search[1]
-        } else {
-                msg['tipo'] = '0'
-        }
-        msg['prioridad'] = search[2];
-        msg['origen'] = search[3].substring(0,3);
-        msg['destino'] = search[3].substring(3);
-        msg['horadia'] = search[4].substring(0,6);
-        msg['referencia'] = search[4].substring(6);
-        msg['novenales'] = search[5];
+                // Calcular tamaño del texto en base a los novenales
+                let long_nov = (parseInt(search[5].substring(0,2)) * 9) + (parseInt(search[5].substring(2)));
 
+                // Eliminar la cabecera del preámbulo del telegrama y extraer longitud del texto
+                codmsg = codmsg.replace(search[0], '').replace(/\//g, '').substring(0, long_nov);
+
+                console.log("Mensaje raw: " + codmsg);
+
+                // Comprobar integridad
+                if (long_nov != codmsg.length) {
+                    msg['codmensaje'] = 'ERROR - Extensión mensaje incorrecta'
+
+                } else {
+                    // Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
+                    msg['codmensaje'] = '';
+                    for (let i=0; i < long_nov - 1; i+=2) {
+                        let posicion = (codmsg[i] + codmsg[(i + 1)]);
+                        msg['codmensaje'] += lencript[parseInt(posicion)];
+                    }
+                }
+
+            // Procesar tipo 3 o 6
+            } else if ((/^[36]\/\d\//).test(codmsg)) {
+                msg['codmensaje'] = null
+
+            } else {
+                throw "ERROR - Tipo de mensaje sin identificar";
+            }
+
+            // Asignar valores
+            if (search[1]) {
+                msg['tipo'] = search[1]
+            } else {
+                    msg['tipo'] = '0'
+            }
+            msg['prioridad'] = search[2];
+            msg['origen'] = search[3].substring(0,3);
+            msg['destino'] = search[3].substring(3);
+            msg['horadia'] = search[4].substring(0,6);
+            msg['referencia'] = search[4].substring(6);
+            msg['novenales'] = search[5];
+
+        // Recoger error
+	} catch (excp) {
+            msg['codmensaje'] = excp;
+            msg['tipo'] = msg['prioridad'] = '0';
+            msg['origen'] = msg['destino'] = msg['novenales'] = '000';
+            msg['horadia'] = '000000';
+            msg['referencia'] = '00';
+	}
         imprimir(msg);
     }
 
