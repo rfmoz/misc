@@ -29,6 +29,9 @@
 	    margin-bottom: 1.1em;
 	    font-size: 2em;
 	}
+	div#title a {
+	    text-decoration: none;
+	}
 	div#title img {
 	    border: 1px lightgrey solid;
 	    width: 90px;
@@ -105,6 +108,13 @@
 		    margin-bottom: 0.7em;
 	    	    font-size: 1.6em;
 		}
+		.info span {
+		    display: block;
+		    white-space: nowrap;
+		    max-width: 100%;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		}
 		div#content { width: 98%; }
 		pre, button, textarea, div#codops { width: 95%; }
 		textarea { font-size: 0.9em; }
@@ -114,7 +124,10 @@
 
 <body>
 <div id="content"> 
-    <div id="title"><img src="https://pbs.twimg.com/profile_images/1358477372572459008/Ly5iF45v_400x400.jpg" alt="Telégrafo" >Conversor Telégrafo Óptico</div>
+    <div id="title">
+        <a href="https://rfrail3.github.io/misc/telop.htm"><img src="https://pbs.twimg.com/profile_images/1358477372572459008/Ly5iF45v_400x400.jpg" alt="Telégrafo"></a>
+        Conversor Telégrafo Óptico
+    </div>
     <div id="formulario">
         <textarea id="form1" maxlength="600"></textarea>
 
@@ -157,10 +170,13 @@
     </div>
     <pre id="salida"></pre>
     <div class="info">&rtrif; más información: 
-    <a class="info" target="_blank" title="GitHub telop" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> - 
-    <a class="info" target="_blank" title="Twitter telegrafoptico" href="https://twitter.com/telegrafoptico">twitter</a> -
-    <a class="info" target="_blank" title="Wikipedia Telégrafo Óptico" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a> -
-    <a class="info" target="_blank" title="Foro Histórico de las Comunicaciones C.O.I.T." href="https://forohistorico.coit.es/index.php/sendas/tecnologica-en-espana/wiki-telegrafia-optica">fht-coit</a></div>
+	<span>
+        <a class="info" target="_blank" title="GitHub telop" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> -
+        <a class="info" target="_blank" title="Twitter telegrafoptico" href="https://twitter.com/telegrafoptico">twitter</a> -
+        <a class="info" target="_blank" title="Foro Histórico de las Comunicaciones C.O.I.T." href="https://forohistorico.coit.es/index.php/sendas/tecnologica-en-espana/wiki-telegrafia-optica">fht-coit</a> -
+        <a class="info" target="_blank" title="Wikipedia Telégrafo Óptico" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a>
+	</span>
+    </div>
 </div>
 
     <script src="static/gifshot.js"></script>
