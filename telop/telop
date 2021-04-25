@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import argparse, string, time, re, logging, sys, unidecode
+import argparse, string, time, re, logging, sys, unicodedata
 
 # Tamaño máximo de texto a codificar
 MAX_TXT = 250
@@ -97,7 +97,7 @@ def zcodif_codificar(arg, msg, lencript):
         codmsg = ''
         for _, elem in enumerate(msg['mensaje']):
             if elem not in lencript:  # si el carácter no se encuentra en la lista
-                elem = unidecode.unidecode(elem)  # pasar a unicode, quita acentos y similar
+                elem = re.sub(r'[^\w]', r'', unicodedata.normalize('NFKD', elem)) # pasar a unicode, quita acentos y similar
                 if elem not in lencript:  #  finalmente sustituir por '#' si no existe
                     elem = '#'
 
