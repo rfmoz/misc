@@ -1,7 +1,7 @@
 telop
 =======
 
-Telop (TELégrafoÓPtico) es una utilidad para codificar y descodificar mensajes de texto utilizando el código telegráfico ideado por José María Mathé. Fue utilizado por el servicio de transmisión en la red de telegrafía óptica de España a finales del s.XIX.
+Telop (TELégrafoÓPtico) - Utilidad para codificar y descodificar mensajes de texto empleando una interpretación del código telegráfico ideado por José María Mathé. Permite recrear el sistema utilizado por el servicio de transmisión en la red de telegrafía óptica de España a finales del s.XIX.
 
 
 ### Ejemplos
@@ -55,6 +55,8 @@ Opciones:
                                 prioridad -> 0 ordinario | 4 urgente | 8 urgentísimo
           -t {3,6}, --tipo {3,6}
                                 tipo de indicación -> 3 vigilancia | 6 recepción
+          --causa {1,2,3,4}     causa acuse recepción -> 1 niebla | 2 ausencia | 3
+                                ocupada | 4 avería
           -o origen, --origen origen
                                 torre de origen
           -d destino, --destino destino
@@ -185,7 +187,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 ### Notas
 
-- Cada dígito del mensaje de texto se codifica empleando el número de la posición que ocupa en un diccionario definido en el programa (telop --diccionario). Se sustituye así el diccionario frasológico del sistema original. Resulta un telegrama de mayor extensión, pero mucho más fácil de implementar.
+- Cada dígito del mensaje de texto se codifica empleando el número de la posición que ocupa en un diccionario definido en el programa (telop --diccionario). Se sustituye así el diccionario frasológico del sistema original. Resulta un telegrama de mayor extensión, pero más polivalente y fácil de implementar.
 
 - También se han normalizado y adaptado las instrucciones de Mathé para facilitar su tratamiento informático. En la cabecera, la posición y formato de los valores se mantiene invariable entre los diferentes tipos de mensajes. El resultado es el siguiente:
 

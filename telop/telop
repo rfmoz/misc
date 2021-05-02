@@ -27,6 +27,7 @@ def get_arguments(msg, lencript):
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'], help='prioridad -> 0 normal | 4 urgente | 8 urgentísimo')
     parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '3', '6'], help='tipo de indicación -> 3 control | 6 recepción')
+    parser.add_argument('--causa', default=msg['causa'], action='store', type=str, choices=['1', '2', '3', '4'], help='causa acuse recepción -> 1 niebla | 2 ausencia | 3 ocupada | 4 avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
@@ -34,7 +35,7 @@ def get_arguments(msg, lencript):
     parser.add_argument('-m', '--mensaje', default=msg['mensaje'], action='store', type=str, help='texto del mensaje entre \' \'')
     parser.add_argument('--batch', default=False, action='store_true', help='sólo imprime mensaje resultante')
     parser.add_argument('-v', '--verbose', default=False, action='store_true', help='debug')
-    parser.add_argument('--version', action='version', version='%(prog)s 1.1')
+    parser.add_argument('--version', action='version', version='%(prog)s 1.2')
     parser.add_argument('-z', dest='zcodif', default=None, type=int, choices=[0, 1], help='servicio a ejecutar -> (auto) | 0 codificar | 1 descodificar')
 
     arg = parser.parse_args()
@@ -126,7 +127,7 @@ def zcodif_codificar(arg, msg, lencript):
 
         elif msg['tipo'] == '6':  # Acuse
             # 6/0/0x1052/1917090x/0x
-            sufijo = '0x'
+            sufijo = msg['causa']
 
         else:
             logging.error('Sin tipo de mensaje')
@@ -181,6 +182,8 @@ def zcodif_descodificar(arg, msg, lencript):
         # Procesar tipo 3 o 6
         elif re.match(r'^[36]/\d/', codmsg) is not None:
             msg['codmensaje'] = None
+            if re.match(r'^[6]/\d/', codmsg) is not None:
+                msg['causa'] = search.group(5)
 
         else:
             raise Exception('Tipo de mensaje sin identificar')
@@ -224,6 +227,17 @@ def imprimir(arg, msg):
         print(f"Destino:\t {msg['destino']}")
         print(f"Día y Hora:\t {msg['horadia'][4:6]} {msg['horadia'][:2]}:{msg['horadia'][2:4]}")
         print(f"Referencia:\t {msg['referencia']}")
+        if msg['tipo'] == '6':
+            if msg['causa'] == '00':
+                print(f"Recepción:\t 0x - Correcta")
+            if msg['causa'] == '1':
+                print(f"Recepción:\t 1 - Niebla")
+            if msg['causa'] == '2':
+                print(f"Recepción:\t 2 - Ausencia")
+            if msg['causa'] == '3':
+                print(f"Recepción:\t 3 - Vanguardia ocupada")
+            if msg['causa'] == '4':
+                print(f"Recepción:\t 4 - Avería")
         if msg['codmensaje'] is not None:
             if msg['tipo'] == '0':
                 print(f"Novenales:\t {msg['novenales'][:2]}.{msg['novenales'][2:]}")
@@ -244,7 +258,7 @@ def main():
     lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€']
 
     # Diccionario de mensaje. Valores por defecto
-    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': '000', 'mensaje': '...', 'codmensaje': None}
+    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': '000', 'mensaje': '...', 'codmensaje': None, 'causa': '0x'}
 
     arg, msg = get_arguments(msg, lencript)
 
