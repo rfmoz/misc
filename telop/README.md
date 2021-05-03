@@ -55,7 +55,7 @@ Opciones:
                                 prioridad -> 0 ordinario | 4 urgente | 8 urgentísimo
           -t {3,6}, --tipo {3,6}
                                 tipo de indicación -> 3 vigilancia | 6 recepción
-          --causa {1,2,3,4}     causa acuse recepción -> 1 niebla | 2 ausencia | 3
+          --incd {1,2,3,4}      incidencia acuse recepción -> 1 niebla | 2 ausencia | 3
                                 ocupada | 4 avería
           -o origen, --origen origen
                                 torre de origen
