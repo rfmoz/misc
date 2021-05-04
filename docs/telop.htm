@@ -82,14 +82,24 @@
 	    display: none;
 	}
 	.info {
+	    display: inline-block;
 	    opacity: 0.7;
 	    font-size: small;
 	    padding: 1em 0px 1em 0px;
+	}
+	div #info2 {
+	    padding-top: 0.5em;
+	    visibility: hidden;
+	    transition: visibility 0.2s;
 	}
 	button {
 	    padding: 5px;
 	    letter-spacing: 1px;
 	    color: #303030;
+	}
+	div#velocidad {
+	    text-align: center;
+	    display: none;
 	}
 	.info a{ color: maroon; }
 	textarea { margin-bottom: 5px; }
@@ -106,14 +116,7 @@
 		div#title {
 		    padding-top: 0.5em;
 		    margin-bottom: 0.7em;
-	    	    font-size: 1.6em;
-		}
-		.info span {
-		    display: block;
-		    white-space: nowrap;
-		    max-width: 100%;
-		    overflow: hidden;
-		    text-overflow: ellipsis;
+		    font-size: 1.6em;
 		}
 		div#content { width: 98%; }
 		pre, button, textarea, div#codops { width: 95%; }
@@ -166,13 +169,15 @@
     <button id="btn1" onclick="procesar()">CONVERTIR</button>
     </div>
     <pre id="salida"></pre>
-    <div class="info">&rtrif; más información: 
-	<span>
-        <a class="info" target="_blank" title="GitHub telop" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> -
-        <a class="info" target="_blank" title="Twitter telegrafoptico" href="https://twitter.com/telegrafoptico">twitter</a> -
-        <a class="info" target="_blank" title="Foro Histórico de las Comunicaciones C.O.I.T." href="https://forohistorico.coit.es/index.php/sendas/tecnologica-en-espana/wiki-telegrafia-optica">fht-coit</a> -
-        <a class="info" target="_blank" title="Wikipedia Telégrafo Óptico" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a>
-	</span>
+    <div class="info" onmouseover="document.getElementById('info2').style.visibility = 'visible';" onmouseout="document.getElementById('info2').style.visibility = 'hidden';">
+        <div id="info1">&rtrif; más información &ltrif;</div>
+        <div id="info2">
+            <a target="_blank" title="GitHub telop" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> -
+            <a target="_blank" title="Twitter telegrafoptico" href="https://twitter.com/telegrafoptico">twitter</a> -
+            <a target="_blank" title="Foro Histórico de las Comunicaciones C.O.I.T." href="https://forohistorico.coit.es/index.php/sendas/tecnologica-en-espana/wiki-telegrafia-optica">fht</a> -
+            <a target="_blank" title="Facebook Telegrafía Óptica" href="https://www.facebook.com/TelegrafiaOptica">facebook</a> -
+            <a target="_blank" title="Wikipedia Telégrafo Óptico" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a>
+    </div>
     </div>
 </div>
 
@@ -251,14 +256,12 @@
                 break;
 
             case '3':
-            case '6':
                 var prefijo = msg['tipo'] + '/';
-
-            case '3':
                 sufijo = msg['prioridad'];
                 break;
 
             case '6':
+                var prefijo = msg['tipo'] + '/';
                 sufijo = '0x';
         }
 
@@ -340,13 +343,13 @@
             msg['novenales'] = search[5];
 
         // Recoger error
-	} catch (excp) {
+        } catch (excp) {
             msg['codmensaje'] = excp;
             msg['tipo'] = msg['prioridad'] = '0';
             msg['origen'] = msg['destino'] = msg['novenales'] = '000';
             msg['horadia'] = '000000';
             msg['referencia'] = '00';
-	}
+        }
         imprimir(msg);
     }
 
@@ -381,7 +384,12 @@
         if (!(/^ERROR/g).test(msg['codmensaje']) && (/^\d\/(.+?)\/(.+?)/).test(msg['codmensaje'])) {
             salida += "<hr><p>";
             salida += "<button id='btn2' onclick='gengif()'>&nbsp;&nbsp;Generar GIF Transmisión&nbsp;&nbsp;</button>";
-            salida += "<span id='destgif'><img id='transgif' src='static/loading.gif'></span></p>";
+            salida += "<span id='destgif'><img id='transgif' src='data:,'></span>";
+            salida += "<div id='velocidad'>velocidad: <select id='velo' onchange='gengif()()'>";
+            salida += "<option value='15'>1 / 15 seg. (real)</option>";
+            salida += "<option value='10'>1 / 10 seg.</option>";
+            salida += "<option value='5' selected>1 / 5 seg.</option>";
+            salida += "<option value='1'>1 / 1 seg.</option></select></div></p>";
         }
         salida += '<hr>';
 
@@ -393,8 +401,12 @@
 
         // Ocultar botón y mostrar loading
         document.getElementById("btn2").style.display = "none";
+        document.getElementById("transgif").setAttribute("src", "static/loading.gif");
         document.getElementById("transgif").style.display = "inline-block";
         document.getElementById("transgif").scrollIntoView();
+
+        // Recoger velocidad
+        velo = document.getElementById("velo").value;
 
         // Recoger texto mensaje sustituyendo '/' por 'b'
         var codtxt = document.getElementById("codmensaje").innerHTML.toLowerCase();
@@ -415,7 +427,7 @@
             gifWidth: 310,
             gifHeight: 300,
             images: lista,
-            interval: 5,
+            interval: velo,
             numFrames: 1,
             frameDuration: 1,
             sampleInterval: 10,
@@ -429,6 +441,7 @@
             if (!obj.error) {
                 // Sustituir loading por gif final
                 document.getElementById("transgif").setAttribute("src", obj.image);
+                document.getElementById("velocidad").style.display = "block";
                 //var image = obj.image, animatedImage = document.createElement('img');
                 //animatedImage.src = image;
                 //document.getElementById("destgif").appendChild(animatedImage);
