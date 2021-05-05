@@ -12,8 +12,8 @@ Codificar mensaje:
 	--------------------------------------------------------------------------------
 	Tipo:		 0 Telegrama ordinario
 	Prioridad:	 0
-	Origen:		 001
-	Destino:	 052
+	T. Origen:	 001
+	T. Destino:	 052
 	Día y Hora:	 08 23:10
 	Referencia:	 00
 	Novenales:	 05.2
@@ -30,8 +30,8 @@ Descodificar mensaje:
 	--------------------------------------------------------------------------------
 	Tipo:		 0 Telegrama ordinario
 	Prioridad:	 0
-	Origen:		 001
-	Destino:	 052
+	T. Origen:	 001
+	T. Destino:	 052
 	Día y Hora:	 08 23:10
 	Referencia:	 00
 	Novenales:	 05.2
@@ -44,19 +44,19 @@ Descodificar mensaje:
 
 Opciones:
 
-	$ telop -h
-        usage: telop [-h] [-p {0,4,8}] [-t {3,6}] [-o origen] [-d destino]
-                     [--diccionario] [-r referencia] [-m MENSAJE] [--batch] [-v]
-                     [-z {0,1}]
+        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6}] [--incd {1,2,3,4}] [-o origen]
+                     [-d destino] [--diccionario] [-r referencia] [-m MENSAJE]
+                     [--batch] [-v] [--version] [-z {0,1}]
         
         optional arguments:
           -h, --help            show this help message and exit
           -p {0,4,8}, --prioridad {0,4,8}
-                                prioridad -> 0 ordinario | 4 urgente | 8 urgentísimo
-          -t {3,6}, --tipo {3,6}
-                                tipo de indicación -> 3 vigilancia | 6 recepción
-          --incd {1,2,3,4}      incidencia acuse recepción -> 1 niebla | 2 ausencia | 3
-                                ocupada | 4 avería
+                                prioridad -> 0-normal | 4-urgente | 8-urgentísimo
+          -t {0,2,3,6}, --tipo {0,2,3,6}
+                                tipo de servicio -> 0-ordinaro | 2-interno |
+                                3-vigilancia | 6-acuse recibo
+          --incd {1,2,3,4}      incidencia en acuse -> 1-niebla | 2-ausencia |
+                                3-ocupada | 4-avería
           -o origen, --origen origen
                                 torre de origen
           -d destino, --destino destino
@@ -68,8 +68,9 @@ Opciones:
                                 texto del mensaje entre ' '
           --batch               sólo imprime mensaje resultante
           -v, --verbose         debug
-          -z {0,1}              servicio a ejecutar -> (auto) | 0 codificar | 1
-                                descodificar
+          --version             show program's version number and exit
+          -z {0,1}              proceso a ejecutar -> (auto) | 0-codificar |
+                                1-descodificar
 
 
 Diccionario codificación:
@@ -201,7 +202,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	--------------------- tipo de servicio(1)	
 
 
-	  0/0x10x5/2341040x/013/252730141/1x0/0
+	  0/0x10x5/2341040x/013/252730141/1x0/0 -> Mensaje ordinario
 	  |    |       |     |   \         /  |
 	  |    |       |     |    \       /   - prioridad(1)
 	  |    |       |     |     ------------ novenales de mensaje
@@ -210,19 +211,27 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	  |    -------------------------------- torre de origen(3) + torre de destino(3)
 	  ------------------------------------- prioridad(1)
 
+	2/0/0x10x5/2341040x/013/252730141/1x0/0 -> Comunicación interna
+	| |    |       |     |   \         /  |
+	| |    |       |     |    \       /   - prioridad(1)
+	| |    |       |     |     ------------ novenales de mensaje
+	| |    |       |     ------------------ sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
+	| |    |       ------------------------ hora(2) + minutos(2) + dia(2) + referencia(2)
+	| |    -------------------------------- torre de origen(3) + torre de destino(3)
+	| ------------------------------------- prioridad(1)
+        --------------------------------------- tipo de servicio(1)
 
-	3/0/0x10x5/2341040x/0
+	3/0/0x10x5/2341040x/0 -> Vigilancia
 	| |    |      |     |
-	| |    |      |     - sufijo prioridad(0)
+	| |    |      |     - prioridad(1)
 	| |    |      ------- hora(2) + minutos(2) + dia(2) + referencia(2)
 	| |    -------------- torre de origen(3) + torre de destino(3)
 	| ------------------- prioridad(1)
 	--------------------- tipo de servicio(1)	
 
-
-	6/0/0x10x5/2341040x/0x
+	6/0/0x10x5/2341040x/0x -> Acuse de recibo
 	| |    |      |     |
-	| |    |      |     - sufijo acuse de recibo(2)
+	| |    |      |     - sufijo acuse de recibo([1-2])
 	| |    |      ------- hora(2) + minutos(2) + dia(2) + referencia(2)
 	| |    -------------- torre de origen(3) + torre de destino(3)
 	| ------------------- prioridad(1)
