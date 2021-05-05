@@ -25,7 +25,7 @@
 	    font-size: 110%;
 	}
 	div#title {
-	    padding-top: 2em;
+	    padding-top: 1.5em;
 	    margin-bottom: 1.1em;
 	    font-size: 2em;
 	}
@@ -101,6 +101,7 @@
 	    text-align: center;
 	    display: none;
 	}
+	#opincd { display: none; }
 	.info a{ color: maroon; }
 	textarea { margin-bottom: 5px; }
 	pre, button, textarea, div#codops { width: 85%; }
@@ -137,11 +138,22 @@
                     <td>Tipo:</td>
                     <td><select id="mrecep" onchange="txtformat()">
                         <option value="0">0 - Ordinario</option>
-                        <option value="3">3 - Control</option>
+                        <option value="2">2 - Comm. Interna</option>
+                        <option value="3">3 - Vigilancia</option>
                         <option value="6">6 - Acuse recibo</option>
                         </select>
                     </td>
-
+                </tr>
+                <tr id="opincd">
+                    <td>Estado:</td>
+                    <td><select id="incd">
+                        <option value="00">0x - Correcto</option>
+                        <option value="1">1 - Incd. niebla</option>
+                        <option value="2">2 - Incd. ausencia</option>
+                        <option value="3">3 - Incd. vang. ocupada</option>
+                        <option value="4">4 - Incd. avería</option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Prioridad:</td>
@@ -186,10 +198,19 @@
 
     function txtformat() {
 
-            if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 0 ) {
+            // Tachar texto
+            if ((document.getElementById("mrecep").options[mrecep.selectedIndex].value == 0) ||
+	        (document.getElementById("mrecep").options[mrecep.selectedIndex].value == 2)) {
                 document.getElementById("form1").style.textDecoration = "none";
             } else {
                 document.getElementById("form1").style.textDecoration = "line-through";
+            }
+
+            // Mostrar opciones
+            if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 6 ) {
+                document.getElementById("opincd").style.display = "table-row";
+            } else {
+                document.getElementById("opincd").style.display = "none";
             }
     }
 
@@ -225,9 +246,11 @@
         msg['destino'] = document.getElementById("mdest").value.toString().substring(0,3).padStart(3, '0');
         msg['referencia'] = document.getElementById("mref").value.toString().substring(0,2).padStart(2, '0');
         msg['horadia'] = d.getHours().toString().padStart(2, '0') + d.getMinutes().toString().padStart(2, '0') + d.getDate().toString().padStart(2, '0');
+        msg['incd'] = document.getElementById("incd").value;
 
         switch (msg['tipo']) {
             case '0':
+            case '2':
                 // Recorrer los digitos del mensaje para codificar cada uno
                 var codmsg = '';
                 for (let i = 0; i < msg['mensaje'].length; i++) {
@@ -252,6 +275,10 @@
                 codmsg = codmsg.replace(/(.{9})/g, "$1/").replace(/\/$/, '');
         
                 var prefijo = ''
+                if (msg['tipo'] == '2') {
+                    prefijo = '2/'
+                }
+
                 var sufijo = msg['novenales'] + "/" + codmsg + "/" + msg['prioridad'];
                 break;
 
@@ -262,7 +289,8 @@
 
             case '6':
                 var prefijo = msg['tipo'] + '/';
-                sufijo = '0x';
+                sufijo = msg['incd'];
+
         }
 
         // Mensaje formateado
@@ -289,19 +317,22 @@
         codmsg = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
 
         // Extraer cabecera del mensaje
-        search = (/^([36])?\/?(\d)\/(\d+?)\/(\d+?)\/(\d{0,3})/g).exec(codmsg);
+        search = (/^([236])?\/?(\d)\/(\d+?)\/(\d+?)\/(\d{0,3})/g).exec(codmsg);
 
         try {
             if (!search) {
                 throw "ERROR - Codificación incorrecta del mensaje";
             }
 
-            // Procesar tipo 0 . Telegrama con mensaje
-            if ((/^[048]\/\d{6}\//g).test(codmsg)) {
+            // Procesar tipo 0 o 2. Telegrama con mensaje
+            if ((/^(?:2\/)?[048]\/\d{6}\//g).test(codmsg)) {
                 // 0/001005/232x0400/006/757575/0
+	        // 2/0/001005/23220400/006/757575/0
+
+                msg['novenales'] = search[5];
 
                 // Calcular tamaño del texto en base a los novenales
-                let long_nov = (parseInt(search[5].substring(0,2)) * 9) + (parseInt(search[5].substring(2)));
+                let long_nov = (parseInt(msg['novenales'].substring(0,2)) * 9) + (parseInt(msg['novenales'].substring(2)));
 
                 // Eliminar la cabecera del preámbulo del telegrama y extraer longitud del texto
                 codmsg = codmsg.replace(search[0], '').replace(/\//g, '').substring(0, long_nov);
@@ -324,6 +355,9 @@
             // Procesar tipo 3 o 6
             } else if ((/^[36]\/\d\//).test(codmsg)) {
                 msg['codmensaje'] = null
+                if ((/^6\//).test(codmsg)) {
+                    msg['incd'] = search[5];
+                }
 
             } else {
                 throw "ERROR - Tipo de mensaje sin identificar";
@@ -340,7 +374,6 @@
             msg['destino'] = search[3].substring(3);
             msg['horadia'] = search[4].substring(0,6);
             msg['referencia'] = search[4].substring(6);
-            msg['novenales'] = search[5];
 
         // Recoger error
         } catch (excp) {
@@ -348,7 +381,7 @@
             msg['tipo'] = msg['prioridad'] = '0';
             msg['origen'] = msg['destino'] = msg['novenales'] = '000';
             msg['horadia'] = '000000';
-            msg['referencia'] = '00';
+            msg['referencia'] = msg['incd'] = '00';
         }
         imprimir(msg);
     }
@@ -362,11 +395,30 @@
             case '0':
                 salida += "<i>Tipo:</i>\t\t 0 - Ordinario<br>";
                 break;
+            case '2':
+                salida += "<i>Tipo:</i>\t\t 2 - Servicio Interno<br>";
+                break;
             case '3':
-                salida += "<i>Tipo:</i>\t\t 3 - Control<br>";
+                salida += "<i>Tipo:</i>\t\t 3 - Vigilancia<br>";
                 break;
             case '6':
-                salida += "<i>Tipo:</i>\t\t 6 - Acuse recibo<br>";
+                salida += "<i>Tipo:</i>\t\t 6 - Acuse de recibo<br>";
+                switch (msg['incd']) {
+                    case '00':
+                        salida += "<i>Estado:</i>\t\t 0x - Correcto<br>";
+                        break;
+                    case '1':
+                        salida += "<i>Estado:</i>\t\t 1 - Incidencia niebla<br>";
+                        break;
+                    case '2':
+                        salida += "<i>Estado:</i>\t\t 2 - Incidencia ausencia<br>";
+                        break;
+                    case '3':
+                        salida += "<i>Estado:</i>\t\t 3 - Incidencia vanguardia ocupada<br>";
+                        break;
+                    case '4':
+                        salida += "<i>Estado:</i>\t\t 4 - Incidencia avería<br>";
+               }
          }
 
         salida += "<i>Prioridad:</i>\t " + msg['prioridad'] + "<br>";
@@ -376,7 +428,7 @@
         salida += "<i>Referencia:</i>\t " + msg['referencia'] + "<br>";
 
         if (msg['codmensaje']) {
-            if (msg['tipo'] == '0') {
+            if ((msg['tipo'] == '0') || (msg['tipo'] == '2')) {
                 salida += "<i>Novenales:</i>\t " + msg['novenales'].substring(0,2) + '.' + msg['novenales'].substring(2) + "<br>";
             }
             salida += "<i>Mensaje:</i>\t &#8628;<hr><p id='codmensaje'>" + msg['codmensaje'] + '</p>';
