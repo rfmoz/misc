@@ -164,6 +164,27 @@ def zcodif_descodificar(arg, msg, lencript):
         if not search:
             raise Exception('Codificación de mensaje incorrecta')
 
+        # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/1
+        regfin = re.search(r'(/(\d{3})/(\d{5}))+$', codmsg)
+
+        if regfin:  # Recorrer todas las interrupciones
+
+            for i in re.findall('.{10}', regfin.group(0)):
+
+                regint = re.search(r'/(\d{3})/(\d{5})', i)
+                msg['regfin'] += '[T-' + regint.group(1) + ' '
+                msg['regfin'] += regint.group(2)[:2] + ':' + regint.group(2)[2:4] + 'h '
+                intrc = regint.group(2)[4:]
+                if intrc == '1':
+                    intrc = '1-Niebla'
+                if intrc == '2':
+                    intrc = '2-Ausencia'
+                if intrc == '3':
+                    intrc = '3-Vang.Ocupada'
+                if intrc == '4':
+                    intrc = '4-Avería'
+                msg['regfin'] += intrc +']  '
+
         # Procesar tipo 0 o 2. Telegrama con mensaje
         if re.match(r'^(?:2/)?[048]/\d{6}/', codmsg) is not None:
             # 0/001005/23220400/006/757575/0
@@ -244,6 +265,8 @@ def imprimir(arg, msg):
         print(f"T. Destino:\t {msg['destino']}")
         print(f"Día y Hora:\t {msg['horadia'][4:6]} {msg['horadia'][:2]}:{msg['horadia'][2:4]}")
         print(f"Referencia:\t {msg['referencia']}")
+        if msg['regfin']:
+            print(f"Interrupción:\t {msg['regfin']}")
         if msg['codmensaje'] is not None:
             if msg['tipo'] in ('0', '2'):
                 print(f"Novenales:\t {msg['novenales'][:2]}.{msg['novenales'][2:]}")
@@ -264,7 +287,7 @@ def main():
     lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€']
 
     # Diccionario de mensaje. Valores por defecto
-    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'codmensaje': None, 'incd': '00'}
+    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'codmensaje': None, 'incd': '00', 'regfin': ''}
 
     arg, msg = get_arguments(msg, lencript)
 

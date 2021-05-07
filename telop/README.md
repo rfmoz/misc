@@ -238,6 +238,19 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	--------------------- tipo de servicio(1)	
 	```
 
+- Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. El formato es el siguiente:
+
+	```
+	/_Y_/__Z__ -> Sufijo interrupción
+	  |    |
+	  |    ---- hora(2) + minutos(2) + causa(1)
+	  --------- torre(3)
+
+	/011/18302 -> Sufijo interrupción
+	  |    |
+	  |    ---- hora(2) + minutos(2) + causa(1)
+	  --------- torre(3)
+	```
 
 
 ### Más información
