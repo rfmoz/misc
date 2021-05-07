@@ -87,10 +87,10 @@
 	    font-size: small;
 	    padding: 1em 0px 1em 0px;
 	}
-	div #info2 {
-	    padding-top: 0.5em;
-	    visibility: hidden;
-	    transition: visibility 0.2s;
+	.info summary  {
+	    outline: 0;
+	    user-select: none;
+	    padding-bottom: 0.5em;
 	}
 	button {
 	    padding: 5px;
@@ -138,7 +138,7 @@
                     <td>Tipo:</td>
                     <td><select id="mrecep" onchange="txtformat()">
                         <option value="0">0 - Ordinario</option>
-                        <option value="2">2 - Comm. Interna</option>
+                        <option value="2">2 - Serv. Interno</option>
                         <option value="3">3 - Vigilancia</option>
                         <option value="6">6 - Acuse recibo</option>
                         </select>
@@ -181,16 +181,16 @@
     <button id="btn1" onclick="procesar()">CONVERTIR</button>
     </div>
     <pre id="salida"></pre>
-    <div class="info" onmouseover="document.getElementById('info2').style.visibility = 'visible';" onmouseout="document.getElementById('info2').style.visibility = 'hidden';">
-        <div id="info1">&rtrif; más información &ltrif;</div>
-        <div id="info2">
+    <details class="info">
+        <summary> más información </summary>
+        <div>
             <a target="_blank" title="GitHub telop" href="https://github.com/rfrail3/misc/tree/master/telop">github</a> -
             <a target="_blank" title="Twitter telegrafoptico" href="https://twitter.com/telegrafoptico">twitter</a> -
             <a target="_blank" title="Foro Histórico de las Comunicaciones C.O.I.T." href="https://forohistorico.coit.es/index.php/sendas/tecnologica-en-espana/wiki-telegrafia-optica">fht</a> -
             <a target="_blank" title="Facebook Telegrafía Óptica" href="https://www.facebook.com/TelegrafiaOptica">facebook</a> -
             <a target="_blank" title="Wikipedia Telégrafo Óptico" href="https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico">wikipedia</a>
-    </div>
-    </div>
+        </div>
+    </details>
 </div>
 
     <script src="static/gifshot.js"></script>
@@ -200,7 +200,7 @@
 
             // Tachar texto
             if ((document.getElementById("mrecep").options[mrecep.selectedIndex].value == 0) ||
-	        (document.getElementById("mrecep").options[mrecep.selectedIndex].value == 2)) {
+                (document.getElementById("mrecep").options[mrecep.selectedIndex].value == 2)) {
                 document.getElementById("form1").style.textDecoration = "none";
             } else {
                 document.getElementById("form1").style.textDecoration = "line-through";
@@ -290,7 +290,6 @@
             case '6':
                 var prefijo = msg['tipo'] + '/';
                 sufijo = msg['incd'];
-
         }
 
         // Mensaje formateado
@@ -319,6 +318,28 @@
         // Extraer cabecera del mensaje
         search = (/^([236])?\/?(\d)\/(\d+?)\/(\d+?)\/(\d{0,3})/g).exec(codmsg);
 
+        // Extraer interrupción final si la hubiera
+        regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(codmsg);
+
+        if (regfin) {  // Recorrer todas las interrupciones
+
+            msg['regfin'] = '';
+            for (i of regfin[0].matchAll('.{10}')) {
+
+                regint = (/\/(\d{3})\/(\d{5})/g).exec(i);
+                msg['regfin'] += '[T-' + regint[1] + ' ';
+                msg['regfin'] += regint[2].substring(0,2) + ':' + regint[2].substring(2,4) + 'h ';
+                intrc = regint[2].substring(4)
+                switch (intrc) {
+                    case '1': intrc = '1-Niebla'; break;
+                    case '2': intrc = '2-Niebla'; break;
+                    case '3': intrc = '3-Vang.Ocupada'; break;
+                    case '4': intrc = '4-Avería';
+                }
+                msg['regfin'] += intrc + ']  ';
+            }
+        }
+
         try {
             if (!search) {
                 throw "ERROR - Codificación incorrecta del mensaje";
@@ -327,7 +348,7 @@
             // Procesar tipo 0 o 2. Telegrama con mensaje
             if ((/^(?:2\/)?[048]\/\d{6}\//g).test(codmsg)) {
                 // 0/001005/232x0400/006/757575/0
-	        // 2/0/001005/23220400/006/757575/0
+                // 2/0/001005/23220400/006/757575/0
 
                 msg['novenales'] = search[5];
 
@@ -392,17 +413,10 @@
         var salida = '<hr>';
 
         switch (msg['tipo']) {
-            case '0':
-                salida += "<i>Tipo:</i>\t\t 0 - Ordinario<br>";
-                break;
-            case '2':
-                salida += "<i>Tipo:</i>\t\t 2 - Servicio Interno<br>";
-                break;
-            case '3':
-                salida += "<i>Tipo:</i>\t\t 3 - Vigilancia<br>";
-                break;
-            case '6':
-                salida += "<i>Tipo:</i>\t\t 6 - Acuse de recibo<br>";
+            case '0': salida += "<i>Tipo:</i>\t\t 0 - Ordinario<br>"; break;
+            case '2': salida += "<i>Tipo:</i>\t\t 2 - Servicio Interno<br>"; break;
+            case '3': salida += "<i>Tipo:</i>\t\t 3 - Vigilancia<br>"; break;
+            case '6': salida += "<i>Tipo:</i>\t\t 6 - Acuse de recibo<br>";
                 switch (msg['incd']) {
                     case '00':
                         salida += "<i>Estado:</i>\t\t 0x - Correcto<br>";
@@ -426,6 +440,10 @@
         salida += "<i>Torre destino:</i>\t " + msg['destino'] + "<br>";
         salida += "<i>Día y Hora:</i>\t " + msg['horadia'].substring(4,6) + ' ' +  msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + "<br>";
         salida += "<i>Referencia:</i>\t " + msg['referencia'] + "<br>";
+
+        if (msg['regfin']) {
+            salida += "<i>Interrupción:</i>\t " + msg['regfin'] + "<br>";
+        }
 
         if (msg['codmensaje']) {
             if ((msg['tipo'] == '0') || (msg['tipo'] == '2')) {
