@@ -29,7 +29,7 @@ def get_arguments(msg, lencript):
                         help='prioridad -> 0-normal | 4-urgente | 8-urgentísimo')
     parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '6'],
                         help='tipo de servicio -> 0-ordinaro | 2-interno | 3-vigilancia | 6-acuse recibo')
-    parser.add_argument('--incd', default=msg['incd'], action='store', type=str, choices=['1', '2', '3', '4'],
+    parser.add_argument('--incd', default=msg['incd'], action='store', type=str, choices=['0', '1', '2', '3', '4'],
                         help='incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
@@ -134,6 +134,8 @@ def zcodif_codificar(arg, msg, lencript):
 
         elif msg['tipo'] == '6':  # Servicio acuse de recibo
             # 6/0/0x1052/1917090x/0x
+            if msg['incd'] == '0':
+                msg['incd'] = '00'
             sufijo = msg['incd']
 
         else:
