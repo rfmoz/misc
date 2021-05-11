@@ -531,7 +531,7 @@
         var codtxt = document.getElementById("codmensaje").innerHTML.toLowerCase();
 
         // Validar, sustituir '/' por 'a' y error en 'e'
-        codtxt = codtxt.replace(/\//g, 'a').replace(/[^0-9,x,m,b]/gi, 'e');
+        codtxt = codtxt.replace(/\//g, 'a').replace(/[^0-9,x,m,a]/gi, 'e');
         if (codtxt.length == 0) { codtxt = 'e'; };
 
         console.log('A gif: ' + codtxt);
