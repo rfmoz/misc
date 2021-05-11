@@ -165,6 +165,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Formato hora:</td>
+                    <td><select id="mfhora">
+                        <option value="0">Normal</option>
+                        <option value="1">Reducido</option>
+                        </select>
+                    </td>
+		</tr>
+                <tr>
                     <td>Torre origen:</td>
                     <td><input type="number" id="morig" min="1" max="999" pattern="\d{3}" /></td>
                 </tr>
@@ -174,7 +182,7 @@
                 </tr>
                 <tr>
                     <td>Referencia:</td>
-                    <td><input type="number" id="mref" min="1" max="99" pattern="\d{3}" /></td>
+                    <td><input type="number" id="mref" min="1" max="99" pattern="\d{2}" /></td>
                 </tr>
             </table>
         </div>
@@ -245,8 +253,27 @@
         msg['origen'] = document.getElementById("morig").value.toString().substring(0,3).padStart(3, '0');
         msg['destino'] = document.getElementById("mdest").value.toString().substring(0,3).padStart(3, '0');
         msg['referencia'] = document.getElementById("mref").value.toString().substring(0,2).padStart(2, '0');
-        msg['horadia'] = d.getHours().toString().padStart(2, '0') + d.getMinutes().toString().padStart(2, '0') + d.getDate().toString().padStart(2, '0');
         msg['incd'] = document.getElementById("incd").value;
+        msg['mfhora'] = document.getElementById("mfhora").value;
+        if (msg['mfhora'] == 1) {
+            fchora = d.getHours();
+            fcmin = d.getMinutes();
+            switch (true) {
+                case 15<=fcmin && fcmin<30:
+                    fchora =+ fchora + 25; break;
+                case 30<=fcmin && fcmin<45:
+                    fchora =+ fchora + 50; break;
+                case 45<=fcmin:
+                    fchora =+ fchora + 75;
+            }
+
+            fchora = fchora.toString().padStart(2, '0');
+            fcdia = d.getDate().toString().slice(-1);
+
+            msg['horadia'] = fchora + fcdia;
+        } else {
+            msg['horadia'] = d.getHours().toString().padStart(2, '0') + d.getMinutes().toString().padStart(2, '0') + d.getDate().toString().padStart(2, '0');
+        }
 
         switch (msg['tipo']) {
             case '0':
@@ -393,8 +420,27 @@
             msg['prioridad'] = search[2];
             msg['origen'] = search[3].substring(0,3);
             msg['destino'] = search[3].substring(3);
-            msg['horadia'] = search[4].substring(0,6);
-            msg['referencia'] = search[4].substring(6);
+
+            // Revertir formato hora corto
+            if (search[4].length == 5) {
+
+                fchora = search[4].substring(0,2);
+                switch (true) {
+                    case 0<=fchora && fchora<25:
+                        hora = fchora.toString().padStart(2, '0') + '00'; break;
+                    case 25<=fchora && fchora<50:
+                        hora = (fchora -25).toString().padStart(2, '0') + '15'; break;
+                    case 50<=fchora && fchora<75:
+                        hora = (fchora - 50).toString().padStart(2, '0') + '30'; break;
+                    case 75<=fchora:
+                        hora = (fchora - 75).toString().padStart(2, '0') + '45';
+                }
+                msg['horadia'] = hora + '?' + search[4].substring(2,3);
+                msg['referencia'] = search[4].substring(3);
+            } else {
+                msg['horadia'] = search[4].substring(0,6);
+                msg['referencia'] = search[4].substring(6);
+            }
 
         // Recoger error
         } catch (excp) {
@@ -419,17 +465,13 @@
             case '6': salida += "<i>Tipo:</i>\t\t 6 - Acuse de recibo<br>";
                 switch (msg['incd']) {
                     case '00':
-                        salida += "<i>Estado:</i>\t\t 0x - Correcto<br>";
-                        break;
+                        salida += "<i>Estado:</i>\t\t 0x - Correcto<br>"; break;
                     case '1':
-                        salida += "<i>Estado:</i>\t\t 1 - Incidencia niebla<br>";
-                        break;
+                        salida += "<i>Estado:</i>\t\t 1 - Incidencia niebla<br>"; break;
                     case '2':
-                        salida += "<i>Estado:</i>\t\t 2 - Incidencia ausencia<br>";
-                        break;
+                        salida += "<i>Estado:</i>\t\t 2 - Incidencia ausencia<br>"; break;
                     case '3':
-                        salida += "<i>Estado:</i>\t\t 3 - Incidencia vanguardia ocupada<br>";
-                        break;
+                        salida += "<i>Estado:</i>\t\t 3 - Incidencia vanguardia ocupada<br>"; break;
                     case '4':
                         salida += "<i>Estado:</i>\t\t 4 - Incidencia avería<br>";
                }
@@ -438,7 +480,14 @@
         salida += "<i>Prioridad:</i>\t " + msg['prioridad'] + "<br>";
         salida += "<i>Torre origen:</i>\t " + msg['origen'] + "<br>";
         salida += "<i>Torre destino:</i>\t " + msg['destino'] + "<br>";
-        salida += "<i>Día y Hora:</i>\t " + msg['horadia'].substring(4,6) + ' ' +  msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + "<br>";
+
+        if (msg['horadia'].length == 3) {
+            var d = new Date();
+            salida += "<i>Día y Hora:</i>\t ?" + msg['horadia'].substring(2,3) + ' ' +  msg['horadia'].substring(0,2) + "<br>";
+        } else {
+            salida += "<i>Día y Hora:</i>\t " + msg['horadia'].substring(4,6) + ' ' +  msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + "<br>";
+        }
+
         salida += "<i>Referencia:</i>\t " + msg['referencia'] + "<br>";
 
         if (msg['regfin']) {
@@ -524,6 +573,9 @@
 
         var msg = {}; // Diccionario de mensaje
         msg['mensaje'] = document.querySelector('textarea#form1').value;  // Asignar entrada
+        if (!msg['mensaje']){
+             msg['mensaje'] = '...'
+        }
         msg['mensaje'] = msg['mensaje'].replace(/(\r\n|\n|\r)/gm, " ").replace(/[\&\<\>\`]/gm, '#').trim();  // Limpiar /n, html tags y espacios
         var lencript = ['0','1','2','3','4','5','6','7','8','9',
                 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',

@@ -33,6 +33,7 @@ def get_arguments(msg, lencript):
                         help='incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
+    parser.add_argument('-b', '--breve', default=False, action='store_true', help='formato fecha y hora reducido')
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
     parser.add_argument('-r', '--referencia', default=msg['referencia'], action='store', type=int, metavar='referencia', help='nº referencia despacho')
     parser.add_argument('-m', '--mensaje', default=msg['mensaje'], action='store', type=str, help='texto del mensaje entre \' \'')
@@ -76,13 +77,28 @@ def get_arguments(msg, lencript):
     for key in vars(arg):
         msg[key] = str(vars(arg)[key])
 
-    # Rellenar hora y dia
-    msg['horadia'] = str(time.strftime("%H%M%d"))
+    # Rellenar hora y dia según formato
+    if arg.breve:
+        fchora = int(time.strftime("%H"))
+        fcmin = int(time.strftime("%M"))
+        if 15 <= fcmin < 30:
+            fchora = fchora + 25
+        elif 30 <= fcmin < 45:
+            fchora = fchora + 50
+        elif 45 <= fcmin:
+            fchora = fchora + 75
+
+        fchora = str(fchora).zfill(2)
+        fcdia = str(time.strftime("%d")[-1])
+
+        msg['horadia'] = fchora + fcdia
+    else:
+        msg['horadia'] = str(time.strftime("%H%M%d"))
 
     # Unificar con ceros. 3 para origen y destino. 2 para referencia
     msg['origen'] = msg['origen'][:3].zfill(3)
     msg['destino'] = msg['destino'][:3].zfill(3)
-    msg['referencia'] = msg['referencia'].zfill(2)
+    msg['referencia'] = msg['referencia'][:2].zfill(2)
 
     logging.info('Argumentos txt:\t %s', str(msg))
 
@@ -228,8 +244,25 @@ def zcodif_descodificar(arg, msg, lencript):
         msg['prioridad'] = search.group(2)
         msg['origen'] = search.group(3)[:3]
         msg['destino'] = search.group(3)[3:]
-        msg['horadia'] = search.group(4)[:6]
-        msg['referencia'] = search.group(4)[6:]
+
+        # Revertir formato hora corto
+        if len(search.group(4)) == 5:
+
+            fchora = int(search.group(4)[:2])
+            if 0 <= fchora < 25:
+                hora = str(fchora).zfill(2) + '00'
+            elif 25 <= fchora < 50:
+                hora = str(fchora - 25).zfill(2) + '15'
+            elif 50 <= fchora < 75:
+                hora = str(fchora - 50).zfill(2) + '30'
+            elif 75 <= fchora:
+                hora = str(fchora - 75).zfill(2) + '45'
+
+            msg['horadia'] = hora + '?' + search.group(4)[2:3]
+            msg['referencia'] = search.group(4)[3:]
+        else:
+            msg['horadia'] = search.group(4)[:6]
+            msg['referencia'] = search.group(4)[6:]
 
     except Exception as exp:
         logging.error('Formato de mensaje incorrecto --> %s', str(exp))
@@ -265,7 +298,12 @@ def imprimir(arg, msg):
         print(f"Prioridad:\t {msg['prioridad']}")
         print(f"T. Origen:\t {msg['origen']}")
         print(f"T. Destino:\t {msg['destino']}")
-        print(f"Día y Hora:\t {msg['horadia'][4:6]} {msg['horadia'][:2]}:{msg['horadia'][2:4]}")
+
+        if len(msg['horadia']) == 3:
+            print(f"Día y Hora:\t ?{msg['horadia'][2:]} {msg['horadia'][:2]}")
+        else:
+            print(f"Día y Hora:\t {msg['horadia'][4:6]} {msg['horadia'][:2]}:{msg['horadia'][2:4]}")
+
         print(f"Referencia:\t {msg['referencia']}")
         if msg['regfin']:
             print(f"Interrupción:\t {msg['regfin']}")

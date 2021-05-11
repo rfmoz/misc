@@ -44,8 +44,8 @@ Descodificar mensaje:
 
 Opciones:
 
-        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6}] [--incd {1,2,3,4}] [-o origen]
-                     [-d destino] [--diccionario] [-r referencia] [-m MENSAJE]
+        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6}] [--incd {0,1,2,3,4}] [-o origen]
+                     [-d destino] [-b] [--diccionario] [-r referencia] [-m MENSAJE]
                      [--batch] [-v] [--version] [-z {0,1}]
         
         optional arguments:
@@ -55,12 +55,13 @@ Opciones:
           -t {0,2,3,6}, --tipo {0,2,3,6}
                                 tipo de servicio -> 0-ordinaro | 2-interno |
                                 3-vigilancia | 6-acuse recibo
-          --incd {1,2,3,4}      incidencia en acuse -> 1-niebla | 2-ausencia |
+          --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
                                 3-ocupada | 4-avería
           -o origen, --origen origen
                                 torre de origen
           -d destino, --destino destino
                                 torre de destino
+          -b, --breve           formato fecha y hora reducido
           --diccionario         mostrar diccionario codificación
           -r referencia, --referencia referencia
                                 nº referencia despacho
@@ -190,7 +191,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 - Cada dígito del mensaje de texto se codifica empleando el número de la posición que ocupa en un diccionario definido en el programa (telop --diccionario). Se sustituye así el diccionario frasológico del sistema original. Resulta un telegrama de mayor extensión, pero más polivalente y fácil de implementar.
 
-- También se han normalizado y adaptado las instrucciones de Mathé para facilitar su tratamiento informático. En la cabecera, la posición y formato de los valores se mantiene invariable entre los diferentes tipos de mensajes. El resultado es el siguiente:
+- También se han normalizado y adaptado las instrucciones de Mathé para facilitar su tratamiento informático. En la cabecera, por defecto, la posición y formato de los valores se mantiene invariable entre los diferentes tipos de mensajes. El resultado es el siguiente:
 
 	```
 	A/B/___C__/___D____/E
@@ -250,6 +251,23 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	  |    |
 	  |    ---- hora(2) + minutos(2) + causa(1)
 	  --------- torre(3)
+	```
+
+- En la cabecera se puede emplear otro formato de fecha y hora más reducido (opción --breve), a costa de obtener una precisión de 15 minutos.
+  Son dos dígitos los que representan la hora y los minutos, el resultado se obtiene teniendo en cuenta el cuarto de hora en que se encuentran los minutos. Se suma 0, 25, 50 o 75 a la hora (00 a 24) según si es el primer, segundo, tercer o último cuarto de hora. Como ejemplo las 12:05 sería un 12, las 12:20 sería 12+25 = 37, las 12:40 sería 12+50 = 62 y las 12:55 12+75 = 87.
+  El día sólo mantiene el último dígito, es decir, se representa igual el día 1 que el 11 que el 21.
+  Ésta fue la modificación más curiosa de las empleadas y conocidas, por eso su codificación, el resto básicamente conseguían reducir tamaño a base de omitir información fácilmente interpretable por la situación del emisor y receptor.
+  El formato de la cabecera reducida quedaría así:
+
+    
+	```
+	A/B/__C__/___D____/E
+	| |   |      |     |
+	| |   |      |     - sufijo particular a cada tipo de mensaje([1-3])
+	| |   |      ------- horaminutos(2) + dia(1) + referencia(2)
+	| |   -------------- torre de origen(3) + torre de destino(3)
+	| ------------------ prioridad(1)
+	-------------------- tipo de servicio(1)	
 	```
 
 
