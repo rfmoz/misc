@@ -115,6 +115,10 @@ def codffx(arg, codmsg, tipo=False):
         logging.error('--password no se puede aplicar. Comprobar módulo "pyffx" --> %s', str(exp))
         return(codmsg)
 
+    # Pedir contraseña en el prompt si se pasa 'ask' como clave
+    if arg.password == 'ask':
+        arg.password = input("Password?: ")
+
     effx = pyffx.Integer(arg.password.encode('utf_8'), length=len(codmsg))
 
     if tipo == 'cod':
