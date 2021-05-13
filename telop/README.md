@@ -45,8 +45,9 @@ Descodificar mensaje:
 Opciones:
 
         usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6}] [--incd {0,1,2,3,4}] [-o origen]
-                     [-d destino] [-b] [--diccionario] [-r referencia] [-m MENSAJE]
-                     [--batch] [-v] [--version] [-z {0,1}]
+                     [-d destino] [-b] [--diccionario] [--password PASSWORD]
+                     [-r referencia] [-m MENSAJE] [--batch] [-v] [--version]
+                     [-z {0,1}]
         
         optional arguments:
           -h, --help            show this help message and exit
@@ -63,6 +64,7 @@ Opciones:
                                 torre de destino
           -b, --breve           formato fecha y hora reducido
           --diccionario         mostrar diccionario codificación
+          --password PASSWORD   Codificar mensaje con contraseña
           -r referencia, --referencia referencia
                                 nº referencia despacho
           -m MENSAJE, --mensaje MENSAJE
@@ -270,6 +272,8 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| ------------------ prioridad(1)
 	-------------------- tipo de servicio(1)	
 	```
+
+- Opcionalmente, mediante el uso de una contraseña (telop --password '123'), se permite encriptar/desencriptar el contenido del mensaje, manteniendo libre la cabecera. El método emplea Format-preserving, Feistel-based encryption (FFX), generando una cadena de números de apariencia aleatoria para quien intente descodificar el mensaje sin emplear la contraseña de encriptación.
 
 
 ### Más información
