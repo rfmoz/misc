@@ -324,7 +324,7 @@ def main():
     '''Inicio'''
 
     # Los caracteres del mensaje se sustituyen por la posición que ocupan en la lista
-    lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€']
+    lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€', ' ']
 
     # Diccionario de mensaje. Valores por defecto
     msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'codmensaje': None, 'incd': '00', 'regfin': ''}

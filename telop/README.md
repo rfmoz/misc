@@ -179,6 +179,7 @@ Diccionario codificación:
         96 - ¿
         97 -  
         98 - €
+        99 -  
 
 
 ### Instalación
