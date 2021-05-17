@@ -32,9 +32,9 @@ for (( i=0; i<${#var1}; i++ )); do
 
 	echo "$num/$total"
 	
-	wget https://rfrail3.github.io/misc/static/"$dgt".gif -qO "$D_TMP"/"$nform".png
+	wget https://rfrail3.github.io/misc/static/"$dgt".gif -qO "$D_TMP"/"$nform".gif
 
-	convert "$D_TMP"/"$nform".png -gravity NorthEast -fill darkgrey -pointsize 30 -annotate +10+10 "$num"/"$total" "$D_TMP"/"$nform".png
+	convert "$D_TMP"/"$nform".gif -gravity NorthEast -fill darkgrey -pointsize 30 -annotate +10+10 "$num"/"$total" "$D_TMP"/"$nform".gif
 done
 
 # Crear gif
