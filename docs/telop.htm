@@ -326,7 +326,7 @@
         console.log('Mensaje txt: "' + msg['mensaje'] + '\"');
 
         // Salida final. Sustituir caracteres reptidos por x
-        msg['codmensaje'] = msgfmt.replace(/(\w{1})\1/g, "$1x");
+        msg['procmsg'] = msgfmt.replace(/(\w{1})\1/g, "$1x");
 
         imprimir(msg);
     }
@@ -389,20 +389,20 @@
 
                 // Comprobar integridad
                 if (long_nov != cipert.length) {
-                    msg['codmensaje'] = 'ERROR - Extensión mensaje incorrecta'
+                    msg['procmsg'] = 'ERROR - Extensión mensaje incorrecta'
 
                 } else {
                     // Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
-                    msg['codmensaje'] = '';
+                    msg['procmsg'] = '';
                     for (let i=0; i < long_nov - 1; i+=2) {
                         let posicion = (cipert[i] + cipert[(i + 1)]);
-                        msg['codmensaje'] += lencript[parseInt(posicion)];
+                        msg['procmsg'] += lencript[parseInt(posicion)];
                     }
                 }
 
             // Procesar tipo 3 o 6
             } else if ((/^[36]\/\d\//).test(ciperm)) {
-                msg['codmensaje'] = null
+                msg['procmsg'] = null
                 if ((/^6\//).test(ciperm)) {
                     msg['incd'] = search[5];
                 }
@@ -444,7 +444,7 @@
 
         // Recoger error
         } catch (excp) {
-            msg['codmensaje'] = excp;
+            msg['procmsg'] = excp;
             msg['tipo'] = msg['prioridad'] = '0';
             msg['origen'] = msg['destino'] = msg['novenales'] = '000';
             msg['horadia'] = '000000';
@@ -494,13 +494,13 @@
             salida += "<i>Interrupción:</i>\t " + msg['regfin'] + "<br>";
         }
 
-        if (msg['codmensaje']) {
+        if (msg['procmsg']) {
             if ((msg['tipo'] == '0') || (msg['tipo'] == '2')) {
                 salida += "<i>Novenales:</i>\t " + msg['novenales'].substring(0,2) + '.' + msg['novenales'].substring(2) + "<br>";
             }
-            salida += "<i>Mensaje:</i>\t &#8628;<hr><p id='codmensaje'>" + msg['codmensaje'] + '</p>';
+            salida += "<i>Mensaje:</i>\t &#8628;<hr><p id='procmsg'>" + msg['procmsg'] + '</p>';
         }
-        if (!(/^ERROR/g).test(msg['codmensaje']) && (/^\d\/(.+?)\/(.+?)/).test(msg['codmensaje'])) {
+        if (!(/^ERROR/g).test(msg['procmsg']) && (/^\d\/(.+?)\/(.+?)/).test(msg['procmsg'])) {
             salida += "<hr><p>";
             salida += "<button id='btn2' onclick='gengif()'>&nbsp;&nbsp;Generar GIF Transmisión&nbsp;&nbsp;</button>";
             salida += "<span id='destgif'><img id='transgif' src='data:,'></span>";
@@ -528,7 +528,7 @@
         velo = document.getElementById("velo").value;
 
         // Recoger texto mensaje
-        var codtxt = document.getElementById("codmensaje").innerHTML.toLowerCase();
+        var codtxt = document.getElementById("procmsg").innerHTML.toLowerCase();
 
         // Validar, sustituir '/' por 'a' y error en 'e'
         codtxt = codtxt.replace(/\//g, 'a').replace(/[^0-9,x,m,a]/gi, 'e');

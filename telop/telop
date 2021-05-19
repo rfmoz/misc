@@ -192,7 +192,7 @@ def zcodif_codificar(arg, msg, lencript):
     logging.info('Mensaje raw:\t %s', msgfmt)
 
     # Salida final. Sustituir caracteres repetidos por x
-    msg['codmensaje'] = re.sub(r'(\w{1})\1', r'\1x', msgfmt)
+    msg['procmsg'] = re.sub(r'(\w{1})\1', r'\1x', msgfmt)
 
     imprimir(arg, msg)
 
@@ -255,13 +255,13 @@ def zcodif_descodificar(arg, msg, lencript):
                 raise Exception('Extension mensaje incorrecta')
             else:
                 # Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
-                msg['codmensaje'] = ''
+                msg['procmsg'] = ''
                 for i in range(0, long_nov - 1, 2):
-                    msg['codmensaje'] += lencript[int(cipert[i] + cipert[i+1])]
+                    msg['procmsg'] += lencript[int(cipert[i] + cipert[i+1])]
 
         # Procesar tipo 3 o 6
         elif re.match(r'^[36]/\d/', ciperm) is not None:
-            msg['codmensaje'] = None
+            msg['procmsg'] = None
             if re.match(r'^6/\d/', ciperm) is not None:
                 msg['incd'] = search.group(5)
 
@@ -308,7 +308,7 @@ def imprimir(arg, msg):
     '''salida por pantalla'''
 
     if arg.batch:
-        print(msg['codmensaje'])
+        print(msg['procmsg'])
 
     else:
         print('-' * 80)
@@ -339,14 +339,14 @@ def imprimir(arg, msg):
         print(f"Referencia:\t {msg['referencia']}")
         if msg['regfin']:
             print(f"Interrupción:\t {msg['regfin']}")
-        if msg['codmensaje'] is not None:
+        if msg['procmsg'] is not None:
             if msg['tipo'] in ('0', '2'):
                 print(f"Novenales:\t {msg['novenales'][:2]}.{msg['novenales'][2:]}")
                 if arg.zcodif == 0:  # Sólo en codificación
                     print(f"Mensaje txt:\t \'{msg['mensaje']}\'")
             print('-' * 80)
             print('')
-            print(f"Mensaje:\t {msg['codmensaje']}")
+            print(f"Mensaje:\t {msg['procmsg']}")
             print('')
         print('-' * 80)
 
@@ -359,7 +359,7 @@ def main():
     lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€', ' ']
 
     # Diccionario de mensaje. Valores por defecto
-    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'codmensaje': None, 'incd': '00', 'regfin': ''}
+    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'procmsg': None, 'incd': '00', 'regfin': ''}
 
     arg, msg = get_arguments(msg, lencript)
 
