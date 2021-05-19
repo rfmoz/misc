@@ -5,7 +5,7 @@
 #
 # Ejecutar:
 #            telop2gif.sh '0/0x1052/1917130x/0x8/172421x0/0'
-#            telop --batch 'test1' | telop2gif.sh
+#            telop --batch -m 'test1' | telop2gif.sh
 #
 
 D_TMP=$(mktemp -d)
@@ -39,5 +39,11 @@ done
 
 # Crear gif
 convert -delay 150 -loop 0 "$D_TMP"/* "$F_TMP"
+
+# Añadir final
+wget https://rfrail3.github.io/misc/static/fin.gif -qO /tmp/fin.gif && convert -delay 150 -loop 0 "$F_TMP" /tmp/fin.gif "$F_TMP"
+
+# Optimizar
+mogrify -layers optimize "$F_TMP"
 
 echo -n 'Gif -> ' && ls "$F_TMP"
