@@ -106,27 +106,27 @@ def get_arguments(msg, lencript):
     return arg, msg
 
 
-def codffx(arg, codmsg, tipo=False):
+def encffx(arg, ciphert, tipo=False):
     '''codificar ffx'''
 
     try:
         import pyffx
     except Exception as exp:
         logging.error('--password no se puede aplicar. Comprobar módulo "pyffx" --> %s', str(exp))
-        return(codmsg)
+        return(ciphert)
 
     # Pedir contraseña en el prompt si se pasa 'ask' como clave
     if arg.password == 'ask':
         arg.password = input("Password?: ")
 
-    effx = pyffx.Integer(arg.password.encode('utf_8'), length=len(codmsg))
+    effx = pyffx.Integer(arg.password.encode('utf_8'), length=len(ciphert))
 
     if tipo == 'cod':
-        return(str(effx.encrypt(codmsg)))
+        return(str(effx.encrypt(ciphert)))
     elif tipo == 'descod':
-        return(str(effx.decrypt(codmsg)))
+        return(str(effx.decrypt(ciphert)))
     else:
-        return(codmsg)
+        return(ciphert)
 
 
 def zcodif_codificar(arg, msg, lencript):
@@ -139,7 +139,7 @@ def zcodif_codificar(arg, msg, lencript):
         logging.info('Texto raw:\t\t %s', str(msg['mensaje']))
 
         # Recorrer los digitos del mensaje para codificar cada uno
-        codmsg = ''
+        cipert = ''
         for _, elem in enumerate(msg['mensaje']):
             if elem not in lencript:  # si el carácter no se encuentra en la lista
                 elem = re.sub(r'[^\w]', r'', unicodedata.normalize('NFKD', elem)) # pasar a unicode, quita acentos y similar
@@ -147,27 +147,27 @@ def zcodif_codificar(arg, msg, lencript):
                     elem = '#'
 
             # Asignar valor de la posicion del caracter, siempre con dos digitos '00'
-            codmsg += str(lencript.index(elem)).zfill(2)
+            cipert += str(lencript.index(elem)).zfill(2)
 
-        logging.info('Texto cod:\t\t %s', str(codmsg))
+        logging.info('Texto cod:\t\t %s', str(cipert))
 
         if arg.password:
-            codmsg = codffx(arg, codmsg, 'cod')
-            logging.info('Texto ffx:\t\t %s', str(codmsg))
+            cipert = encffx(arg, cipert, 'cod')
+            logging.info('Texto ffx:\t\t %s', str(cipert))
 
         # Calcular novenales en base al tamaño del mensaje
-        cociente = int(len(codmsg) / 9)
-        resto = int(len(codmsg) % 9)
+        cociente = int(len(cipert) / 9)
+        resto = int(len(cipert) % 9)
         msg['novenales'] = str(cociente).zfill(2) + str(resto)
 
         # Insertar arriadas en mensaje y borar la última si coincide
-        codmsg = str(re.sub(r'(.{9})', r'\1/', codmsg)).rstrip('/')
+        ciperm = str(re.sub(r'(.{9})', r'\1/', cipert)).rstrip('/')
 
         prefijo = ''
         if msg['tipo'] == '2':
             prefijo = '2/'
 
-        sufijo = msg['novenales'] + '/' + codmsg + '/' + msg['prioridad']
+        sufijo = msg['novenales'] + '/' + ciperm + '/' + msg['prioridad']
 
     else:
         prefijo = msg['tipo'] + '/'
@@ -202,16 +202,16 @@ def zcodif_descodificar(arg, msg, lencript):
     '''descodificar mensaje'''
 
     # Reconstruir caracteres repetidos
-    codmsg = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
+    ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
         # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/1
-        search = re.search(r'^([236])?/?(\d)/(\d+?)/(\d+?)/(\d{0,3})', codmsg)
+        search = re.search(r'^([236])?/?(\d)/(\d+?)/(\d+?)/(\d{0,3})', ciperm)
         if not search:
             raise Exception('Codificación de mensaje incorrecta')
 
         # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/1
-        regfin = re.search(r'(/(\d{3})/(\d{5}))+$', codmsg)
+        regfin = re.search(r'(/(\d{3})/(\d{5}))+$', ciperm)
 
         if regfin:  # Recorrer todas las interrupciones
 
@@ -232,7 +232,7 @@ def zcodif_descodificar(arg, msg, lencript):
                 msg['regfin'] += intrc +']  '
 
         # Procesar tipo 0 o 2. Telegrama con mensaje
-        if re.match(r'^(?:2/)?[048]/\d{6}/', codmsg) is not None:
+        if re.match(r'^(?:2/)?[048]/\d{6}/', ciperm) is not None:
             # 0/001005/23220400/006/757575/0
             # 2/0/001005/23220400/006/757575/0
 
@@ -242,27 +242,27 @@ def zcodif_descodificar(arg, msg, lencript):
             long_nov = (int(msg['novenales'][:2]) * 9) + (int(msg['novenales'][2:]))
 
             # Eliminar la cabecera del preámbulo del telegrama, quitar '/' y extraer longitud del texto
-            codmsg = codmsg.replace(search.group(0), '').replace('/', '')[:long_nov]
+            cipert = ciperm.replace(search.group(0), '').replace('/', '')[:long_nov]
 
-            logging.info("Texto raw:\t\t %s", codmsg)
+            logging.info("Texto raw:\t\t %s", cipert)
 
             if arg.password:
-                codmsg = codffx(arg, codmsg, 'descod')
-                logging.info('Texto ffx:\t\t %s', str(codmsg))
+                cipert = encffx(arg, cipert, 'descod')
+                logging.info('Texto ffx:\t\t %s', str(cipert))
 
             # Comprobar integridad
-            if long_nov != len(codmsg):
+            if long_nov != len(cipert):
                 raise Exception('Extension mensaje incorrecta')
             else:
                 # Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
                 msg['codmensaje'] = ''
                 for i in range(0, long_nov - 1, 2):
-                    msg['codmensaje'] += lencript[int(codmsg[i] + codmsg[i+1])]
+                    msg['codmensaje'] += lencript[int(cipert[i] + cipert[i+1])]
 
         # Procesar tipo 3 o 6
-        elif re.match(r'^[36]/\d/', codmsg) is not None:
+        elif re.match(r'^[36]/\d/', ciperm) is not None:
             msg['codmensaje'] = None
-            if re.match(r'^6/\d/', codmsg) is not None:
+            if re.match(r'^6/\d/', ciperm) is not None:
                 msg['incd'] = search.group(5)
 
         else:

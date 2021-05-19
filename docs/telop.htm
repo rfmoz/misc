@@ -279,7 +279,7 @@
             case '0':
             case '2':
                 // Recorrer los digitos del mensaje para codificar cada uno
-                var codmsg = '';
+                var cipert = '';
                 for (let i = 0; i < msg['mensaje'].length; i++) {
                     let elem = msg['mensaje'][i];
                     if (!lencript.includes(elem)) {  // si el carácter no se encuentra en la lista
@@ -289,24 +289,24 @@
                         }
                     }
                     // Asignar valor de la posicion del caracter, siempre con dos digitos '00'
-                    codmsg += lencript.indexOf(elem).toString().padStart(2, '0');
+                    cipert += lencript.indexOf(elem).toString().padStart(2, '0');
                 }
-                console.log('Texto cod: ' + codmsg);
+                console.log('Texto cod: ' + cipert);
         
                 // Calcular novenales en base al tamaño del mensaje
-                var cociente = Math.floor(codmsg.length / 9);
-                var resto = Math.floor(codmsg.length % 9);
+                var cociente = Math.floor(cipert.length / 9);
+                var resto = Math.floor(cipert.length % 9);
                 msg['novenales'] = cociente.toString().padStart(2, '0') + resto.toString();
         
                 // Insertar arriadas en mensaje y borar la última si coincide
-                codmsg = codmsg.replace(/(.{9})/g, "$1/").replace(/\/$/, '');
+                ciperm = cipert.replace(/(.{9})/g, "$1/").replace(/\/$/, '');
         
                 var prefijo = ''
                 if (msg['tipo'] == '2') {
                     prefijo = '2/'
                 }
 
-                var sufijo = msg['novenales'] + "/" + codmsg + "/" + msg['prioridad'];
+                var sufijo = msg['novenales'] + "/" + ciperm + "/" + msg['prioridad'];
                 break;
 
             case '3':
@@ -340,13 +340,13 @@
         document.getElementById("form1").style.textDecoration = "none";
 
         // Reconstruir caracteres repetidos
-        codmsg = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
+        ciperm = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
 
         // Extraer cabecera del mensaje
-        search = (/^([236])?\/?(\d)\/(\d+?)\/(\d+?)\/(\d{0,3})/g).exec(codmsg);
+        search = (/^([236])?\/?(\d)\/(\d+?)\/(\d+?)\/(\d{0,3})/g).exec(ciperm);
 
         // Extraer interrupción final si la hubiera
-        regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(codmsg);
+        regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(ciperm);
 
         if (regfin) {  // Recorrer todas las interrupciones
 
@@ -373,7 +373,7 @@
             }
 
             // Procesar tipo 0 o 2. Telegrama con mensaje
-            if ((/^(?:2\/)?[048]\/\d{6}\//g).test(codmsg)) {
+            if ((/^(?:2\/)?[048]\/\d{6}\//g).test(ciperm)) {
                 // 0/001005/232x0400/006/757575/0
                 // 2/0/001005/23220400/006/757575/0
 
@@ -383,27 +383,27 @@
                 let long_nov = (parseInt(msg['novenales'].substring(0,2)) * 9) + (parseInt(msg['novenales'].substring(2)));
 
                 // Eliminar la cabecera del preámbulo del telegrama y extraer longitud del texto
-                codmsg = codmsg.replace(search[0], '').replace(/\//g, '').substring(0, long_nov);
+                cipert = ciperm.replace(search[0], '').replace(/\//g, '').substring(0, long_nov);
 
-                console.log("Mensaje raw: " + codmsg);
+                console.log("Mensaje raw: " + cipert);
 
                 // Comprobar integridad
-                if (long_nov != codmsg.length) {
+                if (long_nov != cipert.length) {
                     msg['codmensaje'] = 'ERROR - Extensión mensaje incorrecta'
 
                 } else {
                     // Recorrer a pares el texto y extraer la posición del carácter en la lista de códigos
                     msg['codmensaje'] = '';
                     for (let i=0; i < long_nov - 1; i+=2) {
-                        let posicion = (codmsg[i] + codmsg[(i + 1)]);
+                        let posicion = (cipert[i] + cipert[(i + 1)]);
                         msg['codmensaje'] += lencript[parseInt(posicion)];
                     }
                 }
 
             // Procesar tipo 3 o 6
-            } else if ((/^[36]\/\d\//).test(codmsg)) {
+            } else if ((/^[36]\/\d\//).test(ciperm)) {
                 msg['codmensaje'] = null
-                if ((/^6\//).test(codmsg)) {
+                if ((/^6\//).test(ciperm)) {
                     msg['incd'] = search[5];
                 }
 
