@@ -256,15 +256,15 @@
         msg['incd'] = document.getElementById("incd").value;
         msg['mfhora'] = document.getElementById("mfhora").value;
         if (msg['mfhora'] == 1) {
-            fchora = d.getHours();
-            fcmin = d.getMinutes();
+            fchora = parseInt(d.getHours());
+            fcmin = parseInt(d.getMinutes());
             switch (true) {
-                case 15<=fcmin && fcmin<30:
-                    fchora =+ fchora + 25; break;
-                case 30<=fcmin && fcmin<45:
+                case fcmin >= 45:
+                    fchora =+ fchora + 75; break;
+                case fcmin >= 30:
                     fchora =+ fchora + 50; break;
-                case 45<=fcmin:
-                    fchora =+ fchora + 75;
+                case fcmin >= 15:
+                    fchora =+ fchora + 25;
             }
 
             fchora = fchora.toString().padStart(2, '0');
@@ -424,16 +424,16 @@
             // Revertir formato hora corto
             if (search[4].length == 5) {
 
-                fchora = search[4].substring(0,2);
+                fchora = parseInt(search[4].substring(0,2));
                 switch (true) {
-                    case 0<=fchora && fchora<25:
-                        hora = fchora.toString().padStart(2, '0') + '00'; break;
-                    case 25<=fchora && fchora<50:
-                        hora = (fchora -25).toString().padStart(2, '0') + '15'; break;
-                    case 50<=fchora && fchora<75:
+                    case fchora >= 75:
+                        hora = (fchora - 75).toString().padStart(2, '0') + '45'; break;
+                    case fchora >= 50:
                         hora = (fchora - 50).toString().padStart(2, '0') + '30'; break;
-                    case 75<=fchora:
-                        hora = (fchora - 75).toString().padStart(2, '0') + '45';
+                    case fchora >= 25:
+                        hora = (fchora - 25).toString().padStart(2, '0') + '15'; break;
+                    case fchora >= 0:
+                        hora = fchora.toString().padStart(2, '0') + '00';
                 }
                 msg['horadia'] = hora + '?' + search[4].substring(2,3);
                 msg['referencia'] = search[4].substring(3);
@@ -483,7 +483,18 @@
 
         if (msg['horadia'].length == 3) {
             var d = new Date();
-            salida += "<i>Día y Hora:</i>\t ?" + msg['horadia'].substring(2,3) + ' ' +  msg['horadia'].substring(0,2) + "<br>";
+            fchora = parseInt(msg['horadia'].substring(0,2));
+            salida += "<i>Día y Hora:</i>\t ?" + msg['horadia'].substring(2,3) + ' ' +  msg['horadia'].substring(0,2) + ' [' + d.getHours() + ':';
+            switch (true) {
+                case fchora >= 75:
+		    salida += '45] ' + "<br>"; break;
+                case fchora >= 50:
+		    salida += '30] ' + "<br>"; break;
+                case fchora >= 25:
+		    salida += '15] ' + "<br>"; break;
+                case fchora >= 0:
+		    salida += '00] ' + "<br>";
+            }
         } else {
             salida += "<i>Día y Hora:</i>\t " + msg['horadia'].substring(4,6) + ' ' +  msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + "<br>";
         }

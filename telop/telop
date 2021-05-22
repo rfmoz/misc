@@ -82,12 +82,12 @@ def get_arguments(msg, lencript):
     if arg.breve:
         fchora = int(time.strftime("%H"))
         fcmin = int(time.strftime("%M"))
-        if 15 <= fcmin < 30:
-            fchora = fchora + 25
-        elif 30 <= fcmin < 45:
-            fchora = fchora + 50
-        elif 45 <= fcmin:
+        if fcmin >= 45:
             fchora = fchora + 75
+        elif fcmin >= 30:
+            fchora = fchora + 50
+        elif fcmin >= 15:
+            fchora = fchora + 25
 
         fchora = str(fchora).zfill(2)
         fcdia = str(time.strftime("%d")[-1])
@@ -281,14 +281,14 @@ def zcodif_descodificar(arg, msg, lencript):
         if len(search.group(4)) == 5:
 
             fchora = int(search.group(4)[:2])
-            if 0 <= fchora < 25:
-                hora = str(fchora).zfill(2) + '00'
-            elif 25 <= fchora < 50:
-                hora = str(fchora - 25).zfill(2) + '15'
-            elif 50 <= fchora < 75:
-                hora = str(fchora - 50).zfill(2) + '30'
-            elif 75 <= fchora:
+            if fchora >= 75:
                 hora = str(fchora - 75).zfill(2) + '45'
+            elif fchora >= 50:
+                hora = str(fchora - 50).zfill(2) + '30'
+            elif fchora >= 25:
+                hora = str(fchora - 25).zfill(2) + '15'
+            elif fchora >= 0:
+                hora = str(fchora).zfill(2) + '00'
 
             msg['horadia'] = hora + '?' + search.group(4)[2:3]
             msg['referencia'] = search.group(4)[3:]
@@ -332,7 +332,16 @@ def imprimir(arg, msg):
         print(f"T. Destino:\t {msg['destino']}")
 
         if len(msg['horadia']) == 3:
-            print(f"Día y Hora:\t ?{msg['horadia'][2:]} {msg['horadia'][:2]}")
+            fchora = int(msg['horadia'][:2])
+            if fchora >= 75:
+                fchora = '45'
+            elif fchora >= 50:
+                fchora = '30'
+            elif fchora >= 25:
+                fchora = '15'
+            elif fchora >= 0:
+                fchora = '00'
+            print(f"Día y Hora:\t ?{msg['horadia'][2:]} {msg['horadia'][:2]} [{time.strftime('%H')}:{fchora}]")
         else:
             print(f"Día y Hora:\t {msg['horadia'][4:6]} {msg['horadia'][:2]}:{msg['horadia'][2:4]}")
 
