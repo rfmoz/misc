@@ -1,0 +1,9 @@
+/var/log/nfs-iostat.log {
+        daily
+        missingok
+        rotate 7
+        copytruncate
+        compress
+        notifempty
+}
+

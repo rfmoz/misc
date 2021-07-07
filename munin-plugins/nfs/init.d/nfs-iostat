@@ -1,0 +1,51 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          nfs-iostat
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Should-Start:      $all
+# Should-Stop:       $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop nfs iostat monitor
+### END INIT INFO
+
+# Requiere iostat, part of sysstat package
+
+
+case "$1" in
+
+        start)
+                echo "Iniciando nfs iostat monitor..."
+		/usr/bin/nohup /usr/bin/iostat -nk 300 > /var/log/nfs-iostat.log 2> /dev/null &
+	;;
+
+        stop)
+                echo "Parando nfs iostat monitor..."
+		start-stop-daemon --stop --oknodo --exec /usr/bin/iostat
+
+        ;;
+
+        restart)
+                $0 stop
+                sleep 5
+                $0 start
+        ;;
+
+        status)
+                if pidof -o %PPID iostat > /dev/null; then
+                        echo "Nfs monitor iniciado."
+                        exit 0
+                else
+                        echo "Nfs monitor Parado."
+                        exit 1
+                fi
+        ;;
+
+        *)
+                echo "Usage: $0 {start|stop|restart|status}"
+                exit 1
+esac
+
+# Para instalar
+# update-rc.d nfs-iostat defaults

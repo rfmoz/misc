@@ -1,0 +1,73 @@
+#!/bin/sh
+# -*- sh -*-
+
+: << =cut
+
+=head1 NAME
+
+nfs_iostat_wops -Indicate the number of write operations that were issued to the filesystem per second.
+
+=head1 CONFIGURATION
+
+  [nfs_iostat*]
+     user root
+     env.log   /var/log/iostat.log
+
+=head1 AUTHOR
+
+Ricardo Fraile <rfrail3@yahoo.es>
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 MAGICK MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+. $MUNIN_LIBDIR/plugins/plugin.sh
+
+LOG="$log"
+NAME=''
+HASH=''
+VALUE=''
+
+if [ "$1" = "autoconf" ]; then
+		echo yes 
+		exit 0
+fi
+
+if [ "$1" = "config" ]; then
+
+	echo 'graph_title Write operations that were issued to the filesystem per second.'
+	echo 'graph_args --base 1000 -l 0 '
+	echo 'graph_vlabel WriteOps / sec'
+	echo 'graph_scale no'
+	echo 'graph_category nfs'
+	echo 'graph_info Indicate the number of write operations that were issued to the filesystem per second.'
+
+	tac $LOG | grep -m1 Filesystem -B 50 | grep -v Filesystem | sed '/^ *$/d' | while read Line; do
+
+		NAME=`echo "$Line" |  awk '{print $1} '`
+		HASH=`echo "$Line" | awk '{print $1} ' | md5sum | cut -d - -f1 | sed 's/ //g'`
+                echo "$HASH.label $NAME"
+                echo "$HASH.type GAUGE"
+                echo "$HASH.min 0"
+                echo "$HASH.info I/O on nfs"
+ 	done
+
+	exit 0
+fi
+
+
+tac $LOG | grep -m1 Filesystem -B 50 | grep -v Filesystem | sed '/^ *$/d' | while read Line; do
+
+	VALUE=`echo "$Line" |  awk '{print $10} '`
+	HASH=`echo "$Line" | awk '{print $1} ' | md5sum | cut -d - -f1 | sed 's/ //g'`
+        echo "$HASH.value $VALUE"
+	
+done
+
