@@ -277,20 +277,9 @@ def zcodif_descodificar(arg, msg, lencript):
         msg['origen'] = search.group(3)[:3]
         msg['destino'] = search.group(3)[3:]
 
-        # Revertir formato hora corto
+        # Según formato hora corto/largo
         if len(search.group(4)) == 5:
-
-            fchora = int(search.group(4)[:2])
-            if fchora >= 75:
-                hora = str(fchora - 75).zfill(2) + '45'
-            elif fchora >= 50:
-                hora = str(fchora - 50).zfill(2) + '30'
-            elif fchora >= 25:
-                hora = str(fchora - 25).zfill(2) + '15'
-            elif fchora >= 0:
-                hora = str(fchora).zfill(2) + '00'
-
-            msg['horadia'] = hora + '?' + search.group(4)[2:3]
+            msg['horadia'] = search.group(4)[:3]
             msg['referencia'] = search.group(4)[3:]
         else:
             msg['horadia'] = search.group(4)[:6]
@@ -341,9 +330,9 @@ def imprimir(arg, msg):
                 fchora = '15'
             elif fchora >= 0:
                 fchora = '00'
-            print(f"Día y Hora:\t ?{msg['horadia'][2:]} {msg['horadia'][:2]} [{time.strftime('%H')}:{fchora}]")
+            print(f"Hora y Día:\t {msg['horadia'][:2]} [{time.strftime('%H')}:{fchora}] ?{msg['horadia'][2:]}")
         else:
-            print(f"Día y Hora:\t {msg['horadia'][4:6]} {msg['horadia'][:2]}:{msg['horadia'][2:4]}")
+            print(f"Hora y Día:\t {msg['horadia'][:2]}:{msg['horadia'][2:4]} {msg['horadia'][4:6]}")
 
         print(f"Referencia:\t {msg['referencia']}")
         if msg['regfin']:

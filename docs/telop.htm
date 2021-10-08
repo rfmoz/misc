@@ -421,21 +421,9 @@
             msg['origen'] = search[3].substring(0,3);
             msg['destino'] = search[3].substring(3);
 
-            // Revertir formato hora corto
+            // Según formato hora corto/largo
             if (search[4].length == 5) {
-
-                fchora = parseInt(search[4].substring(0,2));
-                switch (true) {
-                    case fchora >= 75:
-                        hora = (fchora - 75).toString().padStart(2, '0') + '45'; break;
-                    case fchora >= 50:
-                        hora = (fchora - 50).toString().padStart(2, '0') + '30'; break;
-                    case fchora >= 25:
-                        hora = (fchora - 25).toString().padStart(2, '0') + '15'; break;
-                    case fchora >= 0:
-                        hora = fchora.toString().padStart(2, '0') + '00';
-                }
-                msg['horadia'] = hora + '?' + search[4].substring(2,3);
+                msg['horadia'] = search[4].substring(0,3);
                 msg['referencia'] = search[4].substring(3);
             } else {
                 msg['horadia'] = search[4].substring(0,6);
@@ -484,19 +472,20 @@
         if (msg['horadia'].length == 3) {
             var d = new Date();
             fchora = parseInt(msg['horadia'].substring(0,2));
-            salida += "<i>Día y Hora:</i>\t ?" + msg['horadia'].substring(2,3) + ' ' +  msg['horadia'].substring(0,2) + ' [' + d.getHours() + ':';
+            salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ' [' + d.getHours() + ':';
             switch (true) {
                 case fchora >= 75:
-		    salida += '45] ' + "<br>"; break;
+		    salida += '45]'; break;
                 case fchora >= 50:
-		    salida += '30] ' + "<br>"; break;
+		    salida += '30]'; break;
                 case fchora >= 25:
-		    salida += '15] ' + "<br>"; break;
+		    salida += '15]'; break;
                 case fchora >= 0:
-		    salida += '00] ' + "<br>";
+		    salida += '00]';
             }
+	    salida += " ?" + msg['horadia'].substring(2,3) + "<br>";
         } else {
-            salida += "<i>Día y Hora:</i>\t " + msg['horadia'].substring(4,6) + ' ' +  msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + "<br>";
+            salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + ' ' + msg['horadia'].substring(4,6) + "<br>";
         }
 
         salida += "<i>Referencia:</i>\t " + msg['referencia'] + "<br>";

@@ -14,7 +14,7 @@ Codificar mensaje:
 	Prioridad:	 0
 	T. Origen:	 001
 	T. Destino:	 052
-	Día y Hora:	 08 23:10
+	Hora y Día:	 23:10 08
 	Referencia:	 00
 	Novenales:	 05.2
 	--------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ Descodificar mensaje:
 	Prioridad:	 0
 	T. Origen:	 001
 	T. Destino:	 052
-	Día y Hora:	 08 23:10
+	Hora y Día:	 23:10 08
 	Referencia:	 00
 	Novenales:	 05.2
 	--------------------------------------------------------------------------------
@@ -223,7 +223,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| |    |       ------------------------ hora(2) + minutos(2) + dia(2) + referencia(2)
 	| |    -------------------------------- torre de origen(3) + torre de destino(3)
 	| ------------------------------------- prioridad(1)
-        --------------------------------------- tipo de servicio(1)
+	--------------------------------------- tipo de servicio(1)
 
 	3/0/0x10x5/2341040x/0 -> Vigilancia
 	| |    |      |     |
