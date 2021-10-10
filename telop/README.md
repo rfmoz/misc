@@ -275,6 +275,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 - Opcionalmente, mediante el uso de una contraseña (telop --password '123'), se permite encriptar/desencriptar el contenido del mensaje, manteniendo libre la cabecera. El método emplea Format-preserving, Feistel-based encryption (FFX), generando una cadena de números de apariencia aleatoria para quien intente descodificar el mensaje sin emplear la contraseña de encriptación.
 
+- A pesar de disponer de varias ediciones de los diccionarios frasológicos en los fondos de las bibliotecas, no es posible reutilizar los mismos debido al desconocmiento del método de codificación empleado. Como afirma el propio Mathé en su "Diccionario y tablas de transmisión para el telégrafo militar de noche y día compuesto de órden del Exmo. señor Marqués del Duero": "La explicacion del modo de componer y traducir los despachos por medio de este Diccionario, no me ha parecido conveniente escribirla. Los oficiales que se destinen al servicio telegráfico, habrán de aprender á viva voz este mecanismo, que sin ser complicado, no le será fácil entenderlo bien al que no conozca algun tanto la gramática castellana. Los registros de las fórmulas, son variables y dependerán siempre de la clave reservada que rija en el día de la comunicación.".
 
 ### Más información
 
@@ -327,6 +328,12 @@ Autor:		José Maria Mathé
 Fecha de pub.:	1849
 Páginas:	47
 Fuente:		Biblioteca Nacional
+
+Título:		Diccionario y tablas de transmisión para el telégrafo militar de noche y día compuesto de órden del Exmo. señor Marqués del Duero
+Autor:		José Maria Mathé
+Fecha de pub.:	1849
+Páginas:	310
+Fuente:		Biblioteca Virtual de Defensa
 
 Título:		Diccionario de Telégrafos (diccionario frasológico)
 Autor:		Dirección General de Telégrafos
