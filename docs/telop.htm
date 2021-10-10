@@ -472,18 +472,18 @@
         if (msg['horadia'].length == 3) {
             var d = new Date();
             fchora = parseInt(msg['horadia'].substring(0,2));
-            salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ' [' + d.getHours() + ':';
+            salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ' [';
             switch (true) {
                 case fchora >= 75:
-		    salida += '45]'; break;
+		    salida += (fchora - 75).toString().padStart(2, '0') + ':45'; break;
                 case fchora >= 50:
-		    salida += '30]'; break;
+		    salida += (fchora - 50).toString().padStart(2, '0') + ':30'; break;
                 case fchora >= 25:
-		    salida += '15]'; break;
+		    salida += (fchora - 25).toString().padStart(2, '0') + ':15'; break;
                 case fchora >= 0:
-		    salida += '00]';
+		    salida += fchora.toString().padStart(2, '0') + ':00'; 
             }
-	    salida += " ?" + msg['horadia'].substring(2,3) + "<br>";
+	    salida += "] ?" + msg['horadia'].substring(2,3) + "<br>";
         } else {
             salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + ' ' + msg['horadia'].substring(4,6) + "<br>";
         }

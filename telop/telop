@@ -323,14 +323,14 @@ def imprimir(arg, msg):
         if len(msg['horadia']) == 3:
             fchora = int(msg['horadia'][:2])
             if fchora >= 75:
-                fchora = '45'
+                hora = str(fchora - 75).zfill(2) + ':45'
             elif fchora >= 50:
-                fchora = '30'
+                hora = str(fchora - 50).zfill(2) + ':30'
             elif fchora >= 25:
-                fchora = '15'
+                hora = str(fchora - 25).zfill(2) + ':15'
             elif fchora >= 0:
-                fchora = '00'
-            print(f"Hora y Día:\t {msg['horadia'][:2]} [{time.strftime('%H')}:{fchora}] ?{msg['horadia'][2:]}")
+                hora = str(fchora).zfill(2) + ':00'
+            print(f"Hora y Día:\t {msg['horadia'][:2]} [{hora}] ?{msg['horadia'][2:]}")
         else:
             print(f"Hora y Día:\t {msg['horadia'][:2]}:{msg['horadia'][2:4]} {msg['horadia'][4:6]}")
 
