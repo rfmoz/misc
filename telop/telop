@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import argparse, string, time, re, logging, sys, unicodedata
+import argparse, string, time, re, logging, sys, unicodedata, random
 
 # Tamaño máximo de texto a codificar
 MAX_TXT = 250
@@ -27,8 +27,8 @@ def get_arguments(msg, lencript):
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'],
                         help='prioridad -> 0-normal | 4-urgente | 8-urgentísimo')
-    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '6'],
-                        help='tipo de servicio -> 0-ordinaro | 2-interno | 3-vigilancia | 6-acuse recibo')
+    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '5', '6'],
+                        help='tipo de servicio -> 0-ordinaro | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo')
     parser.add_argument('--incd', default=msg['incd'], action='store', type=str, choices=['0', '1', '2', '3', '4'],
                         help='incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
@@ -37,6 +37,7 @@ def get_arguments(msg, lencript):
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
     parser.add_argument('--password', default=None, action='store', help='Codificar mensaje con contraseña')
     parser.add_argument('-r', '--referencia', default=msg['referencia'], action='store', type=int, metavar='referencia', help='nº referencia despacho')
+    parser.add_argument('-s', '--sentido', default=msg['sentido'], action='store', type=str, metavar='sentido', choices=['7', '9'], help='sentido de marcha cuando se reanuda una transmisión interrumpida -> 7-Fin | 9-Inicio')
     parser.add_argument('-m', '--mensaje', default=msg['mensaje'], action='store', type=str, help='texto del mensaje entre \' \'')
     parser.add_argument('--batch', default=False, action='store_true', help='sólo imprime mensaje resultante')
     parser.add_argument('-v', '--verbose', default=False, action='store_true', help='debug')
@@ -100,6 +101,13 @@ def get_arguments(msg, lencript):
     msg['origen'] = msg['origen'][:3].zfill(3)
     msg['destino'] = msg['destino'][:3].zfill(3)
     msg['referencia'] = msg['referencia'][:2].zfill(2)
+
+    # Reasignar valor sentido 7 o 9 si se indica tipo 5 retransmision
+    if msg['tipo'] == '5':
+        # Sentido aleatorio si no se indica
+        if msg['sentido'] == '0':
+            msg['sentido'] = random.choice(['7', '9'])
+        msg['tipo'] = msg['sentido']
 
     logging.info('Argumentos txt:\t %s', str(msg))
 
@@ -182,6 +190,11 @@ def zcodif_codificar(arg, msg, lencript):
                 msg['incd'] = '00'
             sufijo = msg['incd']
 
+        elif msg['tipo'] in ('7','9'):  # Reanudar transmisión
+            # 7/0/0x1052/0x/5
+            msg['horadia'] = ''
+            sufijo = '5'
+
         else:
             logging.error('Sin tipo de mensaje')
             sys.exit(-1)
@@ -205,8 +218,8 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/1
-        search = re.search(r'^([236])?/?(\d)/(\d+?)/(\d+?)/(\d{0,3})', ciperm)
+        # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/3
+        search = re.search(r'^([23679])?/?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
         if not search:
             raise Exception('Codificación de mensaje incorrecta')
 
@@ -231,8 +244,11 @@ def zcodif_descodificar(arg, msg, lencript):
                     intrc = '4-Avería'
                 msg['regfin'] += intrc +']  '
 
+                # Eliminar interrupción del mensaje
+                ciperm = ciperm.replace(regint[0], '')
+
         # Procesar tipo 0 o 2. Telegrama con mensaje
-        if re.match(r'^(?:2/)?[048]/\d{6}/', ciperm) is not None:
+        if re.match(r'^(?:2/)?[048]/\d+/\d+\/\d+\/.*[048]$', ciperm) is not None:
             # 0/001005/23220400/006/757575/0
             # 2/0/001005/23220400/006/757575/0
 
@@ -259,34 +275,46 @@ def zcodif_descodificar(arg, msg, lencript):
                 for i in range(0, long_nov - 1, 2):
                     msg['procmsg'] += lencript[int(cipert[i] + cipert[i+1])]
 
+            # Asignar tipo según indicación
+            if search.group(1):
+                msg['tipo'] = search.group(1)
+            else:
+                msg['tipo'] = '0'
+
         # Procesar tipo 3 o 6
-        elif re.match(r'^[36]/\d/', ciperm) is not None:
-            msg['procmsg'] = None
+        elif re.match(r'^[36]/[048]/\d+\/\d+\/\d{1,2}$', ciperm) is not None:
+            msg['tipo'] = search.group(1)
             if re.match(r'^6/\d/', ciperm) is not None:
                 msg['incd'] = search.group(5)
 
-        else:
-            raise Exception('Tipo de mensaje sin identificar')
-
-        # Asignar valores
-        if search.group(1):
+        # Procesar tipo 7 o 9
+        elif re.match(r'^[79]/[048]/\d+\/\d+\/5$', ciperm) is not None:
             msg['tipo'] = search.group(1)
+
         else:
-            msg['tipo'] = '0'
+            raise Exception('Formato de mensaje inválido')
+
+        # Asignar valores comunes
         msg['prioridad'] = search.group(2)
         msg['origen'] = search.group(3)[:3]
         msg['destino'] = search.group(3)[3:]
 
-        # Según formato hora corto/largo
-        if len(search.group(4)) == 5:
+        # Según formato hora y referencia corto/largo
+        if len(search.group(4)) == 2:
+            msg['horadia'] = ''
+            msg['referencia'] = search.group(4)
+        elif len(search.group(4)) == 5:
             msg['horadia'] = search.group(4)[:3]
             msg['referencia'] = search.group(4)[3:]
-        else:
+        elif len(search.group(4)) == 8:
             msg['horadia'] = search.group(4)[:6]
             msg['referencia'] = search.group(4)[6:]
+        else:
+            msg['horadia'] = ''
+            msg['referencia'] = ''
 
     except Exception as exp:
-        logging.error('Formato de mensaje incorrecto --> %s', str(exp))
+        logging.error('Imposible descodificar --> %s', str(exp))
         sys.exit(-1)
 
     imprimir(arg, msg)
@@ -316,9 +344,19 @@ def imprimir(arg, msg):
                 print(f"Estado:\t\t 3 - Incidencia vanguardia ocupada")
             if msg['incd'] == '4':
                 print(f"Estado:\t\t 4 - Incidencia avería")
+        if msg['tipo'] == '7':
+            print(f"Tipo:\t\t 5 - Reanudar Transmisión")
+            print(f"Sentido:\t 7 - Fin de línea")
+        if msg['tipo'] == '9':
+            print(f"Tipo:\t\t 5 - Reanudar Transmisión")
+            print(f"Sentido:\t 9 - Inicio de línea")
+
         print(f"Prioridad:\t {msg['prioridad']}")
-        print(f"T. Origen:\t {msg['origen']}")
-        print(f"T. Destino:\t {msg['destino']}")
+        if not msg['destino']:  # Si sólo se indica una torre
+            print(f"Torre:\t\t {msg['origen']}")
+        else:
+            print(f"T. Origen:\t {msg['origen']}")
+            print(f"T. Destino:\t {msg['destino']}")
 
         if len(msg['horadia']) == 3:
             fchora = int(msg['horadia'][:2])
@@ -331,7 +369,7 @@ def imprimir(arg, msg):
             elif fchora >= 0:
                 hora = str(fchora).zfill(2) + ':00'
             print(f"Hora y Día:\t {msg['horadia'][:2]} [{hora}] ?{msg['horadia'][2:]}")
-        else:
+        elif len(msg['horadia']) == 6:
             print(f"Hora y Día:\t {msg['horadia'][:2]}:{msg['horadia'][2:4]} {msg['horadia'][4:6]}")
 
         print(f"Referencia:\t {msg['referencia']}")
@@ -357,7 +395,7 @@ def main():
     lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€', ' ']
 
     # Diccionario de mensaje. Valores por defecto
-    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'procmsg': None, 'incd': '00', 'regfin': ''}
+    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'sentido': '0', 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'procmsg': None, 'incd': '00', 'regfin': ''}
 
     arg, msg = get_arguments(msg, lencript)
 

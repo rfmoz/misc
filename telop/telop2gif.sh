@@ -21,6 +21,10 @@ echo \'"$txt1"\'
 
 # Sustituir '/' por 'a' y recoger sólo caracteres convertibles
 var1=$(echo "$txt1" | tr '/' 'a' | sed 's/[^0-9,x,m,a]//g')
+
+# Sustituir reanudar transmisión '7a' por 'fa' y '9a' por 'ia'
+var1=$(echo "$var1" | sed 's/^7a/fa/' | sed 's/^9a/ia/')
+
 total=${#var1}
 
 # Recorrer mensaje, descargar imágenes y añadir número de frame
