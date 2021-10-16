@@ -193,6 +193,7 @@ def zcodif_codificar(arg, msg, lencript):
         elif msg['tipo'] in ('7','9'):  # Reanudar transmisión
             # 7/0/0x1052/0x/5
             msg['horadia'] = ''
+            msg['destino'] = ''
             sufijo = '5'
 
         else:

@@ -173,11 +173,11 @@
                         </select>
                     </td>
                 </tr>
-                <tr>
+                <tr id="optorg">
                     <td>Torre origen:</td>
                     <td><input type="number" id="morig" min="1" max="999" pattern="\d{3}" /></td>
                 </tr>
-                <tr>
+                <tr id="optdst">
                     <td>Torre destino:</td>
                     <td><input type="number" id="mdest" min="1" max="999" pattern="\d{3}" /></td>
                 </tr>
@@ -222,14 +222,17 @@
                 document.getElementById("form1").style.textDecoration = "line-through";
             }
 
-            // Mostrar opciones
+            // Mostrar opciones Reanudar
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 5 ) {
                 document.getElementById("ophora").style.display = "none";
+                document.getElementById("optdst").style.display = "none";
                 document.getElementById("opsent").style.display = "table-row";
             } else {
                 document.getElementById("ophora").style.display = "table-row";
+                document.getElementById("optdst").style.display = "table-row";
                 document.getElementById("opsent").style.display = "none";
             }
+            // Mostrar opciones Acuse Recibo
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 6 ) {
                 document.getElementById("opincd").style.display = "table-row";
             } else {
@@ -346,6 +349,7 @@
             case '9':  // Reanudar transmisión
                 var prefijo = msg['tipo'] + '/';
                 msg['horadia'] = '';
+                msg['destino'] = '';
                 sufijo = '5';
                 break;
         }
