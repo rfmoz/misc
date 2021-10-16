@@ -222,21 +222,21 @@
                 document.getElementById("form1").style.textDecoration = "line-through";
             }
 
+            // Resetear valores que se van a modificar
+            document.getElementById("ophora").style.display = "table-row";
+            document.getElementById("optdst").style.display = "table-row";
+            document.getElementById("opsent").style.display = "none";
+            document.getElementById("opincd").style.display = "none";
+
             // Mostrar opciones Reanudar
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 5 ) {
                 document.getElementById("ophora").style.display = "none";
                 document.getElementById("optdst").style.display = "none";
                 document.getElementById("opsent").style.display = "table-row";
-            } else {
-                document.getElementById("ophora").style.display = "table-row";
-                document.getElementById("optdst").style.display = "table-row";
-                document.getElementById("opsent").style.display = "none";
             }
             // Mostrar opciones Acuse Recibo
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 6 ) {
                 document.getElementById("opincd").style.display = "table-row";
-            } else {
-                document.getElementById("opincd").style.display = "none";
             }
     }
 
