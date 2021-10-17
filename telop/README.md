@@ -44,18 +44,19 @@ Descodificar mensaje:
 
 Opciones:
 
-        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6}] [--incd {0,1,2,3,4}] [-o origen]
-                     [-d destino] [-b] [--diccionario] [--password PASSWORD]
-                     [-r referencia] [-m MENSAJE] [--batch] [-v] [--version]
-                     [-z {0,1}]
+        usage: telop [-h] [-p {0,4,8}] [-t {0,1,2,3,6}] [--incd {0,1,2,3,4}]
+                     [-o origen] [-d destino] [-b] [--diccionario]
+                     [--password PASSWORD] [-r referencia] [-m MENSAJE]
+                     [--batch] [-v] [--version] [-z {0,1}]
         
         optional arguments:
           -h, --help            show this help message and exit
           -p {0,4,8}, --prioridad {0,4,8}
                                 prioridad -> 0-normal | 4-urgente | 8-urgentísimo
-          -t {0,2,3,5,6}, --tipo {0,2,3,5,6}
-                                tipo de servicio -> 0-ordinaro | 2-interno |
-                                3-vigilancia | 5-reanudar transmisión | 6-acuse recibo
+          -t {0,1,2,3,5,6}, --tipo {0,1,2,3,5,6}
+                                tipo de servicio -> 0-ordinaro | 1-supervisión línea |
+                                2-interno | 3-vigilancia | 5-reanudar transmisión |
+                                6-acuse recibo
           --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
                                 3-ocupada | 4-avería
           -o origen, --origen origen
@@ -247,6 +248,22 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	7/0/0x1/03/5 -> Reanudar transmisión sentido fin de línea
 	| |  |  |  |
 	| |  |  |  - sufijo tipo de servicio(1)
+	| |  |  ---- referencia(2)
+	| |  ------- torre de origen(3)
+	| ---------- prioridad(1)
+	------------ prefijo tipo de servicio(1)	
+
+	9/0/0x1/03/5 -> Reanudar transmisión sentido inicio de línea
+	| |  |  |  |
+	| |  |  |  - sufijo tipo de servicio(1)
+	| |  |  ---- referencia(2)
+	| |  ------- torre de origen(3)
+	| ---------- prioridad(1)
+	------------ prefijo tipo de servicio(1)	
+
+        1/0/0x1/0x/0 -> Supervisión de línea
+	| |  |  |  |
+	| |  |  |  - prioridad(1)
 	| |  |  ---- referencia(2)
 	| |  ------- torre de origen(3)
 	| ---------- prioridad(1)
