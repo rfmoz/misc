@@ -149,13 +149,13 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| ------------------------------------- prioridad(1)
 	--------------------------------------- tipo de servicio(1)
 
-	3/0/0x10x5/2341040x/0 -> Vigilancia
-	| |    |      |     |
-	| |    |      |     - prioridad(1)
-	| |    |      ------- hora(2) + minutos(2) + dia(2) + referencia(2)
-	| |    -------------- torre de origen(3) + torre de destino(3)
-	| ------------------- prioridad(1)
-	--------------------- tipo de servicio(1)	
+	3  /0x10x5/2341040x -> Vigilancia
+	|      |      |
+	|      |      |
+	|      |      ----- hora(2) + minutos(2) + dia(2) + referencia(2)
+	|      ------------ torre de origen(3) + torre de destino(3)
+	|
+	------------------- tipo de servicio(1)	
 
 	6/0/0x10x5/2341040x/0x -> Acuse de recibo
 	| |    |      |     |
@@ -181,13 +181,13 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| ---------- prioridad(1)
 	------------ prefijo tipo de servicio(1)	
 
-        1/0/0x1/0x/0 -> Supervisión de línea
-	| |  |  |  |
-	| |  |  |  - prioridad(1)
-	| |  |  ---- referencia(2)
-	| |  ------- torre de origen(3)
-	| ---------- prioridad(1)
-	------------ prefijo tipo de servicio(1)	
+        1  /0x1/0x -> Supervisión de línea
+	|    |  |
+	|    |  |
+	|    |  -- referencia(2)
+	|    ----- torre de origen(3)
+	|
+	---------- prefijo tipo de servicio(1)	
 	```
 
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. El formato es el siguiente:
@@ -227,7 +227,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 ### Más información
 
 ```   
-Wikiepdia:	https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico
+Wikipedia:	https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico
 
 Título:		Historia de la telegrafía
 Fecha de pub.:	2012

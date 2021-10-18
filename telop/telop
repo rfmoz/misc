@@ -141,7 +141,7 @@ def zcodif_codificar(arg, msg, lencript):
     '''codificar mensaje'''
 
     if msg['tipo'] in ('0', '2'):  # Servicio ordinario o interno
-        # 0/0x10x5/232x040x/0x6/757575/0
+        #   0/0x10x5/232x040x/0x6/757575/0
         # 2/0/0x10x5/232x040x/0x6/757575/0
 
         logging.info('Texto raw:\t\t %s', str(msg['mensaje']))
@@ -175,39 +175,45 @@ def zcodif_codificar(arg, msg, lencript):
         if msg['tipo'] == '2':
             prefijo = '2/'
 
-        sufijo = msg['novenales'] + '/' + ciperm + '/' + msg['prioridad']
+        sufijo = '/' + msg['novenales'] + '/' + ciperm + '/' + msg['prioridad']
 
     else:
         prefijo = msg['tipo'] + '/'
 
         if msg['tipo'] == '1':  # Servicio supervisión de línea
-            # 1/0/0x1/0x/0
-            sufijo = msg['prioridad']
+            # 1/0x1/0x
+            msg['prioridad'] = ''
             msg['horadia'] = ''
             msg['destino'] = ''
+            sufijo = ''
 
         elif msg['tipo'] == '3':  # Servicio vigilancia
-            # 3/0/0x1052/1917090x/0
-            sufijo = msg['prioridad']
+            # 3/0x1052/1917090x
+            msg['prioridad'] = ''
+            sufijo = ''
 
         elif msg['tipo'] == '6':  # Servicio acuse de recibo
             # 6/0/0x1052/1917090x/0x
             if msg['incd'] == '0':
                 msg['incd'] = '00'
-            sufijo = msg['incd']
+            sufijo = '/' + msg['incd']
 
         elif msg['tipo'] in ('7','9'):  # Reanudar transmisión
             # 7/0/0x1/0x/5
+            # 9/0/0x1/0x/5
             msg['horadia'] = ''
             msg['destino'] = ''
-            sufijo = '5'
+            sufijo = '/5'
 
         else:
             logging.error('Sin tipo de mensaje')
             sys.exit(-1)
 
     # Mensaje formateado
-    msgfmt = str(prefijo + msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + '/' + sufijo)
+    msgfmt = str(prefijo + msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + sufijo)
+
+    # Eliminar duplicados // por campos vacíos
+    msgfmt = re.sub(r'\/\/', r'/', msgfmt)
 
     logging.info('Mensaje raw:\t %s', msgfmt)
 
@@ -225,8 +231,8 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/3
-        search = re.search(r'^([123679])?/?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
+        # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/6
+        search = re.search(r'^(?:([123679])?/)?(?:([048])/)?(\d{3,6})/(\d{2,8})(?:/(\d{0,3}))?\b', ciperm)
         if not search:
             raise Exception('Codificación de mensaje incorrecta')
 
@@ -256,8 +262,6 @@ def zcodif_descodificar(arg, msg, lencript):
 
         # Procesar tipo 0 o 2. Telegrama con mensaje
         if re.match(r'^(?:2/)?[048]/\d+/\d+\/\d+\/.*[048]$', ciperm) is not None:
-            # 0/001005/23220400/006/757575/0
-            # 2/0/001005/23220400/006/757575/0
 
             msg['novenales'] = search.group(5)
 
@@ -288,11 +292,14 @@ def zcodif_descodificar(arg, msg, lencript):
             else:
                 msg['tipo'] = '0'
 
-        # Procesar tipo 1, 3 o 6
-        elif re.match(r'^[136]/[048]/\d+\/\d+\/\d{1,2}$', ciperm) is not None:
+        # Procesar tipo 1 o 3
+        elif re.match(r'^[13]/\d+\/\d+$', ciperm) is not None:
             msg['tipo'] = search.group(1)
-            if re.match(r'^6/\d/', ciperm) is not None:
-                msg['incd'] = search.group(5)
+
+        # Procesar tipo 6
+        elif re.match(r'^6/[048]/\d+\/\d+\/\d{1,2}$', ciperm) is not None:
+            msg['tipo'] = search.group(1)
+            msg['incd'] = search.group(5)
 
         # Procesar tipo 7 o 9
         elif re.match(r'^[79]/[048]/\d+\/\d+\/5$', ciperm) is not None:
@@ -310,13 +317,13 @@ def zcodif_descodificar(arg, msg, lencript):
         if len(search.group(4)) == 2:  # referencia
             msg['horadia'] = ''
             msg['referencia'] = search.group(4)
-        elif len(search.group(4)) == 5:  # hora-breve + ref
+        elif len(search.group(4)) == 5:  # horadia-breve + ref
             msg['horadia'] = search.group(4)[:3]
             msg['referencia'] = search.group(4)[3:]
-        elif len(search.group(4)) == 6:  # hora-normal
+        elif len(search.group(4)) == 6:  # horadia-normal
             msg['horadia'] = search.group(4)[:6]
             msg['referencia'] = ''
-        elif len(search.group(4)) == 8: # hora-normal + ref
+        elif len(search.group(4)) == 8: # horadia-normal + ref
             msg['horadia'] = search.group(4)[:6]
             msg['referencia'] = search.group(4)[6:]
         else:
@@ -362,7 +369,8 @@ def imprimir(arg, msg):
             print(f"Tipo:\t\t 5 - Reanudar Transmisión")
             print(f"Sentido:\t 9 - Inicio de línea")
 
-        print(f"Prioridad:\t {msg['prioridad']}")
+        if msg['prioridad']:
+            print(f"Prioridad:\t {msg['prioridad']}")
         if not msg['destino']:  # Si sólo se indica una torre
             print(f"Torre:\t\t {msg['origen']}")
         else:
