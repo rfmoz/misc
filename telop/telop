@@ -307,13 +307,16 @@ def zcodif_descodificar(arg, msg, lencript):
         msg['destino'] = search.group(3)[3:]
 
         # Según formato hora y referencia corto/largo
-        if len(search.group(4)) == 2:
+        if len(search.group(4)) == 2:  # referencia
             msg['horadia'] = ''
             msg['referencia'] = search.group(4)
-        elif len(search.group(4)) == 5:
+        elif len(search.group(4)) == 5:  # hora-breve + ref
             msg['horadia'] = search.group(4)[:3]
             msg['referencia'] = search.group(4)[3:]
-        elif len(search.group(4)) == 8:
+        elif len(search.group(4)) == 6:  # hora-normal
+            msg['horadia'] = search.group(4)[:6]
+            msg['referencia'] = ''
+        elif len(search.group(4)) == 8: # hora-normal + ref
             msg['horadia'] = search.group(4)[:6]
             msg['referencia'] = search.group(4)[6:]
         else:
@@ -380,7 +383,8 @@ def imprimir(arg, msg):
         elif len(msg['horadia']) == 6:
             print(f"Hora y Día:\t {msg['horadia'][:2]}:{msg['horadia'][2:4]} {msg['horadia'][4:6]}")
 
-        print(f"Referencia:\t {msg['referencia']}")
+        if msg['referencia']:
+            print(f"Referencia:\t {msg['referencia']}")
         if msg['regfin']:
             print(f"Interrupción:\t {msg['regfin']}")
         if msg['procmsg'] is not None:

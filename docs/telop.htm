@@ -138,7 +138,7 @@
                     <td>Tipo:</td>
                     <td><select id="mrecep" onchange="txtformat()">
                         <option value="0">0 - Ordinario</option>
-			<!--<option value="1">1 - Supervisión línea</option>-->
+			<option value="1">1 - Supervisión línea</option>
                         <option value="2">2 - Serv. Interno</option>
                         <option value="3">3 - Vigilancia</option>
                         <option value="5">5 - Reanudar Trans.</option>
@@ -485,6 +485,9 @@
 	    } else if (search[4].length == 5) {
                 msg['horadia'] = search[4].substring(0,3);
                 msg['referencia'] = search[4].substring(3);
+	    } else if (search[4].length == 6) {
+                msg['horadia'] = search[4].substring(0,6);
+                msg['referencia'] = '';
             } else if (search[4].length == 8) {
                 msg['horadia'] = search[4].substring(0,6);
                 msg['referencia'] = search[4].substring(6);
@@ -562,7 +565,9 @@
             salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + ' ' + msg['horadia'].substring(4,6) + "<br>";
         }
 
-        salida += "<i>Referencia:</i>\t " + msg['referencia'] + "<br>";
+        if (msg['referencia']) {
+            salida += "<i>Referencia:</i>\t " + msg['referencia'] + "<br>";
+        }
 
         if (msg['regfin']) {
             salida += "<i>Interrupción:</i>\t " + msg['regfin'] + "<br>";
