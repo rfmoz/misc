@@ -225,9 +225,16 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/7
-        search = re.search(r'^(?:([23679])?/)?(?:([048])/)?(\d{3,6})/(\d{2,8})(?:/(\d{0,3}))?\b', ciperm)
-        if not search:
+        # Extraer cabecera del mensaje (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/8
+        if re.match(r'^(?:([2679])?/)?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
+            # https://regex101.com/r/uxJuGZ/9
+            search = re.search(r'^(?:([2679])?/)?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
+
+        elif re.match(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm) is not None:
+            # https://regex101.com/r/uxJuGZ/14
+            search = re.search(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm)
+
+        else:
             raise Exception('Codificación de mensaje incorrecta')
 
         # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/1
@@ -287,7 +294,7 @@ def zcodif_descodificar(arg, msg, lencript):
                 msg['tipo'] = '0'
 
         # Procesar tipo 3
-        elif re.match(r'^[3]/\d+\/\d+$', ciperm) is not None:
+        elif re.match(r'^3/\d+\/\d+$', ciperm) is not None:
             msg['tipo'] = search.group(1)
 
         # Procesar tipo 6
