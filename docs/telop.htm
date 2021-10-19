@@ -138,7 +138,6 @@
                     <td>Tipo:</td>
                     <td><select id="mrecep" onchange="txtformat()">
                         <option value="0">0 - Ordinario</option>
-			<option value="1">1 - Supervisión línea</option>
                         <option value="2">2 - Serv. Interno</option>
                         <option value="3">3 - Vigilancia</option>
                         <option value="5">5 - Reanudar Trans.</option>
@@ -190,7 +189,7 @@
                         </select>
                     </td>
 		</tr>
-                <tr>
+                <tr id="opref">
                     <td>Referencia:</td>
                     <td><input type="number" id="mref" min="1" max="99" pattern="\d{2}" /></td>
                 </tr>
@@ -227,18 +226,14 @@
             document.getElementById("ophora").style.display = "table-row";
             document.getElementById("optdst").style.display = "table-row";
             document.getElementById("opprio").style.display = "table-row";
+            document.getElementById("opref").style.display = "table-row";
             document.getElementById("opsent").style.display = "none";
             document.getElementById("opincd").style.display = "none";
 
-            // Mostrar opciones supervisión línea
-            if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 1 ) {
-                document.getElementById("ophora").style.display = "none";
-                document.getElementById("optdst").style.display = "none";
-                document.getElementById("opprio").style.display = "none";
-            }
-            // Mostrar opciones vigilancia
+            // Mostrar opciones de vigilancia
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 3 ) {
                 document.getElementById("opprio").style.display = "none";
+                document.getElementById("opref").style.display = "none";
             }
             // Mostrar opciones Reanudar
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 5 ) {
@@ -347,17 +342,10 @@
                 var sufijo = '/' + msg['novenales'] + "/" + ciperm + "/" + msg['prioridad'];
                 break;
 
-            case '1':  // Servicio supervisión de línea
+            case '3':  // Servicio de vigilancia
                 var prefijo = msg['tipo'] + '/';
                 msg['prioridad'] = '';
-                msg['horadia'] = '';
-                msg['destino'] = '';
-                sufijo = '';
-                break;
-
-            case '3':  // Servicio vigilancia
-                var prefijo = msg['tipo'] + '/';
-                msg['prioridad'] = '';
+                msg['referencia'] = '';
                 sufijo = '';
                 break;
 
@@ -402,7 +390,7 @@
         ciperm = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
 
         // Extraer cabecera del mensaje
-        search = (/^(?:([123679])?\/)?(?:([048])\/)?(\d{3,6})\/(\d{2,8})(?:\/(\d{0,3}))?\b/g).exec(ciperm);
+        search = (/^(?:([23679])?\/)?(?:([048])\/)?(\d{3,6})\/(\d{2,8})(?:\/(\d{0,3}))?\b/g).exec(ciperm);
 
         // Extraer interrupción final si la hubiera
         regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(ciperm);
@@ -469,8 +457,8 @@
                     msg['tipo'] = '0'
                 }
 
-            // Procesar tipo 1 o 3
-            } else if ((/^[13]\/\d+\/\d+$/).test(ciperm)) {
+            // Procesar tipo 3
+            } else if ((/^3\/\d+\/\d+$/).test(ciperm)) {
                 msg['tipo'] = search[1];
 
             // Procesar tipo 6
@@ -495,6 +483,9 @@
 	    if (search[4].length == 2) {
                 msg['horadia'] = '';
                 msg['referencia'] = search[4];
+	    } else if (search[4].length == 3) {
+                msg['horadia'] = search[4].substring(0,3);
+                msg['referencia'] = '';
 	    } else if (search[4].length == 5) {
                 msg['horadia'] = search[4].substring(0,3);
                 msg['referencia'] = search[4].substring(3);
@@ -527,7 +518,6 @@
 
         switch (msg['tipo']) {
             case '0': salida += "<i>Tipo:</i>\t\t 0 - Ordinario<br>"; break;
-            case '1': salida += "<i>Tipo:</i>\t\t 1 - Supervisión de Línea<br>"; break;
             case '2': salida += "<i>Tipo:</i>\t\t 2 - Servicio Interno<br>"; break;
             case '3': salida += "<i>Tipo:</i>\t\t 3 - Vigilancia<br>"; break;
             case '6': salida += "<i>Tipo:</i>\t\t 6 - Acuse de recibo<br>";

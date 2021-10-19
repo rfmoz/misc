@@ -44,7 +44,7 @@ Descodificar mensaje:
 
 Opciones:
 
-        usage: telop [-h] [-p {0,4,8}] [-t {0,1,2,3,6}] [--incd {0,1,2,3,4}]
+        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6}] [--incd {0,1,2,3,4}]
                      [-o origen] [-d destino] [-b] [--diccionario]
                      [--password PASSWORD] [-r referencia] [-m MENSAJE]
                      [--batch] [-v] [--version] [-z {0,1}]
@@ -53,10 +53,9 @@ Opciones:
           -h, --help            show this help message and exit
           -p {0,4,8}, --prioridad {0,4,8}
                                 prioridad -> 0-normal | 4-urgente | 8-urgentísimo
-          -t {0,1,2,3,5,6}, --tipo {0,1,2,3,5,6}
-                                tipo de servicio -> 0-ordinaro | 1-supervisión línea |
-                                2-interno | 3-vigilancia | 5-reanudar transmisión |
-                                6-acuse recibo
+          -t {0,2,3,5,6}, --tipo {0,2,3,5,6}
+                                tipo de servicio -> 0-ordinaro | 2-interno
+                                3-vigilancia | 5-reanudar transmisión | 6-acuse recibo
           --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
                                 3-ocupada | 4-avería
           -o origen, --origen origen
@@ -149,13 +148,13 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| ------------------------------------- prioridad(1)
 	--------------------------------------- tipo de servicio(1)
 
-	3  /0x10x5/2341040x -> Vigilancia
+	3  /0x10x5/234104 -> Vigilancia
 	|      |      |
 	|      |      |
-	|      |      ----- hora(2) + minutos(2) + dia(2) + referencia(2)
-	|      ------------ torre de origen(3) + torre de destino(3)
+	|      |      --- hora(2) + minutos(2) + dia(2)
+	|      ---------- torre de origen(3) + torre de destino(3)
 	|
-	------------------- tipo de servicio(1)	
+	----------------- tipo de servicio(1)	
 
 	6/0/0x10x5/2341040x/0x -> Acuse de recibo
 	| |    |      |     |
@@ -180,14 +179,6 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| |  ------- torre de origen(3)
 	| ---------- prioridad(1)
 	------------ prefijo tipo de servicio(1)	
-
-        1  /0x1/0x -> Supervisión de línea
-	|    |  |
-	|    |  |
-	|    |  -- referencia(2)
-	|    ----- torre de origen(3)
-	|
-	---------- prefijo tipo de servicio(1)	
 	```
 
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. El formato es el siguiente:

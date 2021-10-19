@@ -27,8 +27,8 @@ def get_arguments(msg, lencript):
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'],
                         help='prioridad -> 0-normal | 4-urgente | 8-urgentísimo')
-    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '1', '2', '3', '5', '6'],
-                        help='tipo de servicio -> 0-ordinaro | 1-supervisión línea | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo')
+    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '5', '6'],
+                        help='tipo de servicio -> 0-ordinaro | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo')
     parser.add_argument('--incd', default=msg['incd'], action='store', type=str, choices=['0', '1', '2', '3', '4'],
                         help='incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
@@ -180,16 +180,10 @@ def zcodif_codificar(arg, msg, lencript):
     else:
         prefijo = msg['tipo'] + '/'
 
-        if msg['tipo'] == '1':  # Servicio supervisión de línea
-            # 1/0x1/0x
+        if msg['tipo'] == '3':  # Servicio de vigilancia
+            # 3/0x1052/191709
             msg['prioridad'] = ''
-            msg['horadia'] = ''
-            msg['destino'] = ''
-            sufijo = ''
-
-        elif msg['tipo'] == '3':  # Servicio vigilancia
-            # 3/0x1052/1917090x
-            msg['prioridad'] = ''
+            msg['referencia'] = ''
             sufijo = ''
 
         elif msg['tipo'] == '6':  # Servicio acuse de recibo
@@ -231,8 +225,8 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/6
-        search = re.search(r'^(?:([123679])?/)?(?:([048])/)?(\d{3,6})/(\d{2,8})(?:/(\d{0,3}))?\b', ciperm)
+        # Extraer cabecera del mensaje - https://regex101.com/r/uxJuGZ/7
+        search = re.search(r'^(?:([23679])?/)?(?:([048])/)?(\d{3,6})/(\d{2,8})(?:/(\d{0,3}))?\b', ciperm)
         if not search:
             raise Exception('Codificación de mensaje incorrecta')
 
@@ -292,8 +286,8 @@ def zcodif_descodificar(arg, msg, lencript):
             else:
                 msg['tipo'] = '0'
 
-        # Procesar tipo 1 o 3
-        elif re.match(r'^[13]/\d+\/\d+$', ciperm) is not None:
+        # Procesar tipo 3
+        elif re.match(r'^[3]/\d+\/\d+$', ciperm) is not None:
             msg['tipo'] = search.group(1)
 
         # Procesar tipo 6
@@ -317,6 +311,9 @@ def zcodif_descodificar(arg, msg, lencript):
         if len(search.group(4)) == 2:  # referencia
             msg['horadia'] = ''
             msg['referencia'] = search.group(4)
+        elif len(search.group(4)) == 3:  # horadia-breve
+            msg['horadia'] = search.group(4)[:3]
+            msg['referencia'] = ''
         elif len(search.group(4)) == 5:  # horadia-breve + ref
             msg['horadia'] = search.group(4)[:3]
             msg['referencia'] = search.group(4)[3:]
@@ -347,7 +344,6 @@ def imprimir(arg, msg):
     else:
         print('-' * 80)
         if msg['tipo'] == '0': print(f"Tipo:\t\t 0 - Ordinario")
-        if msg['tipo'] == '1': print(f"Tipo:\t\t 1 - Supervisión de Línea")
         if msg['tipo'] == '2': print(f"Tipo:\t\t 2 - Servicio Interno")
         if msg['tipo'] == '3': print(f"Tipo:\t\t 3 - Vigilancia")
         if msg['tipo'] == '6':
