@@ -399,10 +399,10 @@
 	}
 
         // Extraer interrupción final si la hubiera
-        regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(ciperm);
+	if ((/.*\/\d+\/\d+(\/(\d{3})\/(\d{5}))+$/g).test(ciperm)) {
+            regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(ciperm);
 
-        if (regfin) {  // Recorrer todas las interrupciones
-
+            // Recorrer todas las interrupciones
             msg['regfin'] = '';
             for (i of regfin[0].matchAll('.{10}')) {
 
@@ -421,7 +421,7 @@
                 // Eliminar interrupción del mensaje
                 ciperm = ciperm.replace(regint[0], "");
             }
-        }
+	}
 
         try {
             if (!search) {
