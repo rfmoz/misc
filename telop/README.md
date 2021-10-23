@@ -117,7 +117,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 - Cada dígito del mensaje de texto se codifica empleando el número de la posición que ocupa en un diccionario definido en el programa (telop --diccionario). Se sustituye así el diccionario frasológico del sistema original. Resulta un telegrama de mayor extensión, pero más polivalente y fácil de implementar.
 
-- También se han normalizado y adaptado las instrucciones de Mathé para facilitar su tratamiento informático. En la cabecera, por defecto, la posición y formato de los valores se mantiene invariable entre los diferentes tipos de mensajes. El resultado es el siguiente:
+- El código de transmisión definido por Mathé se ha interpretado siendo lo más fiel posible, aunque ha sido necesaria una ligera normalización y adaptación para facilitar su tratamiento informático. En la cabecera, la posición de los valores se mantiene invariable, el formato sí varía para adaptarse a cada tipo de mensaje. El resultado es el siguiente:
 
 	```
 	A/B/___C__/___D____/E
@@ -164,21 +164,23 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| ------------------- prioridad(1)
 	--------------------- tipo de servicio(1)	
 
-	7/0/0x1/03/5 -> Reanudar transmisión sentido fin de línea
-	| |  |  |  |
-	| |  |  |  - sufijo tipo de servicio(1)
-	| |  |  ---- referencia(2)
-	| |  ------- torre de origen(3)
-	| ---------- prioridad(1)
-	------------ prefijo tipo de servicio(1)	
+      7/5/0/0x1/03 -> Reanudar transmisión sentido fin de línea
+      | | |  |  |
+      | | |  |  |
+      | | |  |  ---- referencia(2)
+      | | |  ------- torre de origen(3)
+      | | ---------- prioridad(1)
+      | ------------ tipo de servicio(1)	
+      -------------- sentido(1)	
 
-	9/0/0x1/03/5 -> Reanudar transmisión sentido inicio de línea
-	| |  |  |  |
-	| |  |  |  - sufijo tipo de servicio(1)
-	| |  |  ---- referencia(2)
-	| |  ------- torre de origen(3)
-	| ---------- prioridad(1)
-	------------ prefijo tipo de servicio(1)	
+      9/5/0/0x1/03 -> Reanudar transmisión sentido inicio de línea
+      | | |  |  |
+      | | |  |  |
+      | | |  |  ---- referencia(2)
+      | | |  ------- torre de origen(3)
+      | | ---------- prioridad(1)
+      | ------------ tipo de servicio(1)	
+      -------------- sentido(1)	
 	```
 
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. El formato es el siguiente:
