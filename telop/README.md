@@ -67,9 +67,6 @@ Opciones:
           --password PASSWORD   Codificar mensaje con contraseña
           -r referencia, --referencia referencia
                                 nº referencia despacho
-          -s sentido, --sentido sentido
-                                sentido de marcha cuando se reanuda una transmisión ->
-                                7-Fin | 9-Inicio
           -m MENSAJE, --mensaje MENSAJE
                                 texto del mensaje entre ' '
           --batch               sólo imprime mensaje resultante
@@ -149,38 +146,28 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	--------------------------------------- tipo de servicio(1)
 
 	3  /0x10x5/234104 -> Vigilancia
-	|      |      |
-	|      |      |
-	|      |      --- hora(2) + minutos(2) + dia(2)
+	|      |       |
+	|      |       |
+	|      |       --- hora(2) + minutos(2) + dia(2)
 	|      ---------- torre de origen(3) + torre de destino(3)
 	|
 	----------------- tipo de servicio(1)	
 
 	6/0/0x10x5/2341040x/0x -> Acuse de recibo
-	| |    |      |     |
-	| |    |      |     - sufijo acuse de recibo([1-2])
-	| |    |      ------- hora(2) + minutos(2) + dia(2) + referencia(2)
+	| |    |       |    |
+	| |    |       |     - sufijo acuse de recibo([1-2])
+	| |    |       ------- hora(2) + minutos(2) + dia(2) + referencia(2)
 	| |    -------------- torre de origen(3) + torre de destino(3)
 	| ------------------- prioridad(1)
 	--------------------- tipo de servicio(1)	
 
-      7/5/0/0x1/03 -> Reanudar transmisión sentido fin de línea
-      | | |  |  |
-      | | |  |  |
-      | | |  |  ---- referencia(2)
-      | | |  ------- torre de origen(3)
-      | | ---------- prioridad(1)
-      | ------------ tipo de servicio(1)	
-      -------------- sentido(1)	
-
-      9/5/0/0x1/03 -> Reanudar transmisión sentido inicio de línea
-      | | |  |  |
-      | | |  |  |
-      | | |  |  ---- referencia(2)
-      | | |  ------- torre de origen(3)
-      | | ---------- prioridad(1)
-      | ------------ tipo de servicio(1)	
-      -------------- sentido(1)	
+	5/0/0x1   /03 -> Reanudar transmisión sentido fin de línea
+	| |    |   |
+	| |    |   |
+	| |    |   ---- referencia(2)
+	| |    ------- torre de origen(3)
+	| ---------- prioridad(1)
+	------------ tipo de servicio(1)	
 	```
 
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. El formato es el siguiente:

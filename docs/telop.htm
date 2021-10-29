@@ -101,7 +101,7 @@
 	    text-align: center;
 	    display: none;
 	}
-	#opincd, #opsent { display: none; }
+	#opincd, { display: none; }
 	.info a{ color: maroon; }
 	textarea { margin-bottom: 5px; }
 	pre, button, textarea, div#codops { width: 85%; }
@@ -153,14 +153,6 @@
                         <option value="2">2 - Incd. ausencia</option>
                         <option value="3">3 - Incd. vang. ocupada</option>
                         <option value="4">4 - Incd. avería</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr id="opsent">
-                    <td>Sentido:</td>
-                    <td><select id="msent">
-                        <option value="7">7 - Fin de línea</option>
-                        <option value="9">9 - Inicio de línea</option>
                         </select>
                     </td>
                 </tr>
@@ -227,7 +219,6 @@
             document.getElementById("optdst").style.display = "table-row";
             document.getElementById("opprio").style.display = "table-row";
             document.getElementById("opref").style.display = "table-row";
-            document.getElementById("opsent").style.display = "none";
             document.getElementById("opincd").style.display = "none";
 
             // Mostrar opciones de vigilancia
@@ -239,7 +230,6 @@
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 5 ) {
                 document.getElementById("ophora").style.display = "none";
                 document.getElementById("optdst").style.display = "none";
-                document.getElementById("opsent").style.display = "table-row";
             }
             // Mostrar opciones Acuse Recibo
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 6 ) {
@@ -258,12 +248,10 @@
 
         var prioridades = ['0','4','8'];
         var destinos = ['18','27','36','50','52'];
-        var sentidos = ['7','9'];
 
         selectElement('mprio', prioridades[Math.floor(Math.random() * prioridades.length)]);
         selectElement('morig', '1');
         selectElement('mdest', (destinos[Math.floor(Math.random() * destinos.length)]));
-        selectElement('msent', (sentidos[Math.floor(Math.random() * sentidos.length)]));
         selectElement('mref', (Math.floor(Math.random() * 99) + 1));
 
         document.getElementById("codops").style.display = "block";
@@ -277,7 +265,6 @@
         var d = new Date();
         msg['tipo'] = document.getElementById("mrecep").options[mrecep.selectedIndex].value;
         msg['prioridad'] = document.getElementById("mprio").value;
-        msg['sentido'] = document.getElementById("msent").value;
         msg['origen'] = document.getElementById("morig").value.toString().substring(0,3).padStart(3, '0');
         msg['destino'] = document.getElementById("mdest").value.toString().substring(0,3).padStart(3, '0');
         msg['referencia'] = document.getElementById("mref").value.toString().substring(0,2).padStart(2, '0');
@@ -350,7 +337,7 @@
                 break;
 
             case '5':  // Reanudar transmisión
-                var prefijo = msg['sentido'] + '/' + msg['tipo'] + '/';
+                var prefijo = msg['tipo'] + '/';
                 msg['horadia'] = '';
                 msg['destino'] = '';
                 sufijo = '';
@@ -390,8 +377,8 @@
 	} else if ((/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/g).test(ciperm)) {
 	    search = (/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/g).exec(ciperm);
 
-	} else if ((/^[79]\/(5)\/([048])\/(\d{3})\/(\d{2})\b/g).test(ciperm)) {
-	    search = (/^[79]\/(5)\/([048])\/(\d{3})\/(\d{2})\b/g).exec(ciperm);
+	} else if ((/^(5)\/([048])\/(\d{3})\/(\d{2})\b/g).test(ciperm)) {
+	    search = (/^(5)\/([048])\/(\d{3})\/(\d{2})\b/g).exec(ciperm);
 
 	}
 
@@ -470,13 +457,8 @@
                 msg['incd'] = search[5];
 
             // Procesar tipo 5
-            } else if ((/^[79]\/5\/[048]\/\d+\/\d+$/).test(ciperm)) {
+            } else if ((/^5\/[048]\/\d+\/\d+$/).test(ciperm)) {
                 msg['tipo'] = search[1]
-	        if ((/^7\//).test(ciperm)) {
-	            msg['sentido'] = '7';
-	        } else if ((/^9\//).test(ciperm)) {
-	            msg['sentido'] = '9';
-	        }
 
             } else {
                 throw "ERROR - Formato de mensaje inválido";
@@ -528,14 +510,7 @@
             case '0': salida += "<i>Tipo:</i>\t\t 0 - Ordinario<br>"; break;
             case '2': salida += "<i>Tipo:</i>\t\t 2 - Servicio Interno<br>"; break;
             case '3': salida += "<i>Tipo:</i>\t\t 3 - Vigilancia<br>"; break;
-            case '5':
-               salida += "<i>Tipo:</i>\t\t 5 - Reanudar transmisión<br>";
-                switch (msg['sentido']) {
-                    case '7':
-               		salida += "<i>Sentido:</i>\t 7 - Fin de línea<br>"; break;
-                    case '9':
-               		salida += "<i>Sentido:</i>\t 9 - Inicio de línea<br>";
-	    	}; break;
+            case '5': salida += "<i>Tipo:</i>\t\t 5 - Reanudar transmisión<br>"; break;
             case '6': salida += "<i>Tipo:</i>\t\t 6 - Acuse de recibo<br>";
                 switch (msg['incd']) {
                     case '00':
