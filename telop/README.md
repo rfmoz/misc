@@ -44,8 +44,8 @@ Descodificar mensaje:
 
 Opciones:
 
-        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6}] [--incd {0,1,2,3,4}]
-                     [-o origen] [-d destino] [-b] [--diccionario]
+        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6,9}] [--incd {0,1,2,3,4}]
+                     [-o origen] [-d destino] [-b] [--rectf {6,9}] [--diccionario]
                      [--password PASSWORD] [-r referencia] [-m MENSAJE]
                      [--batch] [-v] [--version] [-z {0,1}]
         
@@ -53,9 +53,10 @@ Opciones:
           -h, --help            show this help message and exit
           -p {0,4,8}, --prioridad {0,4,8}
                                 prioridad -> 0-normal | 4-urgente | 8-urgentísimo
-          -t {0,2,3,5,6}, --tipo {0,2,3,5,6}
+          -t {0,2,3,5,6,9}, --tipo {0,2,3,5,6,9}
                                 tipo de servicio -> 0-ordinaro | 2-interno
                                 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo
+                                | 9-rectificar
           --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
                                 3-ocupada | 4-avería
           -o origen, --origen origen
@@ -63,6 +64,7 @@ Opciones:
           -d destino, --destino destino
                                 torre de destino
           -b, --breve           formato fecha y hora reducido
+          --rectf {6,9}         tipo de rectificación -> 6-repetir | 9-anular
           --diccionario         mostrar diccionario codificación
           --password PASSWORD   Codificar mensaje con contraseña
           -r referencia, --referencia referencia
@@ -148,7 +150,7 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	3  /0x10x5/234104 -> Vigilancia
 	|      |       |
 	|      |       |
-	|      |       --- hora(2) + minutos(2) + dia(2)
+	|      |       -- hora(2) + minutos(2) + dia(2)
 	|      ---------- torre de origen(3) + torre de destino(3)
 	|
 	----------------- tipo de servicio(1)	
@@ -157,17 +159,25 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 	| |    |       |    |
 	| |    |       |     - sufijo acuse de recibo([1-2])
 	| |    |       ------- hora(2) + minutos(2) + dia(2) + referencia(2)
-	| |    -------------- torre de origen(3) + torre de destino(3)
-	| ------------------- prioridad(1)
-	--------------------- tipo de servicio(1)	
+	| |    --------------- torre de origen(3) + torre de destino(3)
+	| -------------------- prioridad(1)
+	---------------------- tipo de servicio(1)	
 
-	5/0/0x1   /03 -> Reanudar transmisión sentido fin de línea
+	5/0/0x1   /03 -> Reanudar transmisión
 	| |    |   |
 	| |    |   |
-	| |    |   ---- referencia(2)
-	| |    ------- torre de origen(3)
-	| ---------- prioridad(1)
-	------------ tipo de servicio(1)	
+	| |    |   -- referencia(2)
+	| |    ------ torre de origen(3)
+	| ----------- prioridad(1)
+	------------- tipo de servicio(1)	
+
+	9  /0x10x5/04 -> Rectificar
+	|      |   |
+	|      |   |
+	|      |   -- referencia(2)
+	|      ------ torre de origen(3) + torre de destino(3)
+	|
+	------------- tipo de servicio(1)	
 	```
 
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. El formato es el siguiente:

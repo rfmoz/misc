@@ -27,15 +27,17 @@ def get_arguments(msg, lencript):
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'],
                         help='prioridad -> 0-normal | 4-urgente | 8-urgentísimo')
-    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '5', '6'],
-                        help='tipo de servicio -> 0-ordinaro | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo')
+    parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '5', '6', '9'],
+                        help='tipo de servicio -> 0-ordinaro | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo | 9-rectificar')
     parser.add_argument('--incd', default=msg['incd'], action='store', type=str, choices=['0', '1', '2', '3', '4'],
                         help='incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
     parser.add_argument('-b', '--breve', default=False, action='store_true', help='formato fecha y hora reducido')
+    parser.add_argument('--rectf', default=msg['rectf'], action='store', type=str, choices=['6', '9'],
+                        help='tipo de rectificación -> 6-repetir | 9-anular')
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
-    parser.add_argument('--password', default=None, action='store', help='Codificar mensaje con contraseña')
+    parser.add_argument('--password', default=None, action='store', help='codificar mensaje con contraseña')
     parser.add_argument('-r', '--referencia', default=msg['referencia'], action='store', type=int, metavar='referencia', help='nº referencia despacho')
     parser.add_argument('-m', '--mensaje', default=msg['mensaje'], action='store', type=str, help='texto del mensaje entre \' \'')
     parser.add_argument('--batch', default=False, action='store_true', help='sólo imprime mensaje resultante')
@@ -66,6 +68,10 @@ def get_arguments(msg, lencript):
         else:
             arg.zcodif = 1
             logging.info('Auto descodificar = 1')
+
+    # Asignar rectificacion automaticamente.
+    if arg.tipo == '9' and not arg.rectf:
+        arg.rectf = random.choice(['6', '9'])
 
     # En codificacion, comprobar requisitos y eliminar new line siempre
     if arg.zcodif == 0:
@@ -191,6 +197,13 @@ def zcodif_codificar(arg, msg, lencript):
             msg['destino'] = ''
             sufijo = ''
 
+        elif msg['tipo'] == '9':  # Rectificar
+            # 9/0x1052/09/6
+            # 9/0x1052/09/9
+            msg['prioridad'] = ''
+            msg['horadia'] = ''
+            sufijo = '/' + msg['rectf']
+
         else:
             logging.error('Sin tipo de mensaje')
             sys.exit(-1)
@@ -217,18 +230,18 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer cabecera del mensaje (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/15
+        # Extraer cabecera del mensaje (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/19
         if re.match(r'^(?:([26])?/)?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
-            # https://regex101.com/r/uxJuGZ/16
             search = re.search(r'^(?:([26])?/)?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
 
         elif re.match(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm) is not None:
-            # https://regex101.com/r/uxJuGZ/17
             search = re.search(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm)
 
         elif re.match(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm) is not None:
-            # https://regex101.com/r/88Ll5g/18
             search = re.search(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm)
+
+        elif re.match(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm) is not None:
+            search = re.search(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm)
 
         else:
             raise Exception('Codificación de mensaje incorrecta')
@@ -302,6 +315,11 @@ def zcodif_descodificar(arg, msg, lencript):
         elif re.match(r'^5/[048]/\d+\/\d+$', ciperm) is not None:
             msg['tipo'] = search.group(1)
 
+        # Procesar tipo 9
+        elif re.match(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm) is not None:
+            msg['tipo'] = search.group(1)
+            msg['rectf'] = search.group(5)
+
         else:
             raise Exception('Formato de mensaje inválido')
 
@@ -362,6 +380,12 @@ def imprimir(arg, msg):
                 print(f"Estado:\t\t 3 - Incidencia vanguardia ocupada")
             if msg['incd'] == '4':
                 print(f"Estado:\t\t 4 - Incidencia avería")
+        if msg['tipo'] == '9':
+            print(f"Tipo:\t\t 9 - Rectificar")
+            if msg['rectf'] == '6':
+                print(f"Petición:\t 6 - Repetir referencia")
+            if msg['rectf'] == '9':
+                print(f"Petición:\t 9 - Anular referencia")
 
         if msg['prioridad']:
             print(f"Prioridad:\t {msg['prioridad']}")
@@ -409,7 +433,7 @@ def main():
     lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€', ' ']
 
     # Diccionario de mensaje. Valores por defecto
-    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'procmsg': None, 'incd': '00', 'regfin': ''}
+    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'procmsg': None, 'incd': '00', 'rectf': None, 'regfin': ''}
 
     arg, msg = get_arguments(msg, lencript)
 

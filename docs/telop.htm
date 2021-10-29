@@ -101,7 +101,7 @@
 	    text-align: center;
 	    display: none;
 	}
-	#opincd, { display: none; }
+	#opincd, #oprectf { display: none; }
 	.info a{ color: maroon; }
 	textarea { margin-bottom: 5px; }
 	pre, button, textarea, div#codops { width: 85%; }
@@ -142,6 +142,7 @@
                         <option value="3">3 - Vigilancia</option>
                         <option value="5">5 - Reanudar Trans.</option>
                         <option value="6">6 - Acuse de Recibo</option>
+                        <option value="9">9 - Rectificar</option>
                         </select>
                     </td>
                 </tr>
@@ -153,6 +154,14 @@
                         <option value="2">2 - Incd. ausencia</option>
                         <option value="3">3 - Incd. vang. ocupada</option>
                         <option value="4">4 - Incd. avería</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="oprectf">
+                    <td>Petición:</td>
+                    <td><select id="rectf">
+                        <option value="6">6 - Repetir</option>
+                        <option value="9">9 - Anular</option>
                         </select>
                     </td>
                 </tr>
@@ -220,6 +229,7 @@
             document.getElementById("opprio").style.display = "table-row";
             document.getElementById("opref").style.display = "table-row";
             document.getElementById("opincd").style.display = "none";
+            document.getElementById("oprectf").style.display = "none";
 
             // Mostrar opciones de vigilancia
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 3 ) {
@@ -234,6 +244,12 @@
             // Mostrar opciones Acuse Recibo
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 6 ) {
                 document.getElementById("opincd").style.display = "table-row";
+            }
+            // Mostrar opciones Rectificar
+            if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 9 ) {
+                document.getElementById("oprectf").style.display = "table-row";
+                document.getElementById("opprio").style.display = "none";
+                document.getElementById("ophora").style.display = "none";
             }
     }
 
@@ -269,6 +285,7 @@
         msg['destino'] = document.getElementById("mdest").value.toString().substring(0,3).padStart(3, '0');
         msg['referencia'] = document.getElementById("mref").value.toString().substring(0,2).padStart(2, '0');
         msg['incd'] = document.getElementById("incd").value;
+        msg['rectf'] = document.getElementById("rectf").value;
         msg['mfhora'] = document.getElementById("mfhora").value;
         if (msg['mfhora'] == 1) {
             fchora = parseInt(d.getHours());
@@ -342,6 +359,13 @@
                 msg['destino'] = '';
                 sufijo = '';
                 break;
+
+            case '9':  // Servicio de rectificación
+                var prefijo = msg['tipo'] + '/';
+                msg['prioridad'] = '';
+                msg['horadia'] = '';
+                sufijo = '/' + msg['rectf'];
+                break;
         }
 
         // Mensaje formateado
@@ -379,6 +403,9 @@
 
 	} else if ((/^(5)\/([048])\/(\d{3})\/(\d{2})\b/g).test(ciperm)) {
 	    search = (/^(5)\/([048])\/(\d{3})\/(\d{2})\b/g).exec(ciperm);
+
+	} else if ((/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/g).test(ciperm)) {
+	    search = (/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/g).exec(ciperm);
 
 	}
 
@@ -460,6 +487,11 @@
             } else if ((/^5\/[048]\/\d+\/\d+$/).test(ciperm)) {
                 msg['tipo'] = search[1]
 
+            // Procesar tipo 9
+            } else if ((/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/).test(ciperm)) {
+                msg['tipo'] = search[1]
+                msg['rectf'] = search[5]
+
             } else {
                 throw "ERROR - Formato de mensaje inválido";
             }
@@ -523,6 +555,13 @@
                         salida += "<i>Estado:</i>\t\t 3 - Incidencia vanguardia ocupada<br>"; break;
                     case '4':
                         salida += "<i>Estado:</i>\t\t 4 - Incidencia avería<br>"; 
+               }; break;
+            case '9': salida += "<i>Tipo:</i>\t\t 9 - Rectificar<br>";
+                switch (msg['rectf']) {
+                    case '6':
+                        salida += "<i>Petición:</i>\t 6 - Repetir referencia<br>"; break;
+                    case '9':
+                        salida += "<i>Petición:</i>\t 9 - Anular referencia<br>"; break;
                }; break;
          }
 
