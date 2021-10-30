@@ -42,7 +42,7 @@ Mensaje:	 Telegrama de prueba
 --------------------------------------------------------------------------------
 ```
 
-### Ejemplos
+### Ejemplos de  cada tipo de mensaje
 
 **Ordinario:**
 - Mensaje habitual, para ser recibido y descifrado sólo por el comandante de la estación de destino, normalmente una comandacia situada en capital de provincia.
@@ -53,48 +53,48 @@ Mensaje:	 Telegrama de prueba
   - Prioridad '8' con referencia '12', origen '010' y destino '050' :
     >$ telop -p 8 -r 12 -o 10 -d 50 -m 'Texto'
 
-* **Servicio interno:**
-  - Similar a un mensaje ordinario, salvo que permite ser descifrado por cualquier operario de torre.
-  - Ejemplos:
-    - Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '045':
-      >$ telop -t 2 -d 45 -m 'Texto ejemplo'
-    - Prioridad '8' con origen '010' y destino '021':
-      >$ telop -t 2 -p 8 -o 10 -d 21 -m 'Texto'
+**Servicio interno:**
+- Similar a un mensaje ordinario, salvo que permite ser descifrado por cualquier operario de torre.
+- Ejemplos:
+  - Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '045':
+    >$ telop -t 2 -d 45 -m 'Texto ejemplo'
+  - Prioridad '8' con origen '010' y destino '021':
+    >$ telop -t 2 -p 8 -o 10 -d 21 -m 'Texto'
 
-* **Vigilancia:**
-  - Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
-  - Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
-  - Ejemplos:
-    - Origen '001' (por defecto) y destino '021':
-      >$ telop -t 3 -d 21
-    - Confirmación al mensaje anterior. Origen '021' y destino '001':
-      >$ telop -t 3 -o 21 -d 1
+**Vigilancia:**
+- Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
+- Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
+- Ejemplos:
+  - Origen '001' (por defecto) y destino '021':
+    >$ telop -t 3 -d 21
+  - Confirmación al mensaje anterior. Origen '021' y destino '001':
+    >$ telop -t 3 -o 21 -d 1
 
-* **Reanudar transmisión:**
-  - Retomar la transmisión de un mensaje interrumpido en una torre.
-  - Ejemplos:
-    - Mensaje con torre de origen '001' y refrencia '43':
-      >$ telop -t 5 -t 1 -r 43
+**Reanudar transmisión:**
+- Retomar la transmisión de un mensaje interrumpido en una torre.
+- Ejemplos:
+  - Mensaje con torre de origen '001' y refrencia '43':
+    >$ telop -t 5 -t 1 -r 43
 
-* **Acuse de recibo:**
-  - Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
-  - Ejemplos:
-    - Recepción correcta de mensaje con referencia '12' desde la torre '040' a la torre '001':
-      >$ telop -t 6 -o 40 -d 1 -r 12
-    - Recepción por niebla de mensaje con referencia '17' desde la torre '030' a la torre '001':
-      >$ telop -t 6 -o 30 -d 1 -r 17 --incd 1
+**Acuse de recibo:**
+- Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
+- Ejemplos:
+  - Recepción correcta de mensaje con referencia '12' desde la torre '040' a la torre '001':
+    >$ telop -t 6 -o 40 -d 1 -r 12
+  - Recepción por niebla de mensaje con referencia '17' desde la torre '030' a la torre '001':
+    >$ telop -t 6 -o 30 -d 1 -r 17 --incd 1
 
-* **Rectificar:**
-  - Solicitar la anulación o retransmisión de un mensaje por su referencia.
-  - Ejemplos:
-    - Repetir mensaje con referencia '23' desde la torre '023' a la '001':
-      >$ telop -t 9 -o 21 -d 1 --rectf 6 -r 23
-    - Anular mensaje con referencia '12' desde la torre '023' a la '001':
-      >$ telop -t 9 -o 21 -d 1 --rectf 9 -r 12
+**Rectificar:**
+- Solicitar la anulación o retransmisión de un mensaje por su referencia.
+- Ejemplos:
+  - Repetir mensaje con referencia '23' desde la torre '023' a la '001':
+    >$ telop -t 9 -o 21 -d 1 --rectf 6 -r 23
+  - Anular mensaje con referencia '12' desde la torre '023' a la '001':
+    >$ telop -t 9 -o 21 -d 1 --rectf 9 -r 12
 
-* **Modificar fecha a formato corto**
-* **Modificar nº de torre a nº de comandancia**
-* **Modificar indicación de origen y destino a una torre/comandancia**
+**Modificar fecha a formato corto**
+**Modificar nº de torre a nº de comandancia**
+**Modificar indicación de origen y destino a una torre/comandancia**
 
 ###Opciones del programa:
 ```
