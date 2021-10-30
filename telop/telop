@@ -199,7 +199,7 @@ def zcodif_codificar(arg, msg, lencript):
             # 5/4/0x1/0x
             # 5/4/0x1/0x
             msg['horadia'] = ''
-            msg['destino'] = ''
+            msg['destino'] = '0'
             sufijo = ''
 
         elif msg['tipo'] == '9':  # Rectificar
@@ -212,6 +212,10 @@ def zcodif_codificar(arg, msg, lencript):
         else:
             logging.error('Sin tipo de mensaje')
             sys.exit(-1)
+
+    # Destino 0 deja torre origen como indicación única
+    if int(msg['destino']) == 0:
+        msg['destino'] = ''
 
     # Mensaje formateado
     msgfmt = str(prefijo + msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + sufijo)

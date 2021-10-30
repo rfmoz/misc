@@ -356,7 +356,7 @@
             case '5':  // Reanudar transmisión
                 var prefijo = msg['tipo'] + '/';
                 msg['horadia'] = '';
-                msg['destino'] = '';
+                msg['destino'] = '0';
                 sufijo = '';
                 break;
 
@@ -366,6 +366,11 @@
                 msg['horadia'] = '';
                 sufijo = '/' + msg['rectf'];
                 break;
+        }
+
+	// Destino 0 deja torre origen como indicación única
+        if (parseInt(msg['destino'], 10) == 0) {
+            msg['destino'] = ''; 
         }
 
         // Mensaje formateado
