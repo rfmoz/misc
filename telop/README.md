@@ -47,7 +47,7 @@ Descodificar mensaje:
 * Ordinario
   - Mensaje habitual, destinado para ser recibido y descifrado por el comandante de la estarción de destino, normalmente una comandacia situada en capital de provincia.
     - Codificar texto de la manera más sencilla:
-      - ```$ telop -m 'Texto ejemplo' ```
+         ```$ telop -m 'Texto ejemplo' ```
     - Indicar prioridad '4' con origen '001' y destino '040':
       - ```$ telop -p 4 -o 1 -d 40 -m 'Texto' ```
     - Indicar prioridad '8' con referencia '12', origen '010' y destino '050' :
