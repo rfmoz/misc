@@ -6,7 +6,7 @@ Telop (TELégrafoÓPtico) - Utilidad para codificar y descodificar mensajes de t
 
 ### Uso Básico
 
-Codificar mensaje:
+* **Codificar mensaje:**
 
 ```
 $ telop --mensaje 'Telegrama de prueba'
@@ -26,7 +26,7 @@ Mensaje:	 0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0
 ```
 
 
-Descodificar mensaje:
+* **Descodificar mensaje:**
 
 ```
 $ telop --mensaje '0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0'
