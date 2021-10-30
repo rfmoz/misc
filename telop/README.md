@@ -41,6 +41,34 @@ Descodificar mensaje:
 	
 	--------------------------------------------------------------------------------
 
+Diferentes tipos de mensajes:
+
+	Ordinario: Mensaje habitual, destinado para ser recibido y descifrado por el comandante de la estarción de destino, normalmente una comandacia situada en capital de provincia.
+
+		$ telop -m 'Test servicio ordinario'
+		$ telop -t 0 -m 'Test servicio ordinario'
+
+	Servicio interno: Destinado para ser recibido y descifrado por cualquier operario de una torre.
+
+		$ telop -t 2 -m 'Test servicio interno'
+
+	Vigilancia: Controlar y mantener la atención sobre la línea.
+
+		$ telop -t 3 -b
+
+	Reanudar transmisión: Retomar la transmisión de un mensaje interrumpida en una torre.
+
+		$ telop -t 5
+
+	Acuse de recibo: Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
+
+		$ telop -t 6
+		$ telop -t 6 --incd 1
+
+	Rectificar: Solicitar la anulación o retransmisión sobre un mensaje por su referencia.
+
+		$ telop -t 9 --rectf 6 -r 23
+		$ telop -t 9 --rectf 9 -r 23
 
 Opciones:
 
@@ -217,6 +245,30 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 ### Más información
 
 ```   
+Título:		Historia de la telegrafía óptica en España
+Autor:		Olivé Roig, Sebastián
+Fecha de pub.:	1990
+Páginas: 	101
+Fuente:		Foro Histórico de las Telecomunicaciones
+
+Título:		Instrucción general para el servicio de transmisión 
+Autor:		José Maria Mathé
+Fecha de pub.:	1850
+Páginas:	24
+Fuente:		Biblioteca Museo Postal y Telegráfico
+
+Título:		Instrucción general para los torreros en el servicio telegráfico
+Autor:		Manuel Varela y Limia
+Fecha de pub.:	1846
+Páginas:	22(incompleto)
+Fuente:		Biblioteca Museo Postal y Telegráfico
+
+Título:		Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares
+Autor:		José Maria Mathé
+Fecha de pub.:	1849
+Páginas:	25
+Fuente:		Biblioteca Virtual de Defensa
+
 Wikipedia:	https://es.wikipedia.org/wiki/Tel%C3%A9grafo_%C3%B3ptico
 
 Título:		Historia de la telegrafía
@@ -224,23 +276,11 @@ Fecha de pub.:	2012
 Autor:		Fernando Fernández de Villegas / Amateur radio club Orense
 Url:		http://www.ea1uro.com/eb3emd/Telegrafia_hist/Telegrafia_hist.htm
 
-Título:		Historia de la telegrafía óptica en España
-Autor:		Olivé Roig, Sebastián
-Fecha de pub.:	1990
-Páginas: 	101
-Fuente:		Foro Histórico de las Telecomunicaciones
-
 Título:		Estudio de la red de telegrafía óptica en España
 Autor:		Capdevila Montes, Enrique. Slepoy Benites, Paula
 Fecha de pub.:	2012
 Páginas: 	456
 Fuente:		Internet
-
-Título:		Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares
-Autor:		José Maria Mathé
-Fecha de pub.:	1849
-Páginas:	25
-Fuente:		Biblioteca Virtual de Defensa
 
 Título:		Tratado de telegrafía
 Autor:		Suárez Saavedra, Antonino  
@@ -253,12 +293,6 @@ Autor:		Suárez Saavedra, Antonino
 Fecha de pub.:	1870
 Páginas:	605 (interesantes 51-55)
 Fuente:		Biblioteca Digital Hispánica
-
-Título:		Instrucción general para el servicio de transmisión 
-Autor:		José Maria Mathé
-Fecha de pub.:	1850
-Páginas:	24
-Fuente:		Biblioteca Museo Postal y Telegráfico
 
 Título:		Diccionario y tablas de transmisión para el telégrafo militar de noche y día
 Autor:		José Maria Mathé
@@ -283,6 +317,12 @@ Autor:		Pasquale de Dato / Yolanda Hernández Navarro
 Fecha de pub.:	2015
 Páginas:	18
 Fuente:		Revista Oleana Nº 30 - Ayuntamiento de Requena
+
+Título:		The early history of data networks
+Autor:		Gerard J. Holzmann / Björn Pehrson
+Fecha de pub.:	1994
+Páginas:	304
+Fuente:		Internet Archive Open Library / https://archive.org/details/earlyhistoryofda0000holz
 ```   
 
 ### Versión web
