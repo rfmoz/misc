@@ -7,7 +7,6 @@ Telop (TELégrafoÓPtico) - Utilidad para codificar y descodificar mensajes de t
 ### Uso Básico
 
 **Codificar mensaje:**
-
 ```
 $ telop --mensaje 'Telegrama de prueba'
 --------------------------------------------------------------------------------
@@ -25,9 +24,7 @@ Mensaje:	 0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0
 --------------------------------------------------------------------------------
 ```
 
-
 **Descodificar mensaje:**
-
 ```
 $ telop --mensaje '0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0'
 --------------------------------------------------------------------------------
@@ -45,99 +42,96 @@ Mensaje:	 Telegrama de prueba
 --------------------------------------------------------------------------------
 ```
 
-
 ### Ejemplos
 
-**Ordinario**
+**Ordinario:**
 - Mensaje habitual, para ser recibido y descifrado sólo por el comandante de la estación de destino, normalmente una comandacia situada en capital de provincia.
 - Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se devuelve un mensaje de "Acuse de recibo" al emisor indicando el estado de la recepción. 
 - Ejemplos:
-  - Codificar texto de la manera más sencilla
-    >$ telop -m 'Texto ejemplo'
-  - Prioridad '4' con origen '001' y destino '040':
-    >$ telop -p 4 -o 1 -d 40 -m 'Texto'
+  - Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '041':
+    >$ telop -d 41 -m 'Texto ejemplo' 
   - Prioridad '8' con referencia '12', origen '010' y destino '050' :
     >$ telop -p 8 -r 12 -o 10 -d 50 -m 'Texto'
-  - Valores por defecto. Origen '1', tipo '0' y prioridad '0', los dos mensajes siguientes son equivalentes:
-    >$ telop -m 'Texto'
-    >$ telop -t 0 -p 0 -o 1 -m 'Texto'
 
 * **Servicio interno:**
   - Similar a un mensaje ordinario, salvo que permite ser descifrado por cualquier operario de torre.
   - Ejemplos:
-    - Codificar texto de la manera más sencilla
-      >$ telop -t 2 -m 'Texto ejemplo'
-    - Indicar prioridad '8' con origen '010' y destino '021':
+    - Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '045':
+      >$ telop -t 2 -d 45 -m 'Texto ejemplo'
+    - Prioridad '8' con origen '010' y destino '021':
       >$ telop -t 2 -p 8 -o 10 -d 21 -m 'Texto'
 
 * **Vigilancia:**
   - Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
   - Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
   - Ejemplos:
-    - Indicar prioridad '8' con origen '010' y destino '021':
-      >$ telop -t 3 -b
+    - Origen '001' (por defecto) y destino '021':
+      >$ telop -t 3 -d 21
+    - Confirmación al mensaje anterior. Origen '021' y destino '001':
+      >$ telop -t 3 -o 21 -d 1
 
 * **Reanudar transmisión:**
-  - Retomar la transmisión de un mensaje interrumpida en una torre.
+  - Retomar la transmisión de un mensaje interrumpido en una torre.
   - Ejemplos:
-    - Mensaje con origen en torre 1 y referencia 43:
+    - Mensaje con torre de origen '001' y refrencia '43':
       >$ telop -t 5 -t 1 -r 43
 
 * **Acuse de recibo:**
   - Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
   - Ejemplos:
-    - Confirmar recepción correcta de mensaje con referencia 11
-      >$ telop -t 6 -r 11
-    - Confirmar recepción correcta de mensaje con referencia 12 desde la torre 40 a la torre 1
-      >$ telop -t 6 -r 12 -o 40 -d 1
-      >$ telop -t 6 --incd 1
+    - Recepción correcta de mensaje con referencia '12' desde la torre '040' a la torre '001':
+      >$ telop -t 6 -o 40 -d 1 -r 12
+    - Recepción por niebla de mensaje con referencia '17' desde la torre '030' a la torre '001':
+      >$ telop -t 6 -o 30 -d 1 -r 17 --incd 1
 
 * **Rectificar:**
   - Solicitar la anulación o retransmisión de un mensaje por su referencia.
   - Ejemplos:
-    - Repetir mensaje con referencia 23
-      >$ telop -t 9 --rectf 6 -r 23
-    - Anular mensaje con referencia 12
-      >$ telop -t 9 --rectf 9 -r 12
+    - Repetir mensaje con referencia '23' desde la torre '023' a la '001':
+      >$ telop -t 9 -o 21 -d 1 --rectf 6 -r 23
+    - Anular mensaje con referencia '12' desde la torre '023' a la '001':
+      >$ telop -t 9 -o 21 -d 1 --rectf 9 -r 12
 
 * **Modificar fecha a formato corto**
 * **Modificar nº de torre a nº de comandancia**
 * **Modificar indicación de origen y destino a una torre/comandancia**
 
-Opciones:
+###Opciones del programa:
+```
+usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,5,6,9}] [--incd {0,1,2,3,4}]
+             [-o origen] [-d destino] [-b] [--rectf {6,9}] [-c]
+             [--diccionario] [--password PASSWORD] [-r referencia]
+             [-m MENSAJE] [--batch] [-v] [--version] [-z {0,1}]
 
-        usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,6,9}] [--incd {0,1,2,3,4}]
-                     [-o origen] [-d destino] [-b] [--rectf {6,9}] [--diccionario]
-                     [--password PASSWORD] [-r referencia] [-m MENSAJE]
-                     [--batch] [-v] [--version] [-z {0,1}]
-        
-        optional arguments:
-          -h, --help            show this help message and exit
-          -p {0,4,8}, --prioridad {0,4,8}
-                                prioridad -> 0-normal | 4-urgente | 8-urgentísimo
-          -t {0,2,3,5,6,9}, --tipo {0,2,3,5,6,9}
-                                tipo de servicio -> 0-ordinaro | 2-interno
-                                3-vigilancia | 5-reanudar transmisión | 6-acuse recibo
-                                | 9-rectificar
-          --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
-                                3-ocupada | 4-avería
-          -o origen, --origen origen
-                                torre de origen
-          -d destino, --destino destino
-                                torre de destino
-          -b, --breve           formato fecha y hora reducido
-          --rectf {6,9}         tipo de rectificación -> 6-repetir | 9-anular
-          --diccionario         mostrar diccionario codificación
-          --password PASSWORD   Codificar mensaje con contraseña
-          -r referencia, --referencia referencia
-                                nº referencia despacho
-          -m MENSAJE, --mensaje MENSAJE
-                                texto del mensaje entre ' '
-          --batch               sólo imprime mensaje resultante
-          -v, --verbose         debug
-          --version             show program's version number and exit
-          -z {0,1}              proceso a ejecutar -> (auto) | 0-codificar |
-                                1-descodificar
+optional arguments:
+  -h, --help            show this help message and exit
+  -p {0,4,8}, --prioridad {0,4,8}
+                        prioridad -> 0-normal | 4-urgente | 8-urgentísimo
+  -t {0,2,3,5,6,9}, --tipo {0,2,3,5,6,9}
+                        tipo de servicio -> 0-ordinaro | 2-interno |
+                        3-vigilancia | 5-reanudar transmisión | 6-acuse recibo
+                        | 9-rectificar
+  --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
+                        3-ocupada | 4-avería
+  -o origen, --origen origen
+                        torre de origen
+  -d destino, --destino destino
+                        torre de destino
+  -b, --breve           formato fecha y hora reducido
+  --rectf {6,9}         tipo de rectificación -> 6-repetir | 9-anular
+  -c, --comandancia     emplear n. de comandancia en origen / destino
+  --diccionario         mostrar diccionario codificación
+  --password PASSWORD   codificar mensaje con contraseña
+  -r referencia, --referencia referencia
+                        nº referencia despacho
+  -m MENSAJE, --mensaje MENSAJE
+                        texto del mensaje entre ' '
+  --batch               sólo imprime mensaje resultante
+  -v, --verbose         debug
+  --version             show program's version number and exit
+  -z {0,1}              proceso a ejecutar -> (auto) | 0-codificar |
+                        1-descodificar
+```
 
 
 Diccionario codificación:
