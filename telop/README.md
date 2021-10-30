@@ -44,39 +44,61 @@ Descodificar mensaje:
 
 ### Ejemplos
 
-* Ordinario
-  - Mensaje habitual, destinado para ser recibido y descifrado por el comandante de la estarción de destino, normalmente una comandacia situada en capital de provincia.
-    - Codificar texto de la manera más sencilla:
+* **Ordinario**
+  - Mensaje habitual, para ser recibido y descifrado sólo por el comandante de la estación de destino, normalmente una comandacia situada en capital de provincia.
+  - Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se devuelve un mensaje de "Acuse de recibo" al emisor indicando el estado de la recepción. 
+  - Ejemplos:
+    - Codificar texto de la manera más sencilla
       >$ telop -m 'Texto ejemplo'
-    - Indicar prioridad '4' con origen '001' y destino '040':
+    - Prioridad '4' con origen '001' y destino '040':
       >$ telop -p 4 -o 1 -d 40 -m 'Texto'
-    - Indicar prioridad '8' con referencia '12', origen '010' y destino '050' :
+    - Prioridad '8' con referencia '12', origen '010' y destino '050' :
       >$ telop -p 8 -r 12 -o 10 -d 50 -m 'Texto'
     - Valores por defecto. Origen '1', tipo '0' y prioridad '0', los dos mensajes siguientes son equivalentes:
       >$ telop -m 'Texto'
       >$ telop -t 0 -p 0 -o 1 -m 'Texto'
 
-* Servicio interno: Destinado para ser recibido y descifrado por cualquier operario de una torre.
+* **Servicio interno:**
+  - Similar a un mensaje ordinario, salvo que permite ser descifrado por cualquier operario de torre.
+  - Ejemplos:
+    - Codificar texto de la manera más sencilla
+      >$ telop -t 2 -m 'Texto ejemplo'
+    - Indicar prioridad '8' con origen '010' y destino '021':
+      >$ telop -t 2 -p 8 -o 10 -d 21 -m 'Texto'
 
-	$ telop -t 2 -m 'Test servicio interno'
+* **Vigilancia:**
+  - Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
+  - Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
+  - Ejemplos:
+    - Indicar prioridad '8' con origen '010' y destino '021':
+      >$ telop -t 3 -b
 
-* Vigilancia: Controlar y mantener la atención sobre la línea.
+* **Reanudar transmisión:**
+  - Retomar la transmisión de un mensaje interrumpida en una torre.
+  - Ejemplos:
+    - Mensaje con origen en torre 1 y referencia 43:
+      >$ telop -t 5 -t 1 -r 43
 
-	$ telop -t 3 -b
+* **Acuse de recibo:**
+  - Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
+  - Ejemplos:
+    - Confirmar recepción correcta de mensaje con referencia 11
+      >$ telop -t 6 -r 11
+    - Confirmar recepción correcta de mensaje con referencia 12 desde la torre 40 a la torre 1
+      >$ telop -t 6 -r 12 -o 40 -d 1
+      >$ telop -t 6 --incd 1
 
-* Reanudar transmisión: Retomar la transmisión de un mensaje interrumpida en una torre.
+* **Rectificar:**
+  - Solicitar la anulación o retransmisión de un mensaje por su referencia.
+  - Ejemplos:
+    - Repetir mensaje con referencia 23
+      >$ telop -t 9 --rectf 6 -r 23
+    - Anular mensaje con referencia 12
+      >$ telop -t 9 --rectf 9 -r 12
 
-	$ telop -t 5
-
-* Acuse de recibo: Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
-
-	$ telop -t 6
-	$ telop -t 6 --incd 1
-
-* Rectificar: Solicitar la anulación o retransmisión sobre un mensaje por su referencia.
-
-	$ telop -t 9 --rectf 6 -r 23
-	$ telop -t 9 --rectf 9 -r 23
+* **Modificar fecha a formato corto**
+* **Modificar nº de torre a nº de comandancia**
+* **Modificar indicación de origen y destino a una torre/comandancia**
 
 Opciones:
 
