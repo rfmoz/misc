@@ -34,7 +34,7 @@ def get_arguments(msg, lencript):
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
     parser.add_argument('-d', '--destino', default=msg['destino'], action='store', type=int, metavar='destino', help='torre de destino')
     parser.add_argument('-b', '--breve', default=False, action='store_true', help='formato fecha y hora reducido')
-    parser.add_argument('--rectf', default=msg['rectf'], action='store', type=str, choices=['6', '9'],
+    parser.add_argument('--rect', default=msg['rect'], action='store', type=str, choices=['6', '9'],
                         help='tipo de rectificación -> 6-repetir | 9-anular')
     parser.add_argument('-c', '--comandancia', default=False, action='store_true', help='emplear n. de comandancia en origen / destino')
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
@@ -71,8 +71,8 @@ def get_arguments(msg, lencript):
             logging.info('Auto descodificar = 1')
 
     # Asignar rectificacion automaticamente.
-    if arg.tipo == '9' and not arg.rectf:
-        arg.rectf = random.choice(['6', '9'])
+    if arg.tipo == '9' and not arg.rect:
+        arg.rect = random.choice(['6', '9'])
 
     # En codificacion, comprobar requisitos y eliminar new line siempre
     if arg.zcodif == 0:
@@ -207,7 +207,7 @@ def zcodif_codificar(arg, msg, lencript):
             # 9/0x1052/09/9
             msg['prioridad'] = ''
             msg['horadia'] = ''
-            sufijo = '/' + msg['rectf']
+            sufijo = '/' + msg['rect']
 
         else:
             logging.error('Sin tipo de mensaje')
@@ -318,7 +318,7 @@ def zcodif_descodificar(arg, msg, lencript):
         elif re.match(r'^(9)()/(\d{2,6})/(\d{2})/([69])\b', ciperm) is not None:
             search = re.search(r'^(9)()/(\d{2,6})/(\d{2})/([69])\b', ciperm)
             msg['tipo'] = search.group(1)
-            msg['rectf'] = search.group(5)
+            msg['rect'] = search.group(5)
 
         else:
             raise Exception('Formato de mensaje inválido')
@@ -391,9 +391,9 @@ def imprimir(arg, msg):
                 print(f"Estado:\t\t 4 - Incidencia avería")
         if msg['tipo'] == '9':
             print(f"Tipo:\t\t 9 - Rectificar")
-            if msg['rectf'] == '6':
+            if msg['rect'] == '6':
                 print(f"Petición:\t 6 - Repetir referencia")
-            if msg['rectf'] == '9':
+            if msg['rect'] == '9':
                 print(f"Petición:\t 9 - Anular referencia")
 
         if msg['prioridad']:
@@ -449,7 +449,7 @@ def main():
     lencript = list(string.digits + string.ascii_letters + string.punctuation) + ['Ñ', 'ñ', '¿', ' ', '€', ' ']
 
     # Diccionario de mensaje. Valores por defecto
-    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'procmsg': None, 'incd': '00', 'rectf': None, 'regfin': ''}
+    msg = {'prioridad': '0', 'tipo': '0', 'origen': 1, 'destino': 52, 'horadia': None, 'referencia': 0, 'novenales': None, 'mensaje': '...', 'procmsg': None, 'incd': '00', 'rect': None, 'regfin': ''}
 
     arg, msg = get_arguments(msg, lencript)
 
