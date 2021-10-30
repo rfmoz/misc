@@ -101,6 +101,18 @@
 	    text-align: center;
 	    display: none;
 	}
+	div#desc {
+	    text-align: left;
+	    font-family: "arial";
+	    display: none;
+	    font-size: 85%;
+	    color: grey;
+	    border: dotted;
+	    width: 80%;
+	    margin-top: 15px;
+	    padding: 0em 0.5em 0em 0.5em;
+	    line-height: 1.5;
+	}
 	#opincd, #oprectf { display: none; }
 	.info a{ color: maroon; }
 	textarea { margin-bottom: 5px; }
@@ -122,6 +134,7 @@
 		div#content { width: calc(98% - 5px); }
 		pre, button, textarea, div#codops { width: 95%; }
 		textarea { font-size: 0.9em; }
+		div#desc { display: none !important; }
 	}
     </style>
 </head>
@@ -136,7 +149,7 @@
             <table>
                 <tr>
                     <td>Tipo:</td>
-                    <td><select id="mrecep" onchange="txtformat()">
+                    <td onmouseover="desc('tipo')" onmouseout="desc()"><select id="mrecep" onchange="txtformat()">
                         <option value="0">0 - Ordinario</option>
                         <option value="2">2 - Serv. Interno</option>
                         <option value="3">3 - Vigilancia</option>
@@ -148,7 +161,7 @@
                 </tr>
                 <tr id="opincd">
                     <td>Estado:</td>
-                    <td><select id="incd">
+                    <td onmouseover="desc('estado')" onmouseout="desc()"><select id="incd">
                         <option value="00">0x - Correcto</option>
                         <option value="1">1 - Incd. niebla</option>
                         <option value="2">2 - Incd. ausencia</option>
@@ -159,7 +172,7 @@
                 </tr>
                 <tr id="oprectf">
                     <td>Petición:</td>
-                    <td><select id="rectf">
+                    <td onmouseover="desc('peticion')" onmouseout="desc()"><select id="rectf">
                         <option value="6">6 - Repetir ref.</option>
                         <option value="9">9 - Anular ref.</option>
                         </select>
@@ -167,7 +180,7 @@
                 </tr>
                 <tr id="opprio">
                     <td>Prioridad:</td>
-                    <td><select id="mprio">
+                    <td onmouseover="desc('prioridad')" onmouseout="desc()"><select id="mprio">
                         <option value="0">0 - Normal</option>
                         <option value="4">4 - Urgente</option>
                         <option value="8">8 - Urgent&iacute;simo</option>
@@ -184,19 +197,20 @@
                 </tr>
                 <tr id="ophora">
                     <td>Formato hora:</td>
-                    <td><select id="mfhora">
+                    <td onmouseover="desc('hora')" onmouseout="desc()"><select id="mfhora">
                         <option value="0">Normal</option>
                         <option value="1">Reducido</option>
                         </select>
                     </td>
 		</tr>
                 <tr id="opref">
-                    <td>Referencia:</td>
+                    <td onmouseover="desc(innerHTML)" onmouseout="desc()">Referencia:</td>
                     <td><input type="number" id="mref" min="1" max="99" pattern="\d{2}" /></td>
                 </tr>
             </table>
         </div>
     <button id="btn1" onclick="procesar()">CONVERTIR</button>
+    <div id="desc"></div>
     </div>
     <pre id="salida"></pre>
     <details class="info">
@@ -213,6 +227,56 @@
 
     <script src="static/gifshot.js"></script>
     <script>
+
+    function desc(x) {
+        if ( x == 'tipo' ) {
+            document.getElementById("desc").style.display = "inline-block";
+		txt = '\
+		 <ul>\
+		  <li><b>Ordinario:</b> &nbsp;&nbsp;Mensaje habitual, sólo el comandante de la torre de destino lo puede descifrar.</li>\
+		  <li><b>Servicio interno:</b> &nbsp;&nbsp;Similar a un mensaje ordinario, salvo que cualquier torrero lo puede descifrar.</li>\
+		  <li><b>Vigilancia:</b> &nbsp;&nbsp;Controlar y mantener la atención sobre la línea.</li>\
+		  <li><b>Reanudar transmisión:</b> &nbsp;&nbsp;Retomar la transmisión de un mensaje interrumpido en una torre.</li>\
+		  <li><b>Acuse de recibo:</b> &nbsp;&nbsp;Confirmar la recepción de un mensaje junto con el motivo que lo provoca.</li>\
+		  <li><b>Rectificar:</b> &nbsp;&nbsp;Solicitar la anulación o retransmisión de un mensaje por su referencia.</li>\
+		</ul>';
+	} else if ( x == 'estado' ) {
+            document.getElementById("desc").style.display = "inline-block";
+		txt = '\
+		 <ul>\
+		  <li><b>Correcto:</b> &nbsp;&nbsp;El mensaje ha sido recepcionado en destino.</li>\
+		  <li><b>Incidencia niebla:</b> &nbsp;&nbsp;Interrumpido por niebla a vanguardia.</li>\
+		  <li><b>Incidencia ausencia:</b> &nbsp;&nbsp;La vanguardia no responde a los movimientos.</li>\
+		  <li><b>Incidencia vanguardia ocupada:</b> &nbsp;&nbsp;La vanguardia se encuentra en funcionamiento.</li>\
+		  <li><b>Incidencia avería:</b> &nbsp;&nbsp;Problema técnico que impide la transmisión.</li>\
+		</ul>';
+	} else if ( x == 'peticion' ) {
+            document.getElementById("desc").style.display = "inline-block";
+		txt = '\
+		 <ul>\
+		  <li><b>Repetir referencia:</b> &nbsp;&nbsp;Solicitar repetición del mensaje con referencia indicada.</li>\
+		  <li><b>Anular referencia:</b> &nbsp;&nbsp;Petición para anular mensaje con referencia indicada.</li>\
+		</ul>';
+	} else if ( x == 'prioridad' ) {
+            document.getElementById("desc").style.display = "inline-block";
+		txt = '\
+		 <ul>\
+		  <li><b>Normal:</b> &nbsp;&nbsp;Transmisión habitual.</li>\
+		  <li><b>Urgente:</b> &nbsp;&nbsp;Con precedencia de paso sobre normal.</li>\
+		  <li><b>Urgentísima:</b> &nbsp;&nbsp;Tiene máxima precedencia sobre el resto.</li>\
+		</ul>';
+	} else if ( x == 'hora' ) {
+            document.getElementById("desc").style.display = "inline-block";
+		txt = '\
+		 <ul>\
+		  <li><b>Normal:</b> &nbsp;&nbsp;Indicación habitual con hora, minutos y día.</li>\
+		  <li><b>Reducido:</b> &nbsp;&nbsp;Ahorrar caracteres redondeando los minutos al cuarto de hora.</li>\
+		</ul>';
+	} else {
+           document.getElementById("desc").style.display = "none";
+	}
+        document.getElementById('desc').innerHTML = txt;
+    }
 
     function txtformat() {
 
