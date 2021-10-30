@@ -49,12 +49,12 @@ Descodificar mensaje:
     - Codificar texto de la manera más sencilla:
       - ```$ telop -m 'Texto ejemplo' ```
     - Indicar prioridad '4' con origen '001' y destino '040':
-      $ telop -p 4 -o 1 -d 40 -m 'Texto'
+      - ```$ telop -p 4 -o 1 -d 40 -m 'Texto' ```
     - Indicar prioridad '8' con referencia '12', origen '010' y destino '050' :
-      $ telop -p 8 -r 12 -o 10 -d 50 -m 'Texto'
+      - ```$ telop -p 8 -r 12 -o 10 -d 50 -m 'Texto' ```
     - Valores por defecto. Origen '1', tipo '0' y prioridad '0', los dos mensajes siguientes son equivalentes:
-      $ telop -m 'Texto'
-      $ telop -t 0 -p 0 -o 1 -m 'Texto'
+      $ telop -m 'Texto' ```
+      - ```$ telop -t 0 -p 0 -o 1 -m 'Texto' ```
 
 * Servicio interno: Destinado para ser recibido y descifrado por cualquier operario de una torre.
 
