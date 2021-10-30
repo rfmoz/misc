@@ -44,7 +44,7 @@ Mensaje:	 Telegrama de prueba
 
 ### Ejemplos de  cada tipo de mensaje
 
-**Ordinario:**
+**0- Ordinario:**
 - Mensaje habitual, para ser recibido y descifrado sólo por el comandante de la estación de destino, normalmente una comandacia situada en capital de provincia.
 - Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se devuelve un mensaje de "Acuse de recibo" al emisor indicando el estado de la recepción. 
 - Ejemplos:
@@ -53,7 +53,7 @@ Mensaje:	 Telegrama de prueba
   - Prioridad '8' con referencia '12', origen '010' y destino '050' :
     >$ telop -p 8 -r 12 -o 10 -d 50 -m 'Texto'
 
-**Servicio interno:**
+**2- Servicio interno:**
 - Similar a un mensaje ordinario, salvo que permite ser descifrado por cualquier operario de torre.
 - Ejemplos:
   - Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '045':
@@ -61,7 +61,7 @@ Mensaje:	 Telegrama de prueba
   - Prioridad '8' con origen '010' y destino '021':
     >$ telop -t 2 -p 8 -o 10 -d 21 -m 'Texto'
 
-**Vigilancia:**
+**3- Vigilancia:**
 - Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
 - Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
 - Ejemplos:
@@ -70,13 +70,13 @@ Mensaje:	 Telegrama de prueba
   - Confirmación al mensaje anterior. Origen '021' y destino '001':
     >$ telop -t 3 -o 21 -d 1
 
-**Reanudar transmisión:**
+**5- Reanudar transmisión:**
 - Retomar la transmisión de un mensaje interrumpido en una torre.
 - Ejemplos:
   - Mensaje con torre de origen '009' y refrencia '43':
     >$ telop -t 5 -o 9 -r 43
 
-**Acuse de recibo:**
+**6- Acuse de recibo:**
 - Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
 - Ejemplos:
   - Recepción correcta de mensaje con referencia '12' desde la torre '040' a la torre '001':
@@ -84,7 +84,7 @@ Mensaje:	 Telegrama de prueba
   - Recepción por niebla de mensaje con referencia '17' desde la torre '030' a la torre '001':
     >$ telop -t 6 -o 30 -d 1 -r 17 --incd 1
 
-**Rectificar:**
+**9- Rectificar:**
 - Solicitar la anulación o retransmisión de un mensaje por su referencia.
 - Ejemplos:
   - Repetir mensaje con referencia '23' desde la torre '021' a la '001':
@@ -102,6 +102,8 @@ Mensaje:	 Telegrama de prueba
   - Mensaje con origen '01', destino '07' y opción de comandancia:
     >$ telop -o 1 -d 7 -c -m 'Texto'
 
+**Indicar sólo una torre o comandancia:**
+- Se puede generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, pasar el valor '0' a la opción de torre de destino `telop -d 0`.
 
 ### Opciones del programa:
 ```
