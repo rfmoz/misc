@@ -88,9 +88,9 @@ Mensaje:	 Telegrama de prueba
 - Solicitar la anulación o retransmisión de un mensaje por su referencia.
 - Ejemplos:
   - Repetir mensaje con referencia '23' desde la torre '021' a la '001':
-    >$ telop -t 9 -o 21 -d 1 --rectf 6 -r 23
+    >$ telop -t 9 -o 21 -d 1 --rect 6 -r 23
   - Anular mensaje con referencia '12' desde la torre '021' a la '001':
-    >$ telop -t 9 -o 21 -d 1 --rectf 9 -r 12
+    >$ telop -t 9 -o 21 -d 1 --rect 9 -r 12
 
 **Modificar fecha a formato corto:**
 - En cualquier mensaje con fecha se puede pasar el argumento '-b' para utilizar el formato reducido:
@@ -102,10 +102,11 @@ Mensaje:	 Telegrama de prueba
   - Mensaje con origen '01', destino '07' y opción de comandancia:
     >$ telop -o 1 -d 7 -c -m 'Texto'
 
+
 ### Opciones del programa:
 ```
 usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,5,6,9}] [--incd {0,1,2,3,4}]
-             [-o origen] [-d destino] [-b] [--rectf {6,9}] [-c]
+             [-o origen] [-d destino] [-b] [--rect {6,9}] [-c]
              [--diccionario] [--password PASSWORD] [-r referencia]
              [-m MENSAJE] [--batch] [-v] [--version] [-z {0,1}]
 
@@ -124,7 +125,7 @@ optional arguments:
   -d destino, --destino destino
                         torre de destino
   -b, --breve           formato fecha y hora reducido
-  --rectf {6,9}         tipo de rectificación -> 6-repetir | 9-anular
+  --rect {6,9}          tipo de rectificación -> 6-repetir | 9-anular
   -c, --comandancia     emplear n. de comandancia en origen / destino
   --diccionario         mostrar diccionario codificación
   --password PASSWORD   codificar mensaje con contraseña
@@ -256,16 +257,19 @@ A/B/___C__/___D____/E
   --------- torre(3)
 ```
 
-- En la cabecera se puede emplear otro formato de fecha y hora más reducido con la opción --breve, a costa de obtener una precisión de 15 minutos.
+- En la cabecera se puede emplear otro formato de fecha y hora más reducido con la opción `--breve`, a costa de obtener una precisión de 15 minutos.
   Son dos dígitos los que representan la hora y los minutos, el resultado se obtiene teniendo en cuenta el cuarto de hora en que se encuentran los minutos. Se suma 0, 25, 50 o 75 a la hora (00 a 24) según si es el primer, segundo, tercer o último cuarto de hora. Como ejemplo las 12:05 sería un 12, las 12:20 sería 12+25 = 37, las 12:40 sería 12+50 = 62 y las 12:55 12+75 = 87.
   El día sólo mantiene el último dígito, es decir, se representa igual el día 1 que el 11 que el 21.
   Ésta fue la modificación más curiosa de las empleadas y conocidas, por eso su codificación, el resto básicamente conseguían reducir tamaño a base de omitir información fácilmente interpretable por la situación del emisor y receptor.
   El grupo de cbecera pasaría del formato `hora(2) + minutos(2) + dia(2) + referencia(2)` a `horaminutos(2) + dia(1) + referencia(2)`.
 
-- En la cabecera se puede indicar un número de comandancia en sustitución de la torre con la opción --comandancia. Pasando de emplear tres dígitos por torre a dos.
+- En la cabecera se puede indicar un número de comandancia en sustitución de la torre con la opción `--comandancia`. Pasando de emplear tres dígitos por torre a dos.
   El grupo de cbecera pasaría del formato `torre de origen(3) + torre de destino(3)` a `comandancia de origen(2) + comandancia de destino(2)`.
 
-- Opcionalmente, mediante el uso de una contraseña (telop --password '123'), se permite encriptar/desencriptar el contenido del mensaje, manteniendo libre la cabecera. El método emplea Format-preserving, Feistel-based encryption (FFX), generando una cadena de números de apariencia aleatoria para quien intente descodificar el mensaje sin emplear la contraseña de encriptación.
+- Si se indica la torre de destino con valor '0', se suprime la indicación de la misma. El mensaje generado sólo lleva la indicación de origen, una única torre.
+
+- Opcionalmente, mediante el uso de una contraseña `telop --password '123'`, se permite encriptar/desencriptar el contenido del mensaje, manteniendo libre la cabecera. El método emplea Format-preserving, Feistel-based encryption (FFX), generando una cadena de números de apariencia aleatoria para quien intente descodificar el mensaje sin emplear la contraseña de encriptación.
+
 
 
 ### Más información
