@@ -8,20 +8,22 @@ Telop (TELégrafoÓPtico) - Utilidad para codificar y descodificar mensajes de t
 
 Codificar mensaje:
 
-> $ telop --mensaje 'Telegrama de prueba'
->--------------------------------------------------------------------------------
->Tipo:		 0 Telegrama ordinario
->Prioridad:	 0
->T. Origen:	 001
->T. Destino:	 052
->Hora y Día:	 23:10 08
->Referencia:	 00
->Novenales:	 04.2
->--------------------------------------------------------------------------------
->
->Mensaje:	 0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0
->
->--------------------------------------------------------------------------------
+```
+$ telop --mensaje 'Telegrama de prueba'
+--------------------------------------------------------------------------------
+Tipo:		 0 Telegrama ordinario
+Prioridad:	 0
+T. Origen:	 001
+T. Destino:	 052
+Hora y Día:	 23:10 08
+Referencia:	 00
+Novenales:	 04.2
+--------------------------------------------------------------------------------
+
+Mensaje:	 0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0
+
+--------------------------------------------------------------------------------
+```
 
 
 Descodificar mensaje:
