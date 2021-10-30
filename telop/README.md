@@ -73,8 +73,8 @@ Mensaje:	 Telegrama de prueba
 **Reanudar transmisión:**
 - Retomar la transmisión de un mensaje interrumpido en una torre.
 - Ejemplos:
-  - Mensaje con torre de origen '001' y refrencia '43':
-    >$ telop -t 5 -t 1 -r 43
+  - Mensaje con torre de origen '009' y refrencia '43':
+    >$ telop -t 5 -o 9 -r 43
 
 **Acuse de recibo:**
 - Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
@@ -92,19 +92,17 @@ Mensaje:	 Telegrama de prueba
   - Anular mensaje con referencia '12' desde la torre '021' a la '001':
     >$ telop -t 9 -o 21 -d 1 --rectf 9 -r 12
 
-**Modificar fecha a formato corto**
+**Modificar fecha a formato corto:**
 - En cualquier mensaje con fecha se puede pasar el argumento '-b' para utilizar el formato reducido:
   - Mensaje con origen '010', destino '021' y formato de fecha breve:
     >$ telop -o 10 -d 21 -b -m 'Texto'
 
-**Modificar nº de torre a nº de comandancia**
-- En cualquier mensaje se puede cambiar el formato de torre, representado por tres cifras, al de comandancia, formado por dos cifras.
-  - Mensaje con origen '01', destino '07':
+**Sustituir indicación de torre por comandancia:**
+- Empleando el argumento '-c', en cualquier mensaje se puede cambiar el formato de torre, representado por tres cifras, al de comandancia, formado por dos cifras.
+  - Mensaje con origen '01', destino '07' y opción de comandancia:
     >$ telop -o 1 -d 7 -c -m 'Texto'
 
-**Modificar indicación de origen y destino a una torre/comandancia**
-
-###Opciones del programa:
+### Opciones del programa:
 ```
 usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,5,6,9}] [--incd {0,1,2,3,4}]
              [-o origen] [-d destino] [-b] [--rectf {6,9}] [-c]
@@ -141,34 +139,34 @@ optional arguments:
                         1-descodificar
 ```
 
+### Diccionario codificación:
 
-Diccionario codificación:
-
-        $ telop --diccionario
-        --------
-        Nº - Valor
-        --------
-        00 - 0       20 - k       40 - E       60 - Y       80 - =
-        01 - 1       21 - l       41 - F       61 - Z       81 - >
-        02 - 2       22 - m       42 - G       62 - !       82 - ?
-        03 - 3       23 - n       43 - H       63 - "       83 - @
-        04 - 4       24 - o       44 - I       64 - #       84 - [
-        05 - 5       25 - p       45 - J       65 - $       85 - \
-        06 - 6       26 - q       46 - K       66 - %       86 - ]
-        07 - 7       27 - r       47 - L       67 - &       87 - ^
-        08 - 8       28 - s       48 - M       68 - '       88 - _
-        09 - 9       29 - t       49 - N       69 - (       89 - `
-        10 - a       30 - u       50 - O       70 - )       90 - {
-        11 - b       31 - v       51 - P       71 - *       91 - |
-        12 - c       32 - w       52 - Q       72 - +       92 - }
-        13 - d       33 - x       53 - R       73 - ,       93 - ~
-        14 - e       34 - y       54 - S       74 - -       94 - Ñ
-        15 - f       35 - z       55 - T       75 - .       95 - ñ
-        16 - g       36 - A       56 - U       76 - /       96 - ¿
-        17 - h       37 - B       57 - V       77 - :       97 -  
-        18 - i       38 - C       58 - W       78 - ;       98 - €
-        19 - j       39 - D       59 - X       79 - <       99 -  
-
+```
+$ telop --diccionario
+--------
+Nº - Valor
+--------
+00 - 0       20 - k       40 - E       60 - Y       80 - =
+01 - 1       21 - l       41 - F       61 - Z       81 - >
+02 - 2       22 - m       42 - G       62 - !       82 - ?
+03 - 3       23 - n       43 - H       63 - "       83 - @
+04 - 4       24 - o       44 - I       64 - #       84 - [
+05 - 5       25 - p       45 - J       65 - $       85 - \
+06 - 6       26 - q       46 - K       66 - %       86 - ]
+07 - 7       27 - r       47 - L       67 - &       87 - ^
+08 - 8       28 - s       48 - M       68 - '       88 - _
+09 - 9       29 - t       49 - N       69 - (       89 - `
+10 - a       30 - u       50 - O       70 - )       90 - {
+11 - b       31 - v       51 - P       71 - *       91 - |
+12 - c       32 - w       52 - Q       72 - +       92 - }
+13 - d       33 - x       53 - R       73 - ,       93 - ~
+14 - e       34 - y       54 - S       74 - -       94 - Ñ
+15 - f       35 - z       55 - T       75 - .       95 - ñ
+16 - g       36 - A       56 - U       76 - /       96 - ¿
+17 - h       37 - B       57 - V       77 - :       97 -  
+18 - i       38 - C       58 - W       78 - ;       98 - €
+19 - j       39 - D       59 - X       79 - <       99 -  
+```
 
 ### Instalación
 
@@ -180,100 +178,92 @@ Requiere Python 3. Descargar y ejecutar el archivo "telop"
 
 - Cada dígito del mensaje de texto se codifica empleando el número de la posición que ocupa en un diccionario definido en el programa (telop --diccionario). Se sustituye así el diccionario frasológico del sistema original. Resulta un telegrama de mayor extensión, pero más polivalente y fácil de implementar.
 
-- El código de transmisión definido por Mathé se ha interpretado siendo lo más fiel posible, aunque ha sido necesaria una ligera normalización y adaptación para facilitar su tratamiento informático. En la cabecera, la posición de los valores se mantiene invariable, el formato sí varía para adaptarse a cada tipo de mensaje. El resultado es el siguiente:
+- El código de transmisión definido por Mathé se ha interpretado siendo lo más fiel posible, aunque ha sido necesaria una ligera normalización y adaptación para facilitar su tratamiento informático. En la cabecera, la posición de los valores de cada grupo se mantiene invariable, el formato de cada uno sí se adapta a cada tipo de mensaje. El resultado es el siguiente:
 
-	```
-	A/B/___C__/___D____/E
-	| |    |      |     |
-	| |    |      |     - sufijo particular a cada tipo de mensaje([1-3])
-	| |    |      ------- hora(2) + minutos(2) + dia(2) + referencia(2)
-	| |    -------------- torre de origen(3) + torre de destino(3)
-	| ------------------- prioridad(1)
-	--------------------- tipo de servicio(1)	
+```
+A/B/___C__/___D____/E
+| |    |      |     |
+| |    |      |     - E sufijo particular a cada tipo de mensaje([1-3])
+| |    |      ------- D hora(2) + minutos(2) + dia(2) + referencia(2)
+| |    -------------- C torre de origen(3) + torre de destino(3)
+| ------------------- B prioridad(1)
+--------------------- A tipo de servicio(1)	
 
 
-	  0/0x10x5/2341040x/013/252730141/1x0/0 -> Mensaje ordinario
-	  |    |       |     |   \         /  |
-	  |    |       |     |    \       /   - prioridad(1)
-	  |    |       |     |     ------------ novenales de mensaje
-	  |    |       |     ------------------ sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
-	  |    |       ------------------------ hora(2) + minutos(2) + dia(2) + referencia(2)
-	  |    -------------------------------- torre de origen(3) + torre de destino(3)
-	  ------------------------------------- prioridad(1)
+  0/0x10x5/2341040x/013/252730141/1x0/0 -> Mensaje ordinario
+  |    |       |     |   \         /  |
+  |    |       |     |    \       /   - A prioridad(1)
+  |    |       |     |     ------------ - novenales de mensaje
+  |    |       |     ------------------ E sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
+  |    |       ------------------------ D hora(2) + minutos(2) + dia(2) + referencia(2)
+  |    -------------------------------- B torre de origen(3) + torre de destino(3)
+  ------------------------------------- A prioridad(1)
 
-	2/0/0x10x5/2341040x/013/252730141/1x0/0 -> Comunicación interna
-	| |    |       |     |   \         /  |
-	| |    |       |     |    \       /   - prioridad(1)
-	| |    |       |     |     ------------ novenales de mensaje
-	| |    |       |     ------------------ sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
-	| |    |       ------------------------ hora(2) + minutos(2) + dia(2) + referencia(2)
-	| |    -------------------------------- torre de origen(3) + torre de destino(3)
-	| ------------------------------------- prioridad(1)
-	--------------------------------------- tipo de servicio(1)
+2/0/0x10x5/2341040x/013/252730141/1x0/0 -> Comunicación interna
+| |    |       |     |   \         /  |
+| |    |       |     |    \       /   - A prioridad(1)
+| |    |       |     |     ------------ - novenales de mensaje
+| |    |       |     ------------------ E sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
+| |    |       ------------------------ D hora(2) + minutos(2) + dia(2) + referencia(2)
+| |    -------------------------------- C torre de origen(3) + torre de destino(3)
+| ------------------------------------- B prioridad(1)
+--------------------------------------- A tipo de servicio(1)
 
-	3  /0x10x5/234104 -> Vigilancia
-	|      |       |
-	|      |       |
-	|      |       -- hora(2) + minutos(2) + dia(2)
-	|      ---------- torre de origen(3) + torre de destino(3)
-	|
-	----------------- tipo de servicio(1)	
+3  /0x10x5/234104 -> Vigilancia
+|      |       |
+|      |       |
+|      |       -- D hora(2) + minutos(2) + dia(2)
+|      ---------- C torre de origen(3) + torre de destino(3)
+|
+----------------- A tipo de servicio(1)	
 
-	6/0/0x10x5/2341040x/0x -> Acuse de recibo
-	| |    |       |    |
-	| |    |       |     - sufijo acuse de recibo([1-2])
-	| |    |       ------- hora(2) + minutos(2) + dia(2) + referencia(2)
-	| |    --------------- torre de origen(3) + torre de destino(3)
-	| -------------------- prioridad(1)
-	---------------------- tipo de servicio(1)	
+6/0/0x10x5/2341040x/0x -> Acuse de recibo
+| |    |       |    |
+| |    |       |    -- E sufijo acuse de recibo([1-2])
+| |    |       ------- D hora(2) + minutos(2) + dia(2) + referencia(2)
+| |    --------------- C torre de origen(3) + torre de destino(3)
+| -------------------- B prioridad(1)
+---------------------- A tipo de servicio(1)	
 
-	5/0/0x1   /03 -> Reanudar transmisión
-	| |    |   |
-	| |    |   |
-	| |    |   -- referencia(2)
-	| |    ------ torre de origen(3)
-	| ----------- prioridad(1)
-	------------- tipo de servicio(1)	
+5/0/0x1   /03 -> Reanudar transmisión
+| |    |   |
+| |    |   |
+| |    |   -- D referencia(2)
+| |    ------ C torre de origen(3)
+| ----------- B prioridad(1)
+------------- A tipo de servicio(1)	
 
-	9  /0x10x5/04 -> Rectificar
-	|      |   |
-	|      |   |
-	|      |   -- referencia(2)
-	|      ------ torre de origen(3) + torre de destino(3)
-	|
-	------------- tipo de servicio(1)	
-	```
+9  /0x10x5/04 -> Rectificar
+|      |   |
+|      |   |
+|      |   -- D referencia(2)
+|      ------ C torre de origen(3) + torre de destino(3)
+|
+------------- A tipo de servicio(1)	
+```
 
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. El formato es el siguiente:
 
-	```
-	/_Y_/__Z__ -> Sufijo interrupción
-	  |    |
-	  |    ---- hora(2) + minutos(2) + causa(1)
-	  --------- torre(3)
+```
+/_Y_/__Z__ -> Sufijo interrupción
+  |    |
+  |    ---- hora(2) + minutos(2) + causa(1)
+  --------- torre(3)
 
-	/011/18302 -> Sufijo interrupción
-	  |    |
-	  |    ---- hora(2) + minutos(2) + causa(1)
-	  --------- torre(3)
-	```
+/011/18302 -> Sufijo interrupción
+  |    |
+  |    ---- hora(2) + minutos(2) + causa(1)
+  --------- torre(3)
+```
 
-- En la cabecera se puede emplear otro formato de fecha y hora más reducido (opción --breve), a costa de obtener una precisión de 15 minutos.
+- En la cabecera se puede emplear otro formato de fecha y hora más reducido con la opción --breve, a costa de obtener una precisión de 15 minutos.
   Son dos dígitos los que representan la hora y los minutos, el resultado se obtiene teniendo en cuenta el cuarto de hora en que se encuentran los minutos. Se suma 0, 25, 50 o 75 a la hora (00 a 24) según si es el primer, segundo, tercer o último cuarto de hora. Como ejemplo las 12:05 sería un 12, las 12:20 sería 12+25 = 37, las 12:40 sería 12+50 = 62 y las 12:55 12+75 = 87.
   El día sólo mantiene el último dígito, es decir, se representa igual el día 1 que el 11 que el 21.
   Ésta fue la modificación más curiosa de las empleadas y conocidas, por eso su codificación, el resto básicamente conseguían reducir tamaño a base de omitir información fácilmente interpretable por la situación del emisor y receptor.
-  El formato de la cabecera reducida quedaría así:
+  El grupo de cbecera pasaría del formato `hora(2) + minutos(2) + dia(2) + referencia(2)` a `horaminutos(2) + dia(1) + referencia(2)`.
 
-    
-	```
-	A/B/__C__/___D____/E
-	| |   |      |     |
-	| |   |      |     - sufijo particular a cada tipo de mensaje([1-3])
-	| |   |      ------- horaminutos(2) + dia(1) + referencia(2)
-	| |   -------------- torre de origen(3) + torre de destino(3)
-	| ------------------ prioridad(1)
-	-------------------- tipo de servicio(1)	
-	```
+- En la cabecera se puede indicar un número de comandancia en sustitución de la torre con la opción --comandancia. Pasando de emplear tres dígitos por torre a dos.
+  El grupo de cbecera pasaría del formato `torre de origen(3) + torre de destino(3)` a `comandancia de origen(2) + comandancia de destino(2)`.
 
 - Opcionalmente, mediante el uso de una contraseña (telop --password '123'), se permite encriptar/desencriptar el contenido del mensaje, manteniendo libre la cabecera. El método emplea Format-preserving, Feistel-based encryption (FFX), generando una cadena de números de apariencia aleatoria para quien intente descodificar el mensaje sin emplear la contraseña de encriptación.
 
