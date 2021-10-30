@@ -422,8 +422,8 @@
         try {
 
             // Procesar tipo 0 o 2. Telegrama con mensaje
-            if ((/^(2)?\/?([048])\/(\d{3,6})\/(\d{2,8})\/(\d{0,3})\b/g).test(ciperm)) {
-	        search = (/^(2)?\/?([048])\/(\d{3,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
+            if ((/^(2)?\/?([048])\/(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).test(ciperm)) {
+	        search = (/^(2)?\/?([048])\/(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
 
                 msg['novenales'] = search[5];
 
@@ -456,24 +456,24 @@
                 }
 
             // Procesar tipo 3
-            } else if ((/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/).test(ciperm)) {
-	        search = (/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/g).exec(ciperm);
+            } else if ((/^(3)()\/(\d{2,6})\/(\d{3,6})()\b/).test(ciperm)) {
+	        search = (/^(3)()\/(\d{2,6})\/(\d{3,6})()\b/g).exec(ciperm);
                 msg['tipo'] = search[1];
 
             // Procesar tipo 5
-            } else if ((/^(5)\/([048])\/(\d{3})\/(\d{2})()\b/).test(ciperm)) {
-	        search = (/^(5)\/([048])\/(\d{3})\/(\d{2})()\b/g).exec(ciperm);
+            } else if ((/^(5)\/([048])\/(\d{2,3})\/(\d{2})()\b/).test(ciperm)) {
+	        search = (/^(5)\/([048])\/(\d{2,3})\/(\d{2})()\b/g).exec(ciperm);
                 msg['tipo'] = search[1]
 
             // Procesar tipo 6
-            } else if ((/^(6)\/([048])\/(\d{3,6})\/(\d{2,8})\/(\d{1,2})\b/).test(ciperm)) {
-	        search = (/^(6)\/([048])\/(\d{3,6})\/(\d{2,8})\/(\d{1,2})\b/g).exec(ciperm);
+            } else if ((/^(6)\/([048])\/(\d{2,6})\/(\d{2,8})\/(\d{1,2})\b/).test(ciperm)) {
+	        search = (/^(6)\/([048])\/(\d{2,6})\/(\d{2,8})\/(\d{1,2})\b/g).exec(ciperm);
                 msg['tipo'] = search[1];
                 msg['incd'] = search[5];
 
             // Procesar tipo 9
-            } else if ((/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/).test(ciperm)) {
-	        search = (/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/g).exec(ciperm);
+            } else if ((/^(9)()\/(\d{2,6})\/(\d{2})\/([69])\b/).test(ciperm)) {
+	        search = (/^(9)()\/(\d{2,6})\/(\d{2})\/([69])\b/g).exec(ciperm);
                 msg['tipo'] = search[1]
                 msg['rectf'] = search[5]
 
@@ -483,8 +483,18 @@
 
             // Asignar valores comunes
             msg['prioridad'] = search[2];
-            msg['origen'] = search[3].substring(0,3);
-            msg['destino'] = search[3].substring(3);
+
+	    // Según nº torre o comandancia
+	    if ([2,4].indexOf(search[3].length) > -1) {
+                msg['origen'] = search[3].substring(0,2);
+                msg['destino'] = search[3].substring(2);
+	    } else if ([3,6].indexOf(search[3].length) > -1) {
+                msg['origen'] = search[3].substring(0,3);
+                msg['destino'] = search[3].substring(3);
+	    } else {
+                msg['origen'] = '';
+                msg['destino'] = '';
+	    }
 
             // Según formato y referencia hora corto/largo
 	    if (search[4].length == 2) {
@@ -554,10 +564,19 @@
             salida += "<i>Prioridad:</i>\t " + msg['prioridad'] + "<br>";
         }
         if (!msg['destino']) {  // Si sólo se indica una torre
-            salida += "<i>Torre:</i>\t\t " + msg['origen'] + "<br>";
+	    if (msg['origen'].length == 3) {
+                salida += "<i>Torre:</i>\t\t " + msg['origen'] + "<br>";
+	    } else if (msg['origen'].length == 2) {
+                salida += "<i>Comandancia:</i>\t " + msg['origen'] + "<br>";
+	    }
         } else {
-            salida += "<i>Torre origen:</i>\t " + msg['origen'] + "<br>";
-            salida += "<i>Torre destino:</i>\t " + msg['destino'] + "<br>";
+	    if ((msg['origen'] + msg['destino']).length == 6) {
+                salida += "<i>Torre origen:</i>\t " + msg['origen'] + "<br>";
+                salida += "<i>Torre destino:</i>\t " + msg['destino'] + "<br>";
+	    } else if ((msg['origen'] + msg['destino']).length == 4) {
+                salida += "<i>Com. origen:</i>\t " + msg['origen'] + "<br>";
+                salida += "<i>Com. destino:</i>\t " + msg['destino'] + "<br>";
+	    }
         }
 
         if (msg['horadia'].length == 3) {

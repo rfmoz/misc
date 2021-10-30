@@ -36,6 +36,7 @@ def get_arguments(msg, lencript):
     parser.add_argument('-b', '--breve', default=False, action='store_true', help='formato fecha y hora reducido')
     parser.add_argument('--rectf', default=msg['rectf'], action='store', type=str, choices=['6', '9'],
                         help='tipo de rectificación -> 6-repetir | 9-anular')
+    parser.add_argument('-c', '--comandancia', default=False, action='store_true', help='emplear n. de comandancia en origen / destino')
     parser.add_argument('--diccionario', default=None, action='store_true', help='mostrar diccionario codificación')
     parser.add_argument('--password', default=None, action='store', help='codificar mensaje con contraseña')
     parser.add_argument('-r', '--referencia', default=msg['referencia'], action='store', type=int, metavar='referencia', help='nº referencia despacho')
@@ -102,9 +103,13 @@ def get_arguments(msg, lencript):
     else:
         msg['horadia'] = str(time.strftime("%H%M%d"))
 
-    # Unificar con ceros. 3 para origen y destino. 2 para referencia
-    msg['origen'] = msg['origen'][:3].zfill(3)
-    msg['destino'] = msg['destino'][:3].zfill(3)
+    # Unificar con ceros. 2 o 3 para origen y destino. 2 para referencia
+    if arg.comandancia:
+        msg['origen'] = msg['origen'][:2].zfill(2)
+        msg['destino'] = msg['destino'][:2].zfill(2)
+    else:
+        msg['origen'] = msg['origen'][:3].zfill(3)
+        msg['destino'] = msg['destino'][:3].zfill(3)
     msg['referencia'] = msg['referencia'][:2].zfill(2)
 
     logging.info('Argumentos txt:\t %s', str(msg))
@@ -257,8 +262,8 @@ def zcodif_descodificar(arg, msg, lencript):
         # Regex para cabeceras de mensajes (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/19
 
         # Procesar tipo 0 o 2. Telegrama con mensaje
-        if re.match(r'^(2)?/?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
-            search = re.search(r'^(2)?/?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
+        if re.match(r'^(2)?/?([048])/(\d{2,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
+            search = re.search(r'^(2)?/?([048])/(\d{2,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
 
             msg['novenales'] = search.group(5)
 
@@ -290,24 +295,24 @@ def zcodif_descodificar(arg, msg, lencript):
                 msg['tipo'] = '0'
 
         # Procesar tipo 3
-        elif re.match(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm) is not None:
-            search = re.search(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm)
+        elif re.match(r'^(3)()/(\d{2,6})/(\d{3,6})()\b', ciperm) is not None:
+            search = re.search(r'^(3)()/(\d{2,6})/(\d{3,6})()\b', ciperm)
             msg['tipo'] = search.group(1)
 
         # Procesar tipo 5
-        elif re.match(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm) is not None:
-            search = re.search(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm)
+        elif re.match(r'^(5)/([048])/(\d{2,3})/(\d{2})()\b', ciperm) is not None:
+            search = re.search(r'^(5)/([048])/(\d{2,3})/(\d{2})()\b', ciperm)
             msg['tipo'] = search.group(1)
 
         # Procesar tipo 6
-        elif re.match(r'^(6)/([048])/(\d{3,6})/(\d{2,8})/(\d{1,2})\b', ciperm) is not None:
-            search = re.search(r'^(6)/([048])/(\d{3,6})/(\d{2,8})/(\d{1,2})\b', ciperm)
+        elif re.match(r'^(6)/([048])/(\d{2,6})/(\d{2,8})/(\d{1,2})\b', ciperm) is not None:
+            search = re.search(r'^(6)/([048])/(\d{2,6})/(\d{2,8})/(\d{1,2})\b', ciperm)
             msg['tipo'] = search.group(1)
             msg['incd'] = search.group(5)
 
         # Procesar tipo 9
-        elif re.match(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm) is not None:
-            search = re.search(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm)
+        elif re.match(r'^(9)()/(\d{2,6})/(\d{2})/([69])\b', ciperm) is not None:
+            search = re.search(r'^(9)()/(\d{2,6})/(\d{2})/([69])\b', ciperm)
             msg['tipo'] = search.group(1)
             msg['rectf'] = search.group(5)
 
@@ -316,8 +321,17 @@ def zcodif_descodificar(arg, msg, lencript):
 
         # Asignar valores comunes
         msg['prioridad'] = search.group(2)
-        msg['origen'] = search.group(3)[:3]
-        msg['destino'] = search.group(3)[3:]
+
+        # Según nº torre o comandancia
+        if len(search.group(3)) in (2,4):
+            msg['origen'] = search.group(3)[:2]
+            msg['destino'] = search.group(3)[2:]
+        elif len(search.group(3)) in (3,6):
+            msg['origen'] = search.group(3)[:3]
+            msg['destino'] = search.group(3)[3:]
+        else:
+            msg['origen'] = ''
+            msg['destino'] = ''
 
         # Según formato hora y referencia corto/largo
         if len(search.group(4)) == 2:  # referencia
@@ -381,10 +395,17 @@ def imprimir(arg, msg):
         if msg['prioridad']:
             print(f"Prioridad:\t {msg['prioridad']}")
         if not msg['destino']:  # Si sólo se indica una torre
-            print(f"Torre:\t\t {msg['origen']}")
+            if len(msg['origen']) == 3:
+               print(f"Torre:\t\t {msg['origen']}")
+            elif len(msg['origen']) == 2:
+               print(f"Comandancia:\t {msg['origen']}")
         else:
-            print(f"T. Origen:\t {msg['origen']}")
-            print(f"T. Destino:\t {msg['destino']}")
+            if len(msg['origen'] + msg['destino']) == 6:
+               print(f"T. Origen:\t {msg['origen']}")
+               print(f"T. Destino:\t {msg['destino']}")
+            elif len(msg['origen'] + msg['destino']) == 4:
+               print(f"Com. Origen:\t {msg['origen']}")
+               print(f"Com. Destino:\t {msg['destino']}")
 
         if len(msg['horadia']) == 3:
             fchora = int(msg['horadia'][:2])
