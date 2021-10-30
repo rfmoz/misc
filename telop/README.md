@@ -87,13 +87,21 @@ Mensaje:	 Telegrama de prueba
 **Rectificar:**
 - Solicitar la anulación o retransmisión de un mensaje por su referencia.
 - Ejemplos:
-  - Repetir mensaje con referencia '23' desde la torre '023' a la '001':
+  - Repetir mensaje con referencia '23' desde la torre '021' a la '001':
     >$ telop -t 9 -o 21 -d 1 --rectf 6 -r 23
-  - Anular mensaje con referencia '12' desde la torre '023' a la '001':
+  - Anular mensaje con referencia '12' desde la torre '021' a la '001':
     >$ telop -t 9 -o 21 -d 1 --rectf 9 -r 12
 
 **Modificar fecha a formato corto**
+- En cualquier mensaje con fecha se puede pasar el argumento '-b' para utilizar el formato reducido:
+  - Mensaje con origen '010', destino '021' y formato de fecha breve:
+    >$ telop -o 10 -d 21 -b -m 'Texto'
+
 **Modificar nº de torre a nº de comandancia**
+- En cualquier mensaje se puede cambiar el formato de torre, representado por tres cifras, al de comandancia, formado por dos cifras.
+  - Mensaje con origen '01', destino '07':
+    >$ telop -o 1 -d 7 -c -m 'Texto'
+
 **Modificar indicación de origen y destino a una torre/comandancia**
 
 ###Opciones del programa:
