@@ -394,21 +394,6 @@
         // Reconstruir caracteres repetidos
         ciperm = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
 
-        // Extraer cabecera del mensaje
-	if ((/^(?:([26])?\/)?([048])\/(\d{3,6})\/(\d{2,8})\/(\d{0,3})\b/g).test(ciperm)) {
-	    search = (/^(?:([26])?\/)?([048])\/(\d{3,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
-
-	} else if ((/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/g).test(ciperm)) {
-	    search = (/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/g).exec(ciperm);
-
-	} else if ((/^(5)\/([048])\/(\d{3})\/(\d{2})\b/g).test(ciperm)) {
-	    search = (/^(5)\/([048])\/(\d{3})\/(\d{2})\b/g).exec(ciperm);
-
-	} else if ((/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/g).test(ciperm)) {
-	    search = (/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/g).exec(ciperm);
-
-	}
-
         // Extraer interrupción final si la hubiera
 	if ((/.*\/\d+\/\d+(\/(\d{3})\/(\d{5}))+$/g).test(ciperm)) {
             regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(ciperm);
@@ -435,14 +420,10 @@
 	}
 
         try {
-            if (!search) {
-                throw "ERROR - Codificación incorrecta del mensaje";
-            }
 
             // Procesar tipo 0 o 2. Telegrama con mensaje
-            if ((/^(?:2\/)?[048]\/\d+\/\d+\/\d+\/.*[048]$/g).test(ciperm)) {
-                // 0/001005/232x0400/006/757575/0
-                // 2/0/001005/23220400/006/757575/0
+            if ((/^(2)?\/?([048])\/(\d{3,6})\/(\d{2,8})\/(\d{0,3})\b/g).test(ciperm)) {
+	        search = (/^(2)?\/?([048])\/(\d{3,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
 
                 msg['novenales'] = search[5];
 
@@ -475,20 +456,24 @@
                 }
 
             // Procesar tipo 3
-            } else if ((/^3\/\d+\/\d+$/).test(ciperm)) {
+            } else if ((/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/).test(ciperm)) {
+	        search = (/^(3)()\/(\d{3,6})\/(\d{3,6})()\b/g).exec(ciperm);
                 msg['tipo'] = search[1];
 
+            // Procesar tipo 5
+            } else if ((/^(5)\/([048])\/(\d{3})\/(\d{2})()\b/).test(ciperm)) {
+	        search = (/^(5)\/([048])\/(\d{3})\/(\d{2})()\b/g).exec(ciperm);
+                msg['tipo'] = search[1]
+
             // Procesar tipo 6
-            } else if ((/^6\/[048]\/\d+\/\d+\/\d{1,2}$/).test(ciperm)) {
+            } else if ((/^(6)\/([048])\/(\d{3,6})\/(\d{2,8})\/(\d{1,2})\b/).test(ciperm)) {
+	        search = (/^(6)\/([048])\/(\d{3,6})\/(\d{2,8})\/(\d{1,2})\b/g).exec(ciperm);
                 msg['tipo'] = search[1];
                 msg['incd'] = search[5];
 
-            // Procesar tipo 5
-            } else if ((/^5\/[048]\/\d+\/\d+$/).test(ciperm)) {
-                msg['tipo'] = search[1]
-
             // Procesar tipo 9
             } else if ((/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/).test(ciperm)) {
+	        search = (/^(9)()\/(\d{3,6})\/(\d{2})\/([69])\b/g).exec(ciperm);
                 msg['tipo'] = search[1]
                 msg['rectf'] = search[5]
 

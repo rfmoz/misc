@@ -230,22 +230,6 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer cabecera del mensaje (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/19
-        if re.match(r'^(?:([26])?/)?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
-            search = re.search(r'^(?:([26])?/)?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
-
-        elif re.match(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm) is not None:
-            search = re.search(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm)
-
-        elif re.match(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm) is not None:
-            search = re.search(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm)
-
-        elif re.match(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm) is not None:
-            search = re.search(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm)
-
-        else:
-            raise Exception('Codificación de mensaje incorrecta')
-
         # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/1
         if re.match(r'.*/\d+/\d+(/(\d{3})/(\d{5}))+$', ciperm) is not None:
             regfin = re.search(r'(/(\d{3})/(\d{5}))+$', ciperm)
@@ -270,8 +254,11 @@ def zcodif_descodificar(arg, msg, lencript):
                 # Eliminar interrupción del mensaje
                 ciperm = ciperm.replace(regint[0], '')
 
+        # Regex para cabeceras de mensajes (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/19
+
         # Procesar tipo 0 o 2. Telegrama con mensaje
-        if re.match(r'^(?:2/)?[048]/\d+/\d+\/\d+\/.*[048]$', ciperm) is not None:
+        if re.match(r'^(2)?/?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
+            search = re.search(r'^(2)?/?([048])/(\d{3,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
 
             msg['novenales'] = search.group(5)
 
@@ -303,20 +290,24 @@ def zcodif_descodificar(arg, msg, lencript):
                 msg['tipo'] = '0'
 
         # Procesar tipo 3
-        elif re.match(r'^3/\d+\/\d+$', ciperm) is not None:
+        elif re.match(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm) is not None:
+            search = re.search(r'^(3)()/(\d{3,6})/(\d{3,6})()\b', ciperm)
+            msg['tipo'] = search.group(1)
+
+        # Procesar tipo 5
+        elif re.match(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm) is not None:
+            search = re.search(r'^(5)/([048])/(\d{3})/(\d{2})()\b', ciperm)
             msg['tipo'] = search.group(1)
 
         # Procesar tipo 6
-        elif re.match(r'^6/[048]/\d+\/\d+\/\d{1,2}$', ciperm) is not None:
+        elif re.match(r'^(6)/([048])/(\d{3,6})/(\d{2,8})/(\d{1,2})\b', ciperm) is not None:
+            search = re.search(r'^(6)/([048])/(\d{3,6})/(\d{2,8})/(\d{1,2})\b', ciperm)
             msg['tipo'] = search.group(1)
             msg['incd'] = search.group(5)
 
-        # Procesar tipo 5
-        elif re.match(r'^5/[048]/\d+\/\d+$', ciperm) is not None:
-            msg['tipo'] = search.group(1)
-
         # Procesar tipo 9
         elif re.match(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm) is not None:
+            search = re.search(r'^(9)()/(\d{3,6})/(\d{2})/([69])\b', ciperm)
             msg['tipo'] = search.group(1)
             msg['rectf'] = search.group(5)
 
