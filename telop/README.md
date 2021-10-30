@@ -4,7 +4,7 @@ telop
 Telop (TELégrafoÓPtico) - Utilidad para codificar y descodificar mensajes de texto empleando una interpretación del código telegráfico ideado por José María Mathé. Permite recrear el sistema utilizado por el servicio de transmisión en la red de telegrafía óptica de España a finales del s.XIX.
 
 
-### Ejemplos
+### Uso Básico
 
 Codificar mensaje:
 
@@ -41,34 +41,35 @@ Descodificar mensaje:
 	
 	--------------------------------------------------------------------------------
 
-Diferentes tipos de mensajes:
 
-	Ordinario: Mensaje habitual, destinado para ser recibido y descifrado por el comandante de la estarción de destino, normalmente una comandacia situada en capital de provincia.
+### Ejemplos
 
-		$ telop -m 'Test servicio ordinario'
-		$ telop -t 0 -m 'Test servicio ordinario'
+* Ordinario: Mensaje habitual, destinado para ser recibido y descifrado por el comandante de la estarción de destino, normalmente una comandacia situada en capital de provincia.
 
-	Servicio interno: Destinado para ser recibido y descifrado por cualquier operario de una torre.
+	$ telop -m 'Test servicio ordinario'
+	$ telop -t 0 -m 'Test servicio ordinario'
 
-		$ telop -t 2 -m 'Test servicio interno'
+* Servicio interno: Destinado para ser recibido y descifrado por cualquier operario de una torre.
 
-	Vigilancia: Controlar y mantener la atención sobre la línea.
+	$ telop -t 2 -m 'Test servicio interno'
 
-		$ telop -t 3 -b
+* Vigilancia: Controlar y mantener la atención sobre la línea.
 
-	Reanudar transmisión: Retomar la transmisión de un mensaje interrumpida en una torre.
+	$ telop -t 3 -b
 
-		$ telop -t 5
+* Reanudar transmisión: Retomar la transmisión de un mensaje interrumpida en una torre.
 
-	Acuse de recibo: Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
+	$ telop -t 5
 
-		$ telop -t 6
-		$ telop -t 6 --incd 1
+* Acuse de recibo: Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
 
-	Rectificar: Solicitar la anulación o retransmisión sobre un mensaje por su referencia.
+	$ telop -t 6
+	$ telop -t 6 --incd 1
 
-		$ telop -t 9 --rectf 6 -r 23
-		$ telop -t 9 --rectf 9 -r 23
+* Rectificar: Solicitar la anulación o retransmisión sobre un mensaje por su referencia.
+
+	$ telop -t 9 --rectf 6 -r 23
+	$ telop -t 9 --rectf 9 -r 23
 
 Opciones:
 
