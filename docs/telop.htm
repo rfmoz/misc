@@ -57,6 +57,7 @@
 	    border: none;
 	    text-align: left;
 	    float: left;
+	    white-space: nowrap;
 	}
 	div#codops select, div#codops input {
 	    padding: 2px;
@@ -105,17 +106,16 @@
 	div#desc {
 	    text-align: left;
 	    font-family: "arial";
-	    display: none;
-	    font-size: 75%;
+	    font-size: 77%;
 	    color: grey;
-	    width: 53%;
-	    margin-left: auto;
 	    float: right;
 	}
 	div#desc ul{
 	    margin-top: 0px;
 	    margin-bottom: 0px;
-	    padding-inline-start: 20px;
+	}
+	div#desc li{
+	    margin-bottom: 0.4em;
 	}
 	#opincd, #oprectf { display: none; }
 	.info a{ color: maroon; }
@@ -237,12 +237,12 @@
             document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
-		  <li><b>Ordinario:</b> &nbsp;&nbsp;Mensaje corriente a torre de comandancia.</li>\
-		  <li><b>Servicio interno:</b> &nbsp;&nbsp;Mensaje destinado a cualquier torre.</li>\
+		  <li><b>Ordinario:</b> &nbsp;&nbsp;Mensaje de comunicación habitual.</li>\
+		  <li><b>Servicio interno:</b> &nbsp;&nbsp;Indicaciones de servicio entre torres.</li>\
 		  <li><b>Vigilancia:</b> &nbsp;&nbsp;Controlar y mantener la atención sobre la línea.</li>\
 		  <li><b>Reanudar transmisión:</b> &nbsp;&nbsp;Retomar la transmisión de un mensaje interrumpido en una torre.</li>\
 		  <li><b>Acuse de recibo:</b> &nbsp;&nbsp;Confirmar la recepción de un mensaje junto con el motivo que lo provoca.</li>\
-		  <li><b>Rectificar:</b> &nbsp;&nbsp;Solicitar la anulación o retransmisión de un mensaje por su referencia.</li>\
+		  <li><b>Rectificar:</b> &nbsp;&nbsp;Solicitar anulación o retransmisión de un mensaje.</li>\
 		</ul>';
 	} else if ( x == 'estado' ) {
             document.getElementById("desc").style.display = "inline-block";
@@ -266,8 +266,8 @@
 		txt = '\
 		 <ul>\
 		  <li><b>Normal:</b> &nbsp;&nbsp;Transmisión habitual.</li>\
-		  <li><b>Urgente:</b> &nbsp;&nbsp;Con precedencia de paso sobre normal.</li>\
-		  <li><b>Urgentísimo:</b> &nbsp;&nbsp;Tiene máxima precedencia sobre el resto.</li>\
+		  <li><b>Urgente:</b> &nbsp;&nbsp;Con preferencia de paso sobre normal.</li>\
+		  <li><b>Urgentísimo:</b> &nbsp;&nbsp;Tiene máxima preferencia sobre el resto.</li>\
 		</ul>';
 	} else if ( x == 'hora' ) {
             document.getElementById("desc").style.display = "inline-block";
@@ -717,8 +717,6 @@
 
         // Validar, sustituir '/' por 'a' y error en 'e'
         codtxt = codtxt.replace(/\//g, 'a').replace(/[^0-9,x,m,a]/gi, 'e');
-        // Sustituir reanudar transmisión '7a' por 'fa' y '9a' por 'ia'
-        codtxt = codtxt.replace(/^7a/g, 'fa').replace(/^9a/g, 'ia');
         if (codtxt.length == 0) { codtxt = 'e'; };
 
         console.log('A gif: ' + codtxt);
