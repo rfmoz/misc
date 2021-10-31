@@ -199,8 +199,8 @@ A/B/___C__/___D____/E
   |    |       |     |     ------------ - novenales de mensaje
   |    |       |     ------------------ E sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
   |    |       ------------------------ D hora(2) + minutos(2) + dia(2) + referencia(2)
-  |    -------------------------------- B torre de origen(3) + torre de destino(3)
-  ------------------------------------- A prioridad(1)
+  |    -------------------------------- C torre de origen(3) + torre de destino(3)
+  ------------------------------------- B prioridad(1)
 
 2/0/0x10x5/2341040x/013/252730141/1x0/0 -> Comunicación interna
 | |    |       |     |   \         /  |
