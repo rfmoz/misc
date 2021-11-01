@@ -239,9 +239,9 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/1
-        if re.match(r'.*/\d+/\d+(/(\d{3})/(\d{5}))+$', ciperm) is not None:
-            regfin = re.search(r'(/(\d{3})/(\d{5}))+$', ciperm)
+        # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/2
+        if re.match(r'.*/\d+/\d+(/(\d{3})/(\d{4}[1-4]))+$', ciperm) is not None:
+            regfin = re.search(r'(/(\d{3})/(\d{4}[1-4]))+$', ciperm)
 
             # Recorrer todas las interrupciones
             for i in re.findall('.{10}', regfin.group(0)):

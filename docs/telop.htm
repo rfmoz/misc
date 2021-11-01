@@ -52,6 +52,8 @@
 	div#codops {
 	    display: none;
 	    margin: 10px auto 15px auto;
+	    align-items: flex-start;
+	    justify-content: flex-start;
 	}
 	div#codops table {
 	    border: none;
@@ -468,8 +470,8 @@
         ciperm = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
 
         // Extraer interrupción final si la hubiera
-	if ((/.*\/\d+\/\d+(\/(\d{3})\/(\d{5}))+$/g).test(ciperm)) {
-            regfin = (/(\/(\d{3})\/(\d{5}))+$/g).exec(ciperm);
+	if ((/.*\/\d+\/\d+(\/(\d{3})\/(\d{4}[1-4]))+$/g).test(ciperm)) {
+            regfin = (/(\/(\d{3})\/(\d{4}[1-4]))+$/g).exec(ciperm);
 
             // Recorrer todas las interrupciones
             msg['regfin'] = '';
