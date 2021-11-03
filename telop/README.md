@@ -248,15 +248,17 @@ A/B/___C__/___D____/E
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. La causa corresponde a la misma numeración que incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería. El formato es el siguiente:
 
 ```
-/_Y_/__Z__ -> Sufijo interrupción
-  |    |
-  |    ---- hora(2) + minutos(2) + causa(1)
-  --------- torre(3)
+/_X_/__Y_/Z -> Sufijo interrupción
+  |    |  |
+  |    |  -- Z causa (1)
+  |    ----- Y hora(2) + minutos(2)
+  ---------- X torre(3)
 
-/011/18302 -> Sufijo interrupción
-  |    |
-  |    ---- hora(2) + minutos(2) + causa(1)
-  --------- torre(3)
+/011/1830/2 -> Sufijo interrupción
+  |    |  |
+  |    |  -- Z causa (1)
+  |    ----- Y hora(2) + minutos(2)
+  ---------- X torre(3)
 ```
 
 - En la cabecera se puede emplear otro formato de fecha y hora más reducido con la opción `--breve`, a costa de obtener una precisión de 15 minutos.

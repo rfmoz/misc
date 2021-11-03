@@ -239,17 +239,17 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/3
-        if re.match(r'.*/\d+/\d+(/(\d{3})/(\d{4}[1-4]))+$', ciperm) is not None:
-            regfin = re.search(r'(/(\d{3})/(\d{4}[1-4]))+$', ciperm)
+        # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/4
+        if re.match(r'.*/\d+/\d+(/(\d{3})/(\d{4})/([1-4]))+$', ciperm) is not None:
+            regfin = re.search(r'(/(\d{3})/(\d{4})/([1-4]))+$', ciperm)
 
             # Recorrer todas las interrupciones
-            for i in re.findall('.{10}', regfin.group(0)):
+            for i in re.findall('.{11}', regfin.group(0)):
 
-                regint = re.search(r'/(\d{3})/(\d{5})', i)
+                regint = re.search(r'/(\d{3})/(\d{4})/([1-4])', i)
                 msg['regfin'] += '[T-' + regint.group(1) + ' '
-                msg['regfin'] += regint.group(2)[:2] + ':' + regint.group(2)[2:4] + 'h '
-                intrc = regint.group(2)[4:]
+                msg['regfin'] += regint.group(2)[:2] + ':' + regint.group(2)[2:] + 'h '
+                intrc = regint.group(3)
                 if intrc == '1':
                     intrc = '1-Niebla'
                 if intrc == '2':
