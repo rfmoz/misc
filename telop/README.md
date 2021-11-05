@@ -55,60 +55,77 @@ Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se d
 - Prioridad '8' con referencia '12', origen '010' y destino '050' :
     > telop -p 8 -r 12 -o 10 -d 50 -m 'Texto'
 
-**2- Servicio interno:**
-- Similar a un mensaje ordinario, salvo que permite ser descifrado por cualquier operario de torre.
-- Ejemplos:
-  - Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '045':
+
+**2 - Servicio interno**
+
+Similar a un mensaje ordinario, salvo que permite ser intercambiado y descifrado por cualquier operario de torre.
+
+- Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '045':
     > telop -t 2 -d 45 -m 'Texto ejemplo'
-  - Prioridad '8' con origen '010' y destino '021':
+- Prioridad '8' con origen '010' y destino '021':
     > telop -t 2 -p 8 -o 10 -d 21 -m 'Texto'
 
-**3- Vigilancia:**
-- Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
-- Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
-- Ejemplos:
-  - Origen '001' (por defecto) y destino '021':
+
+**3 - Vigilancia**
+
+Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
+
+Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
+
+- Origen '001' (por defecto) y destino '021':
     > telop -t 3 -d 21
-  - Confirmación al mensaje anterior. Origen '021' y destino '001':
+- Confirmación al mensaje anterior. Origen '021' y destino '001':
     > telop -t 3 -o 21 -d 1
 
-**5- Reanudar transmisión:**
-- Continuar con la transmisión de un mensaje interrumpido en una torre.
-- Ejemplos:
-  - Mensaje con torre de origen '009' y refrencia '43':
+
+**5 - Reanudar transmisión**
+
+Aviso para indicar la continuación de un mensaje detenido en cualquier torre intermedia, habitualmente por causas meteorológicas.
+
+- Mensaje con torre de origen '009' y refrencia '43':
     > telop -t 5 -o 9 -r 43
 
-**6- Acuse de recibo:**
-- Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
-- Ejemplos:
-  - Recepción correcta de mensaje con referencia '12' desde la torre '040' a la torre '001':
+**6 - Acuse de recibo**
+
+Confirmar la recepción de un mensaje junto con el motivo que lo provoca.
+
+- Recepción correcta de mensaje con referencia '12' desde la torre '040' a la torre '001':
     > telop -t 6 -o 40 -d 1 -r 12
-  - Recepción por niebla de mensaje con referencia '17' desde la torre '030' a la torre '001':
+- Recepción por niebla de mensaje con referencia '17' desde la torre '030' a la torre '001':
     > telop -t 6 -o 30 -d 1 -r 17 --incd 1
 
-**9- Rectificar:**
-- Solicitar la anulación o retransmisión de un mensaje por su referencia.
-- Ejemplos:
-  - Repetir mensaje con referencia '23' desde la torre '021' a la '001':
+
+**9 - Rectificar**
+
+Solicitar la anulación o retransmisión de un mensaje por su referencia.
+
+- Repetir mensaje con referencia '23' desde la torre '021' a la '001':
     > telop -t 9 -o 21 -d 1 --rect 6 -r 23
-  - Anular mensaje con referencia '12' desde la torre '021' a la '001':
+- Anular mensaje con referencia '12' desde la torre '021' a la '001':
     > telop -t 9 -o 21 -d 1 --rect 9 -r 12
 
 
 ### Modificaciones de formato
 
-**Modificar fecha a formato corto:**
-- En cualquier mensaje con fecha se puede pasar el argumento '-b' para utilizar el formato reducido:
-  - Mensaje con origen '010', destino '021' y formato de fecha breve:
+**Fecha con formato corto**
+
+En cualquier mensaje con fecha se puede pasar el argumento '-b' para utilizar el formato reducido:
+
+- Mensaje con origen '010', destino '021' y formato de fecha breve:
     > telop -o 10 -d 21 -b -m 'Texto'
 
-**Sustituir indicación de torre por comandancia:**
-- Empleando el argumento '-c', en cualquier mensaje se puede cambiar el formato de torre, representado por tres cifras, al de comandancia, formado por dos cifras.
-  - Mensaje con origen '01', destino '07' y opción de comandancia:
+
+**Sustituir indicación de torre por comandancia**
+
+Empleando el argumento '-c', en cualquier mensaje se puede cambiar el formato de torre, representado por tres cifras, al de comandancia, formado por dos cifras.
+
+- Mensaje con origen '01', destino '07' y opción de comandancia:
     > telop -o 1 -d 7 -c -m 'Texto'
 
-**Indicar sólo una torre o comandancia:**
-- Se puede generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, pasar el valor '0' a la opción de torre de destino `telop -d 0`.
+
+**Indicar sólo una torre o comandancia**
+
+Se puede generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, pasar el valor '0' a la opción de torre de destino `telop -d 0`.
 
 
 ### Opciones del programa:
