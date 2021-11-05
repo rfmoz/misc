@@ -44,14 +44,13 @@ Mensaje:	 Telegrama de prueba
 
 ### Ejemplos de  cada tipo de mensaje
 
-**0- Ordinario:**
+**0- Ordinario**
 
 Mensaje habitual. Su contenido era cifrado y se enviaba entre comandancias, normalmente situadas en capital de provincia.
-- Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se devuelve un mensaje de "Acuse de recibo" al emisor indicando el estado de la recepción. 
-- Ejemplos:
-  - Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '041':
+Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se devuelve un mensaje de "Acuse de recibo" al emisor indicando el estado de la recepción. 
+  Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '041':
     > telop -d 41 -m 'Texto ejemplo' 
-  - Prioridad '8' con referencia '12', origen '010' y destino '050' :
+  Prioridad '8' con referencia '12', origen '010' y destino '050' :
     > telop -p 8 -r 12 -o 10 -d 50 -m 'Texto'
 
 **2- Servicio interno:**
