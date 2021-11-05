@@ -269,23 +269,23 @@ A/B/___C__/___D____/E
 ```
 
 - Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario.
-  El día sólo se indica con el último dígito, siendo igual para el 1, 11 o 21. La causa corresponde a la misma numeración que se utiliza en el acuse de recibo -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería. El formato es el siguiente:
+  El grupo de hora y día es opcional. El día sólo se indica con el último dígito, siendo igual para el 1, 11 o 21. La causa corresponde a la misma numeración que se utiliza en el acuse de recibo -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería. El formato es el siguiente:
 
 ```
 /_X_/__Y__/Z -> Sufijo interrupción
   |    |   |
   |    |   -- Z causa (1)
-  |    ------ Y hora(2) + minutos(2) + dia(1)
+  |    ------ Y hora(2) + minutos(2) + dia(1) (opcional)
   ----------- X torre(3)
 
 /011/18301/2 -> Sufijo interrupción
   |    |   |
   |    |   -- Z causa (1)
-  |    ------ Y hora(2) + minutos(2) + dia(1)
+  |    ------ Y hora(2) + minutos(2) + dia(1) (opcional)
   ----------- X torre(3)
 ```
 
-- En la cabecera se puede emplear otro formato de fecha y hora más reducido con la opción `--breve`, a costa de obtener una precisión de 15 minutos.
+- En la cabecera se puede emplear un formato de fecha y hora reducido con la opción `--breve`, a costa de obtener una precisión de 15 minutos.
   Son dos dígitos los que representan la hora y los minutos, el resultado se obtiene teniendo en cuenta el cuarto de hora en que se encuentran los minutos. Se suma 0, 25, 50 o 75 a la hora (00 a 24) según si es el primer, segundo, tercer o último cuarto de hora. Como ejemplo las 12:05 sería un 12, las 12:20 sería 12+25 = 37, las 12:40 sería 12+50 = 62 y las 12:55 12+75 = 87.
   El día sólo mantiene el último dígito, es decir, se representa igual el día 1 que el 11 que el 21.
   Ésta fue la modificación más curiosa de las empleadas y conocidas, por eso su codificación, el resto básicamente conseguían reducir tamaño a base de omitir información fácilmente interpretable por la situación del emisor y receptor.
