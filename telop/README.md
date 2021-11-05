@@ -45,6 +45,7 @@ Mensaje:	 Telegrama de prueba
 ### Ejemplos de  cada tipo de mensaje
 
 **0- Ordinario:**
+
 Mensaje habitual. Su contenido era cifrado y se enviaba entre comandancias, normalmente situadas en capital de provincia.
 - Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se devuelve un mensaje de "Acuse de recibo" al emisor indicando el estado de la recepción. 
 - Ejemplos:
