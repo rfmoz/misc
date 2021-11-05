@@ -71,7 +71,7 @@ Mensaje:	 Telegrama de prueba
     > telop -t 3 -o 21 -d 1
 
 **5- Reanudar transmisión:**
-- Retomar la transmisión de un mensaje interrumpido en una torre.
+- Continuar con la transmisión de un mensaje interrumpido en una torre.
 - Ejemplos:
   - Mensaje con torre de origen '009' y refrencia '43':
     > telop -t 5 -o 9 -r 43
@@ -92,6 +92,9 @@ Mensaje:	 Telegrama de prueba
   - Anular mensaje con referencia '12' desde la torre '021' a la '001':
     > telop -t 9 -o 21 -d 1 --rect 9 -r 12
 
+
+### Modificaciones de formato
+
 **Modificar fecha a formato corto:**
 - En cualquier mensaje con fecha se puede pasar el argumento '-b' para utilizar el formato reducido:
   - Mensaje con origen '010', destino '021' y formato de fecha breve:
@@ -104,6 +107,7 @@ Mensaje:	 Telegrama de prueba
 
 **Indicar sólo una torre o comandancia:**
 - Se puede generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, pasar el valor '0' a la opción de torre de destino `telop -d 0`.
+
 
 ### Opciones del programa:
 ```
@@ -245,20 +249,21 @@ A/B/___C__/___D____/E
 ------------- A tipo de servicio(1)	
 ```
 
-- Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario. La causa corresponde a la misma numeración que incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería. El formato es el siguiente:
+- Cada mensaje puede llevar un sufijo opcional registrando las interrupciones sufridas durante la transmisión. Se puede repetir el número de veces necesario.
+  El día sólo se indica con el último dígito, siendo igual para el 1, 11 o 21. La causa corresponde a la misma numeración que se utiliza en el acuse de recibo -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería. El formato es el siguiente:
 
 ```
-/_X_/__Y_/Z -> Sufijo interrupción
-  |    |  |
-  |    |  -- Z causa (1)
-  |    ----- Y hora(2) + minutos(2)
-  ---------- X torre(3)
+/_X_/__Y__/Z -> Sufijo interrupción
+  |    |   |
+  |    |   -- Z causa (1)
+  |    ------ Y hora(2) + minutos(2) + dia(1)
+  ----------- X torre(3)
 
-/011/1830/2 -> Sufijo interrupción
-  |    |  |
-  |    |  -- Z causa (1)
-  |    ----- Y hora(2) + minutos(2)
-  ---------- X torre(3)
+/011/18301/2 -> Sufijo interrupción
+  |    |   |
+  |    |   -- Z causa (1)
+  |    ------ Y hora(2) + minutos(2) + dia(1)
+  ----------- X torre(3)
 ```
 
 - En la cabecera se puede emplear otro formato de fecha y hora más reducido con la opción `--breve`, a costa de obtener una precisión de 15 minutos.
