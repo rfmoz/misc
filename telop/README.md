@@ -281,7 +281,13 @@ A/B/___C__/___D____/E
 /011/18301/2 -> Sufijo interrupción
   |    |   |
   |    |   -- Z causa (1)
-  |    ------ Y hora(2) + minutos(2) + dia(1) (opcional)
+  |    ------ Y hora(2) + minutos(2) + dia(1)
+  ----------- X torre(3)
+
+/011      /2 -> Sufijo interrupción
+  |        |
+  |        -- Z causa (1)
+  |
   ----------- X torre(3)
 ```
 
