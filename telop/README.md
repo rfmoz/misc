@@ -44,7 +44,7 @@ Mensaje:	 Telegrama de prueba
 
 ### Ejemplos de  cada tipo de mensaje
 
-**0- Ordinario**
+**0 - Ordinario**
 
 Mensaje habitual. Su contenido era cifrado y se enviaba entre comandancias, normalmente situadas en capital de provincia.
 
