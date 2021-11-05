@@ -100,6 +100,8 @@
 	    padding: 5px;
 	    letter-spacing: 1px;
 	    color: #303030;
+	    border-radius: 3px;
+	    border: 1px solid gray;
 	}
 	div#velocidad {
 	    text-align: center;
@@ -233,6 +235,11 @@
 
     <script src="static/gifshot.js"></script>
     <script>
+
+    // Eliminar salto de línea en textarea
+    document.querySelector('textarea').addEventListener('input', function(){
+	this.value = this.value.replace(/(\r\n|\n|\r)/gm, "");
+    })
 
     function desc(x) {
         if ( x == 'tipo' ) {
