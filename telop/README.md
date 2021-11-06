@@ -327,6 +327,7 @@ Documento previo a la Instrucción General de Mathé del que apenas quedan algun
 Se puede considerar el antecesor directo de la Instrución General escrita también por Mathé, de hecho, algunos artículos son copias. Aunque el aparato militar dispone de menos combinaciones, son equivalentes y el fundamento de trabajo es similar. Permite poner en prespectiva los demás documentos y cubrir algunos vacíos. 
 
 *Tratado de telegrafía y nociones suficientes de la posta. Suárez Saavedra, Antonino*
+
 Parece recoger declaraciones de torreros, aporta detalles como la reducción del formato de la hora con aproximación de 15 minutos. También la última versión de la máquina de transmisión con las parrillas con persianas, que quizá se ideó, según los principios de sencillez y eficiencia mantenidos, no para añadir más símbolos de transmisión, sino para simplificar situaciones complejas mediante la ampliación de los indicadores de control (retransmisiones, continuaciones...).
 
 
