@@ -80,10 +80,11 @@ Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando la
 
 **5 - Reanudar transmisión**
 
-Aviso para indicar la continuación de un mensaje detenido en cualquier torre intermedia, habitualmente por causas meteorológicas.
+Aviso para indicar la continuación de un mensaje detenido en cualquier torre intermedia, habitualmente por causas meteorológicas o cruce con otra comunicación en curso.
 
-- Mensaje con torre de origen '009' y refrencia '43':
+- Retomar la transmisión del mensaje con torre de origen '009' y refrencia '43':
     > telop -t 5 -o 9 -r 43
+
 
 **6 - Acuse de recibo**
 
@@ -125,7 +126,7 @@ Empleando el argumento '-c', en cualquier mensaje se puede cambiar el formato de
 
 **Indicar sólo una torre o comandancia**
 
-Se puede generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, pasar el valor '0' a la opción de torre de destino `telop -d 0`.
+Es posible generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, pasar el valor '0' a la opción de torre de destino `telop -d 0`.
 
 
 ### Opciones del programa:
@@ -304,6 +305,25 @@ A/B/___C__/___D____/E
 
 - Opcionalmente, mediante el uso de una contraseña `telop --password '123'`, se permite encriptar/desencriptar el contenido del mensaje, manteniendo libre la cabecera. El método emplea Format-preserving, Feistel-based encryption (FFX), generando una cadena de números de apariencia aleatoria para quien intente descodificar el mensaje sin emplear la contraseña de encriptación.
 
+
+### Interpretación del original
+
+Destacan varios títulos de referencia en el resultado de este código telegráfico que requieren una reseña particular:
+
+*Historia de la telegrafía óptica en España. Sebastián Olivé Roig*
+Sobresaliente obra sobre la telegrafía óptica es España. Imprescindible para conocer tanto el contexto como los detalles del sistema. El autor aporta su interpretación del código de transmisión, fundada sobre documentos y telegramas originales. Excelente base para consolidar el contenido del resto de documentos.
+
+*Instrucción general para el servicio de transmisión. José María Mathé*
+Documento base del sistema de transmisión. Se define la estructura de los mensajes, la marcha de las comunicaciones, las confirmaciones, cómo actuar ante problemas en la transmisión, uso de la bola y reglas genarales. Carece de detalles exhativos de cada tipo de mensaje, algunos apenas se mencionan una vez en la clasificación. Lamentablemente deja bastantes lagunas abiertas a distintas interpretaciones, por lo que resulta inviable reconstruir el sistema de transmisión, siendo completamente fiel al original, con la información presentada.
+
+*Instrucción general para los torreros en el servicio telegráfico. Manuel Varela y Limia*
+Documento previo a la Instrucción General de Mathé del que apenas quedan algunas hojas sueltas. Parece un proyecto aún por concretar, los números se dejan por rellenar. Las indicaciones involucran más el uso de la bola, aparentemente de una manera menos clara. Complementa las indicaciones del documento posterior de Mathé.
+
+*Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares. José Maria Mathé*
+Se puede considerar el antecesor directo de la Instrución General escrita también por Mathé, de hecho, algunos artículos son copias. Aunque el aparato militar dispone de menos combinaciones, son equivalentes y el fundamento de trabajo es similar. Permite poner en prespectiva los demás documentos y cubrir algunos vacíos. 
+
+*Tratado de telegrafía y nociones suficientes de la posta. Suárez Saavedra, Antonino*
+Parece recoger declaraciones de torreros, aporta detalles como la reducción del formato de la hora con aproximación de 15 minutos. También la última versión de la máquina de transmisión con las parrillas con persianas, que quizá se ideó, según los principios de sencillez y eficiencia mantenidos, no para añadir más símbolos de transmisión, sino para simplificar situaciones complejas mediante la ampliación de los indicadores de control (retransmisiones, continuaciones...).
 
 
 ### Más información
