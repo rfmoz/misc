@@ -311,15 +311,19 @@ A/B/___C__/___D____/E
 Destacan varios títulos de referencia en el resultado de este código telegráfico que requieren una reseña particular:
 
 *Historia de la telegrafía óptica en España. Sebastián Olivé Roig*
+
 Sobresaliente obra sobre la telegrafía óptica es España. Imprescindible para conocer tanto el contexto como los detalles del sistema. El autor aporta su interpretación del código de transmisión, fundada sobre documentos y telegramas originales. Excelente base para consolidar el contenido del resto de documentos.
 
 *Instrucción general para el servicio de transmisión. José María Mathé*
+
 Documento base del sistema de transmisión. Se define la estructura de los mensajes, la marcha de las comunicaciones, las confirmaciones, cómo actuar ante problemas en la transmisión, uso de la bola y reglas genarales. Carece de detalles exhativos de cada tipo de mensaje, algunos apenas se mencionan una vez en la clasificación. Lamentablemente deja bastantes lagunas abiertas a distintas interpretaciones, por lo que resulta inviable reconstruir el sistema de transmisión, siendo completamente fiel al original, con la información presentada.
 
 *Instrucción general para los torreros en el servicio telegráfico. Manuel Varela y Limia*
+
 Documento previo a la Instrucción General de Mathé del que apenas quedan algunas hojas sueltas. Parece un proyecto aún por concretar, los números se dejan por rellenar. Las indicaciones involucran más el uso de la bola, aparentemente de una manera menos clara. Complementa las indicaciones del documento posterior de Mathé.
 
 *Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares. José Maria Mathé*
+
 Se puede considerar el antecesor directo de la Instrución General escrita también por Mathé, de hecho, algunos artículos son copias. Aunque el aparato militar dispone de menos combinaciones, son equivalentes y el fundamento de trabajo es similar. Permite poner en prespectiva los demás documentos y cubrir algunos vacíos. 
 
 *Tratado de telegrafía y nociones suficientes de la posta. Suárez Saavedra, Antonino*
