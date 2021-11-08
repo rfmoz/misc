@@ -240,21 +240,22 @@ def zcodif_descodificar(arg, msg, lencript):
 
     try:
         # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/5
-        if re.match(r'.*/\d+/\d+(/(\d{3})/(?:(\d{5})/)?([1-4]))+$', ciperm) is not None:
+        if re.match(r'.*/\d+/\d+(/(\d{3})/(?:(\d{4,6})/)?([1-4]))+$', ciperm) is not None:
 
             msg['regfin'] = ''
 
             # Recorrer todas las interrupciones
             while True:
-                regfin = re.search(r'(/(\d{3})/(?:(\d{5})/)?([1-4]))+$', ciperm)
+                regfin = re.search(r'(/(\d{3})/(?:(\d{4,6})/)?([1-4]))+$', ciperm)
                 if not regfin:
                     break
 
                 # Procesar interrupción
-                regint = re.search(r'/(\d{3})/(?:(\d{5})/)?([1-4])', regfin[1])
+                regint = re.search(r'/(\d{3})/(?:(\d{4,6})/)?([1-4])', regfin[1])
                 msg['regfin'] += '[T-' + regint.group(1) + ' '
                 if regint.group(2):
-                    msg['regfin'] += regint.group(2)[4:] + '_'
+                    if len(regint.group(2)) > 4:
+                        msg['regfin'] += regint.group(2)[4:] + '_'
                     msg['regfin'] += regint.group(2)[:2] + ':' + regint.group(2)[2:4] + 'h '
                 intrc = regint.group(3)
                 if intrc == '1':

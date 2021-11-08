@@ -100,8 +100,6 @@
 	    padding: 5px;
 	    letter-spacing: 1px;
 	    color: #303030;
-	    border-radius: 3px;
-	    border: 1px solid gray;
 	}
 	div#velocidad {
 	    text-align: center;
@@ -477,22 +475,24 @@
         ciperm = msg['mensaje'].replace(/(.{1})x/g, "$1$1");
 
         // Extraer interrupción final si la hubiera
-	if ((/.*\/\d+\/\d+(\/(\d{3})\/(?:(\d{5})\/)?([1-4]))+$/g).test(ciperm)) {
+	if ((/.*\/\d+\/\d+(\/(\d{3})\/(?:(\d{4,6})\/)?([1-4]))+$/g).test(ciperm)) {
 
             msg['regfin'] = '';
 
             // Recorrer todas las interrupciones
 	    while(true) {
-                regfin = (/(\/(\d{3})\/(?:(\d{5})\/)?([1-4]))+$/g).exec(ciperm);
+                regfin = (/(\/(\d{3})\/(?:(\d{4,6})\/)?([1-4]))+$/g).exec(ciperm);
 		if (!regfin) {
                     break;
 		}
 
 		// Procesar interrupción
-                regint = (/\/(\d{3})\/(?:(\d{5})\/)?([1-4])/g).exec(regfin[1]);
+                regint = (/\/(\d{3})\/(?:(\d{4,6})\/)?([1-4])/g).exec(regfin[1]);
                 msg['regfin'] += '[T-' + regint[1] + ' ';
 	        if (regint[2]) {
-                    msg['regfin'] += regint[2].substring(4) + '_';
+ 	            if (regint[2].length > 4) {
+                        msg['regfin'] += regint[2].substring(4) + '_';
+		    }
                     msg['regfin'] += regint[2].substring(0,2) + ':' + regint[2].substring(2,4) + 'h ';
 		}
                 intrc = regint[3]
