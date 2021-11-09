@@ -331,10 +331,10 @@ En el resultado de este código telegráfico, destacan los siguientes títulos d
 - *Tratado de telegrafía y nociones suficientes de la posta. Suárez Saavedra, Antonino. 1880*: 
   Compendio de la evolución telegráfica, reúne en varios apartados los detalles relacionados con este sistema. Aporta algunos detalles del periodo final de funcionamiento, lo que evidencia la evolución del código.
 
-El formato de mensaje resulta de interpretar y estandarizar la información anteriormente citada, teniendo como base la Instrucción de 1850. Exceptuando la regularización que implica separar los dígitos de novenales entre arriadas, es equivalente al original indicado por Mathé. Aún así, las demás particularidades de cada tipo de mensaje se detallan a continuación:
+El formato de mensaje resulta de interpretar y estandarizar la información anteriormente citada, teniendo como base la Instrucción de 1850. Cada tipo de mensaje tiene sus particularidades, las cuales se detallan a continuación:
 
 - *Ordinario / Sin indicación de servicio*: 
-  Se puede considerar igual al indicado en la instrucción de 1850.
+  Se separan los dígitos de novenales entre arriadas. Se puede considerar equivalente al indicado en la instrucción de 1850.
 
 - *Comunicación interna / Servicio interior*: 
   Combinando las indicaciones de la instrucción militar de 1849 y el de un mensaje ordinario, que incluye referencia y número de novenales. Así se puede enviar correctamente mensajes con contenido, recepciones, continuaciones y rectificaciones de igual modo.
