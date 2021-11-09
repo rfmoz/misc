@@ -331,7 +331,7 @@ En el resultado de este código telegráfico, destacan los siguientes títulos d
 - *Tratado de telegrafía y nociones suficientes de la posta. Suárez Saavedra, Antonino. 1880*: 
   Compendio de la evolución telegráfica, reúne en varios apartados los detalles relacionados con este sistema. Aporta algunos detalles del periodo final de funcionamiento, lo que evidencia la evolución del código.
 
-El formato de mensaje propuesto resulta de interpretar la información anteriormente citada, manteniéndose lo más fiel posible al original. Exceptuando la normalización que implica separar la indicación de novenales entre arriadas, es equivalente al original indicado por Mathé. Aún así, las demás particularidades de cada tipo de mensaje se detallan a continuación:
+El formato de mensaje resulta de interpretar y estandarizar la información anteriormente citada, teniendo como base la Instrucción de 1850. Exceptuando la regularización que implica separar los dígitos de novenales entre arriadas, es equivalente al original indicado por Mathé. Aún así, las demás particularidades de cada tipo de mensaje se detallan a continuación:
 
 - *Ordinario / Sin indicación de servicio*: 
   Se puede considerar igual al indicado en la instrucción de 1850.
@@ -344,7 +344,7 @@ El formato de mensaje propuesto resulta de interpretar la información anteriorm
   Su normalización agrupa ambos valores en un único mensaje, adaptándose así también al formato general.
 
 - *Vigilancia entre comandancias*: 
-  No hay ninguna referencia más que en la enumeración de 1850. Se puede sutitir por el mismo formato que vigilancia, pero con indicación de comandancia. No implementado.
+  No hay ninguna referencia más que en la enumeración de 1850. Se podría sutitir por el formato propuesto de vigilancia, pero con indicación de comandancia. No implementado.
 
 - *Acuse de recibo / Recepción de despachos*: 
   Según indicación en la instrucción de 1850, se modifica la posición del nº de registro para mantenerlo en el lugar correspondiente. El resto es equivalente.
@@ -369,9 +369,9 @@ Hay varias modificaciones que tuvieron aplicación sobre el formato principal co
 - *Cifrado*: 
   Se da la opción de encriptar el mensaje con una contraseña, de esta manera el contenido es indescrifrable aún conociendo el diccionario. Viene a ser la equivalencia de la encriptación que se aplicaba sobre los mensajes entre comandancias, de la cual se recoge una indicación al inicio de uno de los diccionarios telegráfios que no se quiso dar conocimiento escrito alguno.
 
-En el transcurso de la transmisión se podían emplear distintas combinaciones del indicador tanto para salvar los posibles problemas internos del mensaje (corregir dígitos erróneos o la extension incorrecta de novenales), como para solventar las causas que podían detener o interrumpir la correcta marcha de un mensaje (el paso de una comunicación superior o interrupcones y su posterior continuación). Al tratarse de indicaciones fuera del formato del mensaje, se han dejado sin implementar.
+En el transcurso de la transmisión se podían emplear distintas combinaciones del indicador tanto para salvar los posibles problemas internos del mensaje (corregir dígitos erróneos o la extension incorrecta de novenales), como para solventar las causas que podían detener o interrumpir la correcta marcha de un mensaje (el paso de una comunicación superior o interrupcones y su posterior continuación). Al tratarse de indicaciones fuera del formato del mensaje, su implementación no procede.
 
-La última versión de la máquina con las franjas abatibles, indicada por Saavedra, no se llegó a utilizar ni tampoco se conoce las ventajas que venía a aportar. Después de toda esta interpretación del sistema, y conociendo la finalidad de sencillez y eficiencia que regía en su diseño, es posible intuir su evolución de funcionamiento. Quizá la ampliación de signos se orientaba más en el sentido de simplificar combinaciones en situaciones complejas, como las interrupciones y continuaciones, que en añadir más dígitos de transmisión, lo que hubiera requerido una revisión completa del sistema.
+La última versión de la máquina con las franjas abatibles, indicada por Saavedra, no se llegó a utilizar ni tampoco se conoce las ventajas que venía a aportar. Después de toda esta interpretación del sistema, y conociendo la finalidad de sencillez y eficiencia que regía en su diseño, es posible intuir su evolución de funcionamiento. Quizá la ampliación de signos se orientaba más en el sentido de simplificar combinaciones en situaciones complejas de control, como las interrupciones y continuaciones, que en ampliar los dígitos de transmisión, lo que hubiera requerido una revisión completa del sistema.
 
 
 ### Más información
