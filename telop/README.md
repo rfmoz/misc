@@ -337,17 +337,16 @@ El formato de mensaje resulta de interpretar y estandarizar la información ante
   Se puede considerar igual al indicado en la instrucción de 1850.
 
 - *Comunicación interna / Servicio interior*: 
-  Siguiendo las indicaciones del tratado militar de 1849, ya que no hay ninguna otra evidencia completa.
+  Combinando las indicaciones de la instrucción militar de 1849 y el de un mensaje ordinario, que incluye referencia y número de novenales. Así se puede enviar correctamente mensajes con contenido, recepciones, continuaciones y rectificaciones de igual modo.
 
 - *Vigilancia / Vigilancia entre extremos de línea y recepción de las mismas*: 
-  Olivé indica varios tipos de vigilancias, unas con nº de torre, otras sólo con hora. También el tratado militar confirma ese formato.
-  Su normalización agrupa ambos valores en un único mensaje, adaptándose así también al formato general.
+  Olivé indica dos tipos de vigilancias, una con hora y otra con nº de torres. La instrucción militar confirma ese formato. Su normalización agrupa ambos valores en un único mensaje, adaptándose así también al formato general.
 
 - *Vigilancia entre comandancias*: 
   No hay ninguna referencia más que en la enumeración de 1850. Se podría sutitir por el formato propuesto de vigilancia, pero con indicación de comandancia. No implementado.
 
 - *Acuse de recibo / Recepción de despachos*: 
-  Según indicación en la instrucción de 1850, se modifica la posición del nº de registro para mantenerlo en el lugar correspondiente. El resto es equivalente.
+  Según indicación en la instrucción de 1850, se modifica la posición del nº de registro para mantenerlo en el lugar correspondiente, se añaden los minutos a la hora y se separa convenienemente con arriadas. El resto es equivalente.
 
 - *Reanudar transmisión / Continuación*: 
   Según indicación en la instrucción de 1850, se modifica la posición de prioridad para mantenerla en el lugar correspondiente. El resto es equivalente.
@@ -357,13 +356,13 @@ El formato de mensaje resulta de interpretar y estandarizar la información ante
 
 Hay varias modificaciones que tuvieron aplicación sobre el formato principal con el objetivo de acortar caracteres. Aunque algunas sólo se empleaban sobre un tipo de mensaje, en esta interpretación se deja libre la modificación sobre cualquiera de ellos. Son las siguientes:
 
-- *Sufijo final*: 
+- *Sufijo final de interrupción*: 
   Mantiene los tres formatos posibles, con hora y día, sólo con hora o sin ese grupo. Hay referencias exactas en la instrucción de 1850 y en Olivé.
 
-- *Formato hora*: 
+- *Formato de hora en cabecera*: 
   Aunque la instrucción de 1850 documenta una variación de formato horario con precisión a media hora, el tratado de Saavedra de 1880 propone una fórmula para aumentar la precisión a 15 minutos. Olivé confirma su uso en la época final.
 
-- *Formato torre o comandancia*: 
+- *Formato de torre o comandancia*: 
   En la época final también confirma Olivé y Saavedra la sustitución del número de torre por el de comandancia, totalmente lógico. Por otra parte, Olivé comenta la indicación única de torre o comandancia cuando el mensaje se origina en el comienzo de línea o va destinado al mismo desde cualquier otro lugar. Mathé igualmente lo registra en los ejemplos manuscritos al final de la instrucción de 1850.
 
 - *Cifrado*: 
@@ -460,6 +459,8 @@ Título:		El progreso con retraso: La telegrafía óptica en la provincia de Cue
 Autor:		Jesús López Requena
 Fecha de pub.:	2012
 Páginas:	354
+
+VV/AA:		https://forohistorico.coit.es/index.php/wiki-telegrafia-optica/category/bibliografia-y-referencias
 ```   
 
 ### Versión web
