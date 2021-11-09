@@ -276,7 +276,7 @@ A/B/___C__/___D____/E
 /_X_/__Y__/Z -> Sufijo interrupción
   |    |   |
   |    |   -- Z causa (1)
-  |    ------ Y hora(2) + minutos(2) + dia(1) (opcional)
+  |    ------ Y hora(2) + minutos(2) + dia(2)
   ----------- X torre(3)
 
 /011/183012/2 -> Sufijo interrupción
@@ -320,7 +320,7 @@ En el resultado de este código telegráfico, destacan los siguientes títulos d
   Sobresaliente obra sobre la telegrafía óptica es España. Imprescindible para conocer tanto el contexto como los detalles del sistema. El autor aporta su interpretación del código de transmisión, fundada sobre documentos y telegramas originales. Excelente base sobre la que articular el resto de información.
 
 - *Instrucción general para el servicio de transmisión. José María Mathé. 1850*: 
-  Documento elemental del sistema de transmisión. Se define la estructura de los mensajes, la marcha de las comunicaciones, las confirmaciones, cómo actuar ante problemas en la transmisión, uso de la bola y reglas genarales. Se podría reconstruir la lógica de transmisión en gran medida, aunque llevado a la práctica se evidencian lagunas abiertas a distintas interpretaciones.
+  Documento elemental del sistema de transmisión. Se define la estructura de los mensajes, la marcha de las comunicaciones, las confirmaciones, cómo actuar ante problemas en la transmisión, uso de la bola y reglas genarales. Permite reconstruir la lógica de transmisión, aunque llevado a la práctica se evidencian lagunas abiertas a distintas interpretaciones.
 
 - *Instrucción general para los torreros en el servicio telegráfico. Manuel Varela y Limia. 1846*: 
   Documento previo a la Instrucción General de Mathé del que apenas quedan algunas hojas sueltas. Parece un proyecto aún por concretar, los números se dejan sin rellenar. Las indicaciones involucran más el uso de la bola, aparentemente de una manera menos clara. Algunos artículos complementan las indicaciones del documento posterior de Mathé, otros indican maniobras diferentes.
