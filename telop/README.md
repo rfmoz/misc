@@ -275,25 +275,25 @@ A/B/___C__/___D____/E
 ```
 /_X_/__Y__/Z -> Sufijo interrupción
   |    |   |
-  |    |   -- Z causa (1)
+  |    |   -- Z causa(1)
   |    ------ Y hora(2) + minutos(2) + dia(2)
   ----------- X torre(3)
 
 /011/183012/2 -> Sufijo interrupción
   |    |    |
-  |    |    -- Z causa (1)
+  |    |    -- Z causa(1)
   |    ------- Y hora(2) + minutos(2) + dia(2)
   ------------ X torre(3)
 
 /011/1830  /2 -> Sufijo interrupción
   |    |    |
-  |    |    -- Z causa (1)
+  |    |    -- Z causa(1)
   |    ------- Y hora(2) + minutos(2)
   ------------ X torre(3)
 
 /011       /2 -> Sufijo interrupción
   |         |
-  |         -- Z causa (1)
+  |         -- Z causa(1)
   |
   ------------ X torre(3)
 ```
@@ -302,7 +302,15 @@ A/B/___C__/___D____/E
   Son dos dígitos los que representan la hora y los minutos, el resultado se obtiene teniendo en cuenta el cuarto de hora en que se encuentran los minutos. Se suma 0, 25, 50 o 75 a la hora (00 a 24) según si es el primer, segundo, tercer o último cuarto de hora. Como ejemplo las 12:05 sería un 12, las 12:20 sería 12+25 = 37, las 12:40 sería 12+50 = 62 y las 12:55 12+75 = 87.
   El día sólo mantiene el último dígito, es decir, se representa igual el día 1 que el 11 que el 21.
   Ésta fue la modificación más curiosa de las empleadas y conocidas, por eso su codificación, el resto básicamente conseguían reducir tamaño a base de omitir información fácilmente interpretable por la situación del emisor y receptor.
-  El grupo de cbecera pasaría del formato `hora(2) + minutos(2) + dia(2) + referencia(2)` a `horaminutos(2) + dia(1) + referencia(2)`.
+  El grupo de cabecera podría tener cualquiera de los siguientes formatos:
+
+```
+/12150199/ -> hora(2) + minutos(2) + dia(2) + referencia(2)
+/121501/   -> hora(2) + minutos(2) + dia(2)
+/37199/    -> hora_breve(2) + dia_breve(1) + referencia(2)
+/371/      -> hora_breve(2) + dia_breve(1)
+/99/       -> referencia(2)
+```
 
 - En la cabecera se puede indicar un número de comandancia en sustitución de la torre con la opción `--comandancia`. Pasando de emplear tres dígitos por torre a dos.
   El grupo de cbecera pasaría del formato `torre de origen(3) + torre de destino(3)` a `comandancia de origen(2) + comandancia de destino(2)`.
