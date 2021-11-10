@@ -303,7 +303,6 @@ A/B/___C__/___D____/E
   El día sólo mantiene el último dígito, es decir, se representa igual el día 1 que el 11 que el 21.
   Ésta fue la modificación más curiosa de las empleadas y conocidas, por eso su codificación, el resto básicamente conseguían reducir tamaño a base de omitir información fácilmente interpretable por la situación del emisor y receptor.
   El grupo de cabecera podría tener cualquiera de los siguientes formatos:
-
 ```
 /12150199/ -> hora(2) + minutos(2) + dia(2) + referencia(2)
 /121501/   -> hora(2) + minutos(2) + dia(2)
@@ -311,12 +310,17 @@ A/B/___C__/___D____/E
 /371/      -> hora_breve(2) + dia_breve(1)
 /99/       -> referencia(2)
 ```
-
 - En la cabecera se puede indicar un número de comandancia en sustitución de la torre con la opción `--comandancia`. Pasando de emplear tres dígitos por torre a dos.
-  El grupo de cbecera pasaría del formato `torre de origen(3) + torre de destino(3)` a `comandancia de origen(2) + comandancia de destino(2)`.
+  El grupo de cabecera pasaría del formato `torre de origen(3) + torre de destino(3)` a `comandancia de origen(2) + comandancia de destino(2)`.
 
 - Si se indica la torre de destino con valor '0', se suprime la indicación de la misma. El mensaje generado sólo lleva la indicación de origen, una única torre.
-
+  El grupo de torre/comandancia podría tener cualquiera de los siguientes formatos:
+```
+/001051/ -> torre de origen(3) + torre de destino(3)
+/0109/   -> comandancia de origen(2) + comandancia de destino(2)
+/051/    -> torre(3)
+/09/     -> comandancia(2)
+```
 - Opcionalmente, mediante el uso de una contraseña `telop --password '123'`, se permite encriptar/desencriptar el contenido del mensaje, manteniendo libre la cabecera. El método emplea Format-preserving, Feistel-based encryption (FFX), generando una cadena de números de apariencia aleatoria para quien intente descodificar el mensaje sin emplear la contraseña de encriptación.
 
 
