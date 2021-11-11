@@ -195,11 +195,11 @@
                 </tr>
                 <tr id="optorg">
                     <td>Torre origen:</td>
-                    <td><input type="number" id="morig" min="1" max="999" pattern="\d{3}" /></td>
+                    <td><input type="number" id="morig" min="0" max="999" pattern="\d{3}" /></td>
                 </tr>
                 <tr id="optdst">
                     <td>Torre destino:</td>
-                    <td><input type="number" id="mdest" min="1" max="999" pattern="\d{3}" /></td>
+                    <td><input type="number" id="mdest" min="0" max="999" pattern="\d{3}" /></td>
                 </tr>
                 <tr id="ophora">
                     <td>Formato hora:</td>
@@ -443,7 +443,10 @@
                 break;
         }
 
-	// Destino 0 deja torre origen como indicación única
+	// Torre '0' sin valor. Indicación única de torre
+        if (parseInt(msg['origen'], 10) == 0) {
+            msg['origen'] = ''; 
+        }
         if (parseInt(msg['destino'], 10) == 0) {
             msg['destino'] = ''; 
         }
@@ -654,19 +657,28 @@
         if (msg['prioridad']) {
             salida += "<i>Prioridad:</i>\t " + msg['prioridad'] + "<br>";
         }
-        if (!msg['destino']) {  // Si sólo se indica una torre
-	    if (msg['origen'].length == 3) {
-                salida += "<i>Torre:</i>\t\t " + msg['origen'] + "<br>";
-	    } else if (msg['origen'].length == 2) {
-                salida += "<i>Comandancia:</i>\t " + msg['origen'] + "<br>";
-	    }
-        } else {
+
+	// Comprobar una o dos torres
+        if (msg['origen'] && msg['destino']) {
 	    if ((msg['origen'] + msg['destino']).length == 6) {
                 salida += "<i>Torre origen:</i>\t " + msg['origen'] + "<br>";
                 salida += "<i>Torre destino:</i>\t " + msg['destino'] + "<br>";
 	    } else if ((msg['origen'] + msg['destino']).length == 4) {
                 salida += "<i>Com. origen:</i>\t " + msg['origen'] + "<br>";
                 salida += "<i>Com. destino:</i>\t " + msg['destino'] + "<br>";
+	    }
+	} else {
+            if (!msg['destino']) {
+		tsimple =  msg['origen'];
+	    }
+            if (!msg['origen']) {
+		tsimple =  msg['destino'];
+	    }
+	    
+	    if (tsimple.length == 3) {
+                salida += "<i>Torre:</i>\t\t " + tsimple + "<br>";
+	    } else if (tsimple.length == 2) {
+                salida += "<i>Comandancia:</i>\t " + tsimple + "<br>";
 	    }
         }
 

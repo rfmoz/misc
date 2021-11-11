@@ -213,7 +213,9 @@ def zcodif_codificar(arg, msg, lencript):
             logging.error('Sin tipo de mensaje')
             sys.exit(-1)
 
-    # Destino 0 deja torre origen como indicación única
+    # Torre '0' sin valor. Indicación única de torre
+    if int(msg['origen']) == 0:
+        msg['origen'] = ''
     if int(msg['destino']) == 0:
         msg['destino'] = ''
 
@@ -407,18 +409,24 @@ def imprimir(arg, msg):
 
         if msg['prioridad']:
             print(f"Prioridad:\t {msg['prioridad']}")
-        if not msg['destino']:  # Si sólo se indica una torre
-            if len(msg['origen']) == 3:
-               print(f"Torre:\t\t {msg['origen']}")
-            elif len(msg['origen']) == 2:
-               print(f"Comandancia:\t {msg['origen']}")
-        else:
+
+        # Comprobar una o dos torres
+        if msg['origen'] and msg['destino']:
             if len(msg['origen'] + msg['destino']) == 6:
-               print(f"T. Origen:\t {msg['origen']}")
-               print(f"T. Destino:\t {msg['destino']}")
+                print(f"T. Origen:\t {msg['origen']}")
+                print(f"T. Destino:\t {msg['destino']}")
             elif len(msg['origen'] + msg['destino']) == 4:
-               print(f"Com. Origen:\t {msg['origen']}")
-               print(f"Com. Destino:\t {msg['destino']}")
+                print(f"Com. Origen:\t {msg['origen']}")
+                print(f"Com. Destino:\t {msg['destino']}")
+        else:
+            if not msg['destino']:
+                tsimple = msg['origen']
+            if not msg['origen']:
+                tsimple = msg['destino']
+            if len(tsimple) == 3:
+               print(f"Torre:\t\t {tsimple}")
+            elif len(tsimple) == 2:
+               print(f"Comandancia:\t {tsimple}")
 
         if len(msg['horadia']) == 3:
             fchora = int(msg['horadia'][:2])

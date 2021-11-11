@@ -68,14 +68,14 @@ Similar a un mensaje ordinario, salvo que permite ser intercambiado y descifrado
 
 **3 - Vigilancia**
 
-Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora.
+Controlar y mantener la atención sobre la línea. En reposo se mandaban cada media hora desde el inicio de línea a los extermos.
 
 Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
 
-- Origen '001' (por defecto) y destino '021':
-    > telop -t 3 -d 21
-- Confirmación al mensaje anterior. Origen '021' y destino '001':
-    > telop -t 3 -o 21 -d 1
+- Indicar sólo destino, con valor '99' a modo de comodín a todos los extremos de línea y ramales, origen '0', formato breve:
+    > telop -t 3 -o 0 -d 99 -c -b
+- Confirmación al mensaje anterior. Comandancia de origen '07' y destino '01':
+    > telop -t 3 -o 7 -d 1 -c
 
 
 **5 - Reanudar transmisión**
@@ -313,7 +313,7 @@ A/B/___C__/___D____/E
 - En la cabecera se puede indicar un número de comandancia en sustitución de la torre con la opción `--comandancia`. Pasando de emplear tres dígitos por torre a dos.
   El grupo de cabecera pasaría del formato `torre de origen(3) + torre de destino(3)` a `comandancia de origen(2) + comandancia de destino(2)`.
 
-- Si se indica la torre de destino con valor '0', se suprime la indicación de la misma. El mensaje generado sólo lleva la indicación de origen, una única torre.
+- Si se indica alguna torre con valor '0', se suprime la representación de la misma. El mensaje generado sólo lleva registro de una única torre o comandancia.
   El grupo de torre/comandancia podría tener cualquiera de los siguientes formatos:
 ```
 /001051/ -> torre de origen(3) + torre de destino(3)
