@@ -145,7 +145,7 @@ def zcodif_codificar(arg, msg, lencript):
 
     if msg['tipo'] in ('0', '2'):  # Servicio ordinario o interno
         #   0/0x10x5/232x040x/0x6/757575/0
-        # 2/0/0x10x5/232x040x/0x6/757575/0
+        # 2/0x10x5/232x040x/0x6/757575
 
         logging.info('Texto raw:\t\t %s', str(msg['mensaje']))
 
@@ -177,6 +177,7 @@ def zcodif_codificar(arg, msg, lencript):
         prefijo = ''
         if msg['tipo'] == '2':
             prefijo = '2/'
+            msg['prioridad'] = ''
 
         sufijo = '/' + msg['novenales'] + '/' + ciperm + '/' + msg['prioridad']
 
@@ -222,8 +223,9 @@ def zcodif_codificar(arg, msg, lencript):
     # Mensaje formateado
     msgfmt = str(prefijo + msg['prioridad'] + '/' + msg['origen'] + msg['destino'] + '/' + msg['horadia'] + msg['referencia'] + sufijo)
 
-    # Eliminar duplicados // por campos vacíos
+    # Eliminar duplicados // por campos vacíos y / al final
     msgfmt = re.sub(r'\/\/', r'/', msgfmt)
+    msgfmt = re.sub(r'\/$', r'', msgfmt)
 
     logging.info('Mensaje raw:\t %s', msgfmt)
 
@@ -274,11 +276,11 @@ def zcodif_descodificar(arg, msg, lencript):
                 logging.info('Intrr.:\t %s', str(regfin[1]))
                 ciperm = ciperm.replace(regfin[1], '')
 
-        # Regex para cabeceras de mensajes (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/19
+        # Regex para cabeceras de mensajes (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/20
 
         # Procesar tipo 0 o 2. Telegrama con mensaje
-        if re.match(r'^(2)?/?([048])/(\d{2,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
-            search = re.search(r'^(2)?/?([048])/(\d{2,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
+        if re.match(r'^(?:(2)/|([048])/)(\d{2,6})/(\d{2,8})/(\d{0,3})\b', ciperm) is not None:
+            search = re.search(r'^(?:(2)/|([048])/)(\d{2,6})/(\d{2,8})/(\d{0,3})\b', ciperm)
 
             msg['novenales'] = search.group(5)
 

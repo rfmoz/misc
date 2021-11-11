@@ -306,6 +306,10 @@
             document.getElementById("opincd").style.display = "none";
             document.getElementById("oprectf").style.display = "none";
 
+            // Mostrar opciones de servicio interno
+            if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 2 ) {
+                document.getElementById("opprio").style.display = "none";
+            }
             // Mostrar opciones de vigilancia
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 3 ) {
                 document.getElementById("opprio").style.display = "none";
@@ -410,7 +414,8 @@
         
                 var prefijo = ''
                 if (msg['tipo'] == '2') {
-                    prefijo = '2/'
+                    prefijo = '2/';
+		    msg['prioridad'] = '';
                 }
 
                 var sufijo = '/' + msg['novenales'] + "/" + ciperm + "/" + msg['prioridad'];
@@ -444,18 +449,19 @@
         }
 
 	// Torre '0' sin valor. Indicación única de torre
-        if (parseInt(msg['origen'], 10) == 0) {
+        if ((parseInt(msg['origen'], 10) == 0) && (parseInt(msg['destino'], 10) != 0)) {
             msg['origen'] = ''; 
         }
-        if (parseInt(msg['destino'], 10) == 0) {
+        if ((parseInt(msg['destino'], 10) == 0) && (parseInt(msg['origen'], 10) != 0)){
             msg['destino'] = ''; 
         }
 
         // Mensaje formateado
         var msgfmt = prefijo + msg['prioridad'] + "/" + msg['origen'] + msg['destino'] + "/" + msg['horadia'] + msg['referencia'] + sufijo;
 
-        // Eliminar duplicados // por campos vacíos
+        // Eliminar duplicados // por campos vacíos y / al final
         msgfmt = msgfmt.replace(/\/\//g, "/");
+        msgfmt = msgfmt.replace(/\/$/g, "");
 
         console.log('Mensaje raw: ' + msgfmt);
         console.log('Mensaje txt: "' + msg['mensaje'] + '\"');
@@ -516,8 +522,8 @@
         try {
 
             // Procesar tipo 0 o 2. Telegrama con mensaje
-            if ((/^(2)?\/?([048])\/(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).test(ciperm)) {
-	        search = (/^(2)?\/?([048])\/(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
+            if ((/^(?:(2)\/|([048])\/)(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).test(ciperm)) {
+	        search = (/^(?:(2)\/|([048])\/)(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
 
                 msg['novenales'] = search[5];
 

@@ -60,11 +60,10 @@ Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se d
 
 Similar a un mensaje ordinario, salvo que permite ser intercambiado y descifrado por cualquier operario de torre.
 
-- Codificar texto de la manera más sencilla de la torre '001' (por defecto) a la '045':
-    > telop -t 2 -d 45 -m 'Texto ejemplo'
-- Prioridad '8' con origen '010' y destino '021':
-    > telop -t 2 -p 8 -o 10 -d 21 -m 'Texto'
-
+- Mensaje interno de la torre '001' (por defecto) a la '045' con formato de fecha breve:
+    > telop -t 2 -d 45 -b -m 'Texto ejemplo'
+- Mensaje interno de la torre '045'a la '001' con formato de fecha breve:
+    > telop -t 2 -o 45 -d 1 -b -m 'Texto ejemplo'
 
 **3 - Vigilancia**
 
@@ -219,22 +218,22 @@ A/B/___C__/___D____/E
 
   0/0x10x5/2341040x/013/252730141/1x0/0 -> Mensaje ordinario
   |    |       |     |   \         /  |
-  |    |       |     |    \       /   - A prioridad(1)
+  |    |       |     |    \       /   - B prioridad(1)
   |    |       |     |     ------------ - novenales de mensaje
   |    |       |     ------------------ E sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
   |    |       ------------------------ D hora(2) + minutos(2) + dia(2) + referencia(2)
   |    -------------------------------- C torre de origen(3) + torre de destino(3)
   ------------------------------------- B prioridad(1)
 
-2/0/0x10x5/2341040x/013/252730141/1x0/0 -> Comunicación interna
-| |    |       |     |   \         /  |
-| |    |       |     |    \       /   - A prioridad(1)
-| |    |       |     |     ------------ - novenales de mensaje
-| |    |       |     ------------------ E sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
-| |    |       ------------------------ D hora(2) + minutos(2) + dia(2) + referencia(2)
-| |    -------------------------------- C torre de origen(3) + torre de destino(3)
-| ------------------------------------- B prioridad(1)
---------------------------------------- A tipo de servicio(1)
+2  /0x10x5/2341040x/013/252730141/1x0 -> Comunicación interna
+|      |       |     |   \         /
+|      |       |     |    \       /
+|      |       |     |     ---------- - novenales de mensaje
+|      |       |     ---------------- E sufijo nº de novenales completos(2) y nº de digitos en el resto(1)
+|      |       ---------------------- D hora(2) + minutos(2) + dia(2) + referencia(2)
+|      ------------------------------ C torre de origen(3) + torre de destino(3)
+|
+------------------------------------- A tipo de servicio(1)
 
 3  /0x10x5/234104 -> Vigilancia
 |      |       |
@@ -349,7 +348,7 @@ El formato de mensaje resulta de interpretar y estandarizar la información ante
   Se separan los dígitos de novenales entre arriadas. Se puede considerar equivalente al indicado en la instrucción de 1850.
 
 - *Comunicación interna / Servicio interior*: 
-  Combinando las indicaciones de la instrucción militar de 1849 y el de un mensaje ordinario, que incluye referencia y número de novenales. Así se puede enviar correctamente mensajes con contenido, recepciones, continuaciones y rectificaciones de igual modo.
+  Combinando las indicaciones de la instrucción militar de 1849, normalizando fecha y añadiendo referencia y número de novenales. Así se puede enviar correctamente mensajes con contenido, recepciones, continuaciones y rectificaciones de igual modo que un mensaje ordinario.
 
 - *Vigilancia / Vigilancia entre extremos de línea y recepción de las mismas*: 
   Olivé indica dos tipos de vigilancias, una con hora y otra con nº de torres. La instrucción militar confirma ese formato. Su normalización agrupa ambos valores en un único mensaje, adaptándose así también al formato general.
