@@ -499,7 +499,7 @@
                 regint = (/\/(\d{3})\/(?:(\d{4,6})\/)?([1-4])/g).exec(regfin[1]);
                 msg['regfin'] += '[T-' + regint[1] + ' ';
 	        if (regint[2]) {
- 	            if (regint[2].length > 4) {
+ 	            if (regint[2].length == 6) {
                         msg['regfin'] += regint[2].substring(4) + '_';
 		    }
                     msg['regfin'] += regint[2].substring(0,2) + ':' + regint[2].substring(2,4) + 'h ';
@@ -681,10 +681,12 @@
 		tsimple =  msg['destino'];
 	    }
 	    
-	    if (tsimple.length == 3) {
-                salida += "<i>Torre:</i>\t\t " + tsimple + "<br>";
-	    } else if (tsimple.length == 2) {
-                salida += "<i>Comandancia:</i>\t " + tsimple + "<br>";
+	    if (tsimple) {
+ 	        if (tsimple.length == 3) {
+                    salida += "<i>Torre:</i>\t\t " + tsimple + "<br>";
+	        } else if (tsimple.length == 2) {
+                   salida += "<i>Comandancia:</i>\t " + tsimple + "<br>";
+		}
 	    }
         }
 
