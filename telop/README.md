@@ -71,7 +71,7 @@ Controlar y mantener la atención sobre la línea. En reposo se mandaban cada me
 
 Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando las torres oportunas.
 
-- Indicar sólo destino, con valor '99' a modo de comodín a todos los extremos de línea y ramales, origen '0', formato breve:
+- Indicar sólo comandancia de destino, con valor '99' a modo de comodín a todos los extremos de línea y ramales, origen '0', formato breve:
     > telop -t 3 -o 0 -d 99 -c -b
 - Confirmación al mensaje anterior. Comandancia de origen '07' y destino '01':
     > telop -t 3 -o 7 -d 1 -c
@@ -125,7 +125,7 @@ Empleando el argumento '-c', en cualquier mensaje se puede cambiar el formato de
 
 **Indicar sólo una torre o comandancia**
 
-Es posible generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, pasar el valor '0' a la opción de torre de destino `telop -d 0`.
+Es posible generar un mensaje con sólo un número de torre en vez del formato habitual que lleva dos, origen y destino. Con sólo una torre, se deduce el origen o destino según el sentido del mensaje y la posición que ocupa la torre en la línea. Para ello, se pasa el valor '0' a la opción de origen `telop -o 0` o destino `telop -d 0`.
 
 
 ### Opciones del programa:
