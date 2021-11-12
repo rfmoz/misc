@@ -244,38 +244,35 @@ def zcodif_descodificar(arg, msg, lencript):
     ciperm = re.sub(r'(.{1})x', r'\1\1', msg['mensaje']).replace(" ", "")
 
     try:
-        # Extraer interrupción final si la hubiera - https://regex101.com/r/N183lk/5
-        if re.match(r'.*/\d+/\d+(/(\d{3})/(?:(\d{4,6})/)?([1-4]))+$', ciperm) is not None:
-
-            msg['regfin'] = ''
-
-            # Recorrer todas las interrupciones
-            while True:
+        # Extraer interrupciones finales si las hubiera - https://regex101.com/r/5LCWJm/1
+        msg['regfin'] = ''
+        while True:
+            if re.match(r'^(([0248](/\d*){5})|([3569](/\d*){3})).+(/(\d{3})/(?:(\d{4,6})/)?([1-4]))+$', ciperm) is not None:
                 regfin = re.search(r'(/(\d{3})/(?:(\d{4,6})/)?([1-4]))+$', ciperm)
-                if not regfin:
-                    break
+            else:
+                break
 
-                # Procesar interrupción
-                regint = re.search(r'/(\d{3})/(?:(\d{4,6})/)?([1-4])', regfin[1])
-                msg['regfin'] += '[T-' + regint.group(1) + ' '
-                if regint.group(2):
-                    if len(regint.group(2)) == 6:
-                        msg['regfin'] += regint.group(2)[4:] + '_'
-                    msg['regfin'] += regint.group(2)[:2] + ':' + regint.group(2)[2:4] + 'h '
-                intrc = regint.group(3)
-                if intrc == '1':
-                    intrc = '1-Niebla'
-                if intrc == '2':
-                    intrc = '2-Ausencia'
-                if intrc == '3':
-                    intrc = '3-Vang.Ocupada'
-                if intrc == '4':
-                    intrc = '4-Avería'
-                msg['regfin'] += intrc +']  '
+            # Procesar interrupción
+            regint = re.search(r'/(\d{3})/(?:(\d{4,6})/)?([1-4])', regfin[1])
+            msg['regfin'] += '[T-' + regint.group(1) + ' '
+            if regint.group(2):
+                if len(regint.group(2)) == 6:
+                    msg['regfin'] += regint.group(2)[4:] + '_'
+                msg['regfin'] += regint.group(2)[:2] + ':' + regint.group(2)[2:4] + 'h '
+            intrc = regint.group(3)
+            if intrc == '1':
+                intrc = '1-Niebla'
+            if intrc == '2':
+                intrc = '2-Ausencia'
+            if intrc == '3':
+                intrc = '3-Vang.Ocupada'
+            if intrc == '4':
+                intrc = '4-Avería'
+            msg['regfin'] += intrc +']  '
 
-                # Eliminar interrupción del mensaje
-                logging.info('Intrr.:\t %s', str(regfin[1]))
-                ciperm = ciperm.replace(regfin[1], '')
+            # Eliminar interrupción del mensaje
+            logging.info('Intrr.:\t %s', str(regfin[1]))
+            ciperm = ciperm.replace(regfin[1], '')
 
         # Regex para cabeceras de mensajes (manetener en cada caso los mismos 5 grupos) - https://regex101.com/r/uxJuGZ/20
 
