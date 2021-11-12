@@ -259,13 +259,13 @@ A/B/___C__/___D____/E
 | ----------- B prioridad(1)
 ------------- A tipo de servicio(1)	
 
-9  /0x10x5/04 -> Rectificar
-|      |   |
-|      |   |
-|      |   -- D referencia(2)
-|      ------ C torre de origen(3) + torre de destino(3)
+9  /0x10x5/04/6 -> Rectificar
+|      |   |  |
+|      |   |  - E sufijo tipo de petición(1) 
+|      |   ---- D referencia(2)
+|      -------- C torre de origen(3) + torre de destino(3)
 |
-------------- A tipo de servicio(1)	
+--------------- A tipo de servicio(1)	
 ```
 
 - Cada mensaje puede llevar un sufijo indicando las interrupciones sufridas durante la transmisión, si así corresponde. Se puede repetir el número de veces necesario.
@@ -301,7 +301,7 @@ A/B/___C__/___D____/E
   Son dos dígitos los que representan la hora y los minutos, el resultado se obtiene teniendo en cuenta el cuarto de hora en que se encuentran los minutos. Se suma 0, 25, 50 o 75 a la hora (00 a 24) según si es el primer, segundo, tercer o último cuarto de hora. Como ejemplo las 12:05 sería un 12, las 12:20 sería 12+25 = 37, las 12:40 sería 12+50 = 62 y las 12:55 12+75 = 87.
   El día sólo mantiene el último dígito, es decir, se representa igual el día 1 que el 11 que el 21.
   Ésta fue la modificación más curiosa de las empleadas y conocidas, por eso su codificación, el resto básicamente conseguían reducir tamaño a base de omitir información fácilmente interpretable por la situación del emisor y receptor.
-  El grupo de cabecera podría tener cualquiera de los siguientes formatos:
+  El grupo de cabecera podría tener cualquiera de los siguientes formatos. Aunque el programa no genera todas ellas, sí las puede interpretar:
 ```
 /12150199/ -> hora(2) + minutos(2) + dia(2) + referencia(2)
 /121501/   -> hora(2) + minutos(2) + dia(2)
@@ -337,7 +337,7 @@ En el resultado de este código telegráfico, destacan los siguientes títulos d
   Documento previo a la Instrucción General de Mathé del que apenas quedan algunas hojas sueltas. Parece un proyecto aún por concretar, los números se dejan sin rellenar. Las indicaciones involucran más el uso de la bola, aparentemente de una manera menos clara. Algunos artículos complementan las indicaciones del documento posterior de Mathé, otros indican maniobras diferentes.
 
 - *Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares. José Maria Mathé. 1849*: 
-  Se puede considerar el antecesor directo de la Instrución General escrita también por Mathé, de hecho, algunos artículos son copias. Aunque el aparato militar empleado dispone de menos combinaciones, son equivalentes y el fundamento de trabajo es similar. Proporciona otra prespectiva del sistema y complementa algunas indicaciones. 
+  Se puede considerar el antecesor directo de la Instrución General escrita también por Mathé, de hecho, algunos artículos son copias. Aunque el aparato militar empleado dispone de menos combinaciones, son equivalentes y el fundamento de trabajo es similar. Proporciona otra prespectiva del sistema y complementa bastantes indicaciones. 
 
 - *Tratado de telegrafía y nociones suficientes de la posta. Suárez Saavedra, Antonino. 1880*: 
   Compendio de la evolución telegráfica, reúne en varios apartados los detalles relacionados con este sistema. Aporta algunos detalles del periodo final de funcionamiento, lo que evidencia la evolución del código.
@@ -348,7 +348,7 @@ El formato de mensaje resulta de interpretar y estandarizar la información ante
   Se separan los dígitos de novenales entre arriadas. Se puede considerar equivalente al indicado en la instrucción de 1850.
 
 - *Comunicación interna / Servicio interior*: 
-  Combinando las indicaciones de la instrucción militar de 1849, normalizando fecha y añadiendo referencia y número de novenales. Así se puede enviar correctamente mensajes con contenido, recepciones, continuaciones y rectificaciones de igual modo que un mensaje ordinario.
+  Según las indicaciones de la instrucción militar de 1849, normalizando fecha, añadiendo referencia y número de novenales. Así se puede confiar en la integridad de los mensajes y gestionar incidencias de manera eficaz, de igual modo que con el tipo ordinario.
 
 - *Vigilancia / Vigilancia entre extremos de línea y recepción de las mismas*: 
   Olivé indica dos tipos de vigilancias, una con hora y otra con nº de torres. La instrucción militar confirma ese formato. Su normalización agrupa ambos valores en un único mensaje, adaptándose así también al formato general.
@@ -363,7 +363,7 @@ El formato de mensaje resulta de interpretar y estandarizar la información ante
   Según indicación en la instrucción de 1850, se modifica la posición de prioridad para mantenerla en el lugar correspondiente. El resto es equivalente.
 
 - *Rectificar*: 
-  Se indica someramente al final de la instrucción de 1850 sin detalles particulares, tampoco hay más referencias en el resto de documentos. Su implementación se subordina al formato propuesto de la manera más lógica, con el objetivo de mostrar la existencia de este tipo de mensaje.
+  Se indica someramente al final de la instrucción de 1850 sin detalles particulares, tampoco hay más referencias en el resto de documentos. Su implementación se subordina al formato general de la manera más lógica, con el objetivo de mostrar la existencia de este tipo de mensaje.
 
 Hay varias modificaciones que tuvieron aplicación sobre el formato principal con el objetivo de acortar caracteres. Aunque algunas sólo se empleaban sobre un tipo de mensaje, en esta interpretación se deja libre la modificación sobre cualquiera de ellos. Son las siguientes:
 
