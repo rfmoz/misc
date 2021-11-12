@@ -174,12 +174,13 @@ def zcodif_codificar(arg, msg, lencript):
         # Insertar arriadas en mensaje y borar la última si coincide
         ciperm = str(re.sub(r'(.{9})', r'\1/', cipert)).rstrip('/')
 
-        prefijo = ''
         if msg['tipo'] == '2':
-            prefijo = '2/'
+            prefijo = msg['tipo'] + '/'
             msg['prioridad'] = ''
-
-        sufijo = '/' + msg['novenales'] + '/' + ciperm + '/' + msg['prioridad']
+            sufijo = '/' + msg['novenales'] + '/' + ciperm + '/' + msg['tipo']
+        else:
+            prefijo = ''
+            sufijo = '/' + msg['novenales'] + '/' + ciperm + '/' + msg['prioridad']
 
     else:
         prefijo = msg['tipo'] + '/'

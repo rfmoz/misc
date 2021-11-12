@@ -412,13 +412,14 @@
                 // Insertar arriadas en mensaje y borar la última si coincide
                 ciperm = cipert.replace(/(.{9})/g, "$1/").replace(/\/$/, '');
         
-                var prefijo = ''
                 if (msg['tipo'] == '2') {
-                    prefijo = '2/';
+                    var prefijo = msg['tipo'] + '/';
 		    msg['prioridad'] = '';
-                }
-
-                var sufijo = '/' + msg['novenales'] + "/" + ciperm + "/" + msg['prioridad'];
+                    var sufijo = '/' + msg['novenales'] + "/" + ciperm + "/" + msg['tipo'];
+	        } else {
+                    var prefijo = ''
+                    var sufijo = '/' + msg['novenales'] + "/" + ciperm + "/" + msg['prioridad'];
+		}
                 break;
 
             case '3':  // Servicio de vigilancia
