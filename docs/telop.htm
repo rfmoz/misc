@@ -453,7 +453,7 @@
         if ((parseInt(msg['origen'], 10) == 0) && (parseInt(msg['destino'], 10) != 0)) {
             msg['origen'] = ''; 
         }
-        if ((parseInt(msg['destino'], 10) == 0) && (parseInt(msg['origen'], 10) != 0)){
+        if ((parseInt(msg['destino'], 10) == 0) && (parseInt(msg['origen'], 10) >= 0)){
             msg['destino'] = ''; 
         }
 

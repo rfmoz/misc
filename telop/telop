@@ -218,7 +218,7 @@ def zcodif_codificar(arg, msg, lencript):
     # Torre '0' sin valor. Indicación única de torre
     if int(msg['origen']) == 0 and int(msg['destino']) != 0:
         msg['origen'] = ''
-    if int(msg['destino']) == 0 and int(msg['origen']) != 0:
+    if int(msg['destino']) == 0 and int(msg['origen']) >= 0:
         msg['destino'] = ''
 
     # Mensaje formateado
