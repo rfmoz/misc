@@ -58,12 +58,13 @@ Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se d
 
 **2 - Servicio interno**
 
-Similar a un mensaje ordinario, salvo que permite ser intercambiado y descifrado por cualquier operario de torre.
+Similar a un mensaje ordinario, pero utilizado sólo para indicaciones de servicio entre cualquier operario de torre.
 
 - Mensaje interno de la torre '001' (por defecto) a la '045' con formato de fecha breve:
     > telop -t 2 -d 45 -b -m 'Texto ejemplo'
 - Mensaje interno de la torre '045'a la '001' con formato de fecha breve:
     > telop -t 2 -o 45 -d 1 -b -m 'Texto ejemplo'
+
 
 **3 - Vigilancia**
 
@@ -213,7 +214,7 @@ A/B/___C__/___D____/E
 | |    |      ------- D hora(2) + minutos(2) + dia(2) + referencia(2)
 | |    -------------- C torre de origen(3) + torre de destino(3)
 | ------------------- B prioridad(1)
---------------------- A tipo de servicio(1)	
+--------------------- A tipo de servicio(1)
 
 
   0/0x10x5/2341040x/013/252730141/1x0/0 -> Mensaje ordinario
@@ -241,7 +242,7 @@ A/B/___C__/___D____/E
 |      |       -- D hora(2) + minutos(2) + dia(2)
 |      ---------- C torre de origen(3) + torre de destino(3)
 |
------------------ A tipo de servicio(1)	
+----------------- A tipo de servicio(1)
 
 6/0/0x10x5/2341040x/0x -> Acuse de recibo
 | |    |       |    |
@@ -249,7 +250,7 @@ A/B/___C__/___D____/E
 | |    |       ------- D hora(2) + minutos(2) + dia(2) + referencia(2)
 | |    --------------- C torre de origen(3) + torre de destino(3)
 | -------------------- B prioridad(1)
----------------------- A tipo de servicio(1)	
+---------------------- A tipo de servicio(1)
 
 5/0/0x1   /03 -> Reanudar transmisión
 | |    |   |
@@ -257,7 +258,7 @@ A/B/___C__/___D____/E
 | |    |   -- D referencia(2)
 | |    ------ C torre de origen(3)
 | ----------- B prioridad(1)
-------------- A tipo de servicio(1)	
+------------- A tipo de servicio(1)
 
 9  /0x10x5/04/6 -> Rectificar
 |      |   |  |
@@ -265,7 +266,7 @@ A/B/___C__/___D____/E
 |      |   ---- D referencia(2)
 |      -------- C torre de origen(3) + torre de destino(3)
 |
---------------- A tipo de servicio(1)	
+--------------- A tipo de servicio(1)
 ```
 
 - Cada mensaje puede llevar un sufijo indicando las interrupciones sufridas durante la transmisión, si así corresponde. Se puede repetir el número de veces necesario.

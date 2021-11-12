@@ -208,7 +208,7 @@
                         <option value="1">Reducido</option>
                         </select>
                     </td>
-		</tr>
+                </tr>
                 <tr id="opref">
                     <td onmouseover="desc(innerHTML)" onmouseout="desc()">Referencia:</td>
                     <td><input type="number" id="mref" min="1" max="99" pattern="\d{2}" /></td>
@@ -236,12 +236,12 @@
 
     // Eliminar salto de línea en textarea
     document.querySelector('textarea').addEventListener('input', function(){
-	this.value = this.value.replace(/(\r\n|\n|\r)/gm, "");
+        this.value = this.value.replace(/(\r\n|\n|\r)/gm, "");
     })
 
     function desc(x) {
-        if ( x == 'tipo' ) {
-            document.getElementById("desc").style.display = "inline-block";
+	if ( x == 'tipo' ) {
+	    document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
 		  <li><b>Ordinario:</b> &nbsp;&nbsp;Mensaje de comunicación habitual.</li>\
@@ -252,7 +252,7 @@
 		  <li><b>Rectificar:</b> &nbsp;&nbsp;Solicitar anulación o retransmisión de un mensaje.</li>\
 		</ul>';
 	} else if ( x == 'estado' ) {
-            document.getElementById("desc").style.display = "inline-block";
+	    document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
 		  <li><b>Correcto:</b> &nbsp;&nbsp;El mensaje ha sido recepcionado en destino.</li>\
@@ -262,14 +262,14 @@
 		  <li><b>Incidencia avería:</b> &nbsp;&nbsp;Problema técnico que impide la transmisión.</li>\
 		</ul>';
 	} else if ( x == 'peticion' ) {
-            document.getElementById("desc").style.display = "inline-block";
+	    document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
 		  <li><b>Repetir referencia:</b> &nbsp;&nbsp;Solicitar repetición del mensaje con referencia indicada.</li>\
 		  <li><b>Anular referencia:</b> &nbsp;&nbsp;Petición para anular mensaje con referencia indicada.</li>\
 		</ul>';
 	} else if ( x == 'prioridad' ) {
-            document.getElementById("desc").style.display = "inline-block";
+	    document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
 		  <li><b>Normal:</b> &nbsp;&nbsp;Transmisión habitual.</li>\
@@ -277,16 +277,16 @@
 		  <li><b>Urgentísimo:</b> &nbsp;&nbsp;Tiene máxima preferencia sobre el resto.</li>\
 		</ul>';
 	} else if ( x == 'hora' ) {
-            document.getElementById("desc").style.display = "inline-block";
+	    document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
 		  <li><b>Normal:</b> &nbsp;&nbsp;Indicación habitual con hora, minutos y día.</li>\
 		  <li><b>Reducido:</b> &nbsp;&nbsp;Fórmula para acortar redondeando los minutos al cuarto de hora.</li>\
 		</ul>';
 	} else {
-           document.getElementById("desc").style.display = "none";
+	    document.getElementById("desc").style.display = "none";
 	}
-        document.getElementById('desc').innerHTML = txt;
+	document.getElementById('desc').innerHTML = txt;
     }
 
     function txtformat() {
@@ -414,12 +414,12 @@
         
                 if (msg['tipo'] == '2') {
                     var prefijo = msg['tipo'] + '/';
-		    msg['prioridad'] = '';
+                    msg['prioridad'] = '';
                     var sufijo = '/' + msg['novenales'] + "/" + ciperm + "/" + msg['tipo'];
-	        } else {
+                } else {
                     var prefijo = ''
                     var sufijo = '/' + msg['novenales'] + "/" + ciperm + "/" + msg['prioridad'];
-		}
+                }
                 break;
 
             case '3':  // Servicio de vigilancia
@@ -449,7 +449,7 @@
                 break;
         }
 
-	// Torre '0' sin valor. Indicación única de torre
+        // Torre '0' sin valor. Indicación única de torre
         if ((parseInt(msg['origen'], 10) == 0) && (parseInt(msg['destino'], 10) != 0)) {
             msg['origen'] = ''; 
         }
@@ -487,9 +487,9 @@
         // Extraer interrupciones finales si las hubiera
         msg['regfin'] = '';
         while(true) {
-	    if ((/^(([0248](\/\d*){5})|([3569](\/\d*){3})).+(\/(\d{3})\/(?:(\d{4,6})\/)?([1-4]))+$/g).test(ciperm)) {
+            if ((/^(([0248](\/\d*){5})|([3569](\/\d*){3})).+(\/(\d{3})\/(?:(\d{4,6})\/)?([1-4]))+$/g).test(ciperm)) {
                 regfin = (/(\/(\d{3})\/(?:(\d{4,6})\/)?([1-4]))+$/g).exec(ciperm);
-	    } else {
+            } else {
                 break;
             }
 
@@ -499,7 +499,7 @@
             if (regint[2]) {
                 if (regint[2].length == 6) {
                     msg['regfin'] += regint[2].substring(4) + '_';
-    	        }
+                }
                 msg['regfin'] += regint[2].substring(0,2) + ':' + regint[2].substring(2,4) + 'h ';
             }
             intrc = regint[3]
@@ -514,13 +514,13 @@
             // Eliminar interrupción del mensaje
             console.log("Intrr.: " + regfin[1]);
             ciperm = ciperm.replace(regfin[1], "");
-	}
+        }
 
         try {
 
             // Procesar tipo 0 o 2. Telegrama con mensaje
             if ((/^(?:(2)\/|([048])\/)(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).test(ciperm)) {
-	        search = (/^(?:(2)\/|([048])\/)(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
+                search = (/^(?:(2)\/|([048])\/)(\d{2,6})\/(\d{2,8})\/(\d{0,3})\b/g).exec(ciperm);
 
                 msg['novenales'] = search[5];
 
@@ -554,23 +554,23 @@
 
             // Procesar tipo 3
             } else if ((/^(3)()\/(\d{2,6})\/(\d{3,6})()\b/).test(ciperm)) {
-	        search = (/^(3)()\/(\d{2,6})\/(\d{3,6})()\b/g).exec(ciperm);
+                search = (/^(3)()\/(\d{2,6})\/(\d{3,6})()\b/g).exec(ciperm);
                 msg['tipo'] = search[1];
 
             // Procesar tipo 5
             } else if ((/^(5)\/([048])\/(\d{2,3})\/(\d{2})()\b/).test(ciperm)) {
-	        search = (/^(5)\/([048])\/(\d{2,3})\/(\d{2})()\b/g).exec(ciperm);
+                search = (/^(5)\/([048])\/(\d{2,3})\/(\d{2})()\b/g).exec(ciperm);
                 msg['tipo'] = search[1]
 
             // Procesar tipo 6
             } else if ((/^(6)\/([048])\/(\d{2,6})\/(\d{2,8})\/(\d{1,2})\b/).test(ciperm)) {
-	        search = (/^(6)\/([048])\/(\d{2,6})\/(\d{2,8})\/(\d{1,2})\b/g).exec(ciperm);
+                search = (/^(6)\/([048])\/(\d{2,6})\/(\d{2,8})\/(\d{1,2})\b/g).exec(ciperm);
                 msg['tipo'] = search[1];
                 msg['incd'] = search[5];
 
             // Procesar tipo 9
             } else if ((/^(9)()\/(\d{2,6})\/(\d{2})\/([69])\b/).test(ciperm)) {
-	        search = (/^(9)()\/(\d{2,6})\/(\d{2})\/([69])\b/g).exec(ciperm);
+                search = (/^(9)()\/(\d{2,6})\/(\d{2})\/([69])\b/g).exec(ciperm);
                 msg['tipo'] = search[1]
                 msg['rectf'] = search[5]
 
@@ -581,29 +581,29 @@
             // Asignar valores comunes
             msg['prioridad'] = search[2];
 
-	    // Según nº torre o comandancia
-	    if ([2,4].indexOf(search[3].length) > -1) {
+            // Según nº torre o comandancia
+            if ([2,4].indexOf(search[3].length) > -1) {
                 msg['origen'] = search[3].substring(0,2);
                 msg['destino'] = search[3].substring(2);
-	    } else if ([3,6].indexOf(search[3].length) > -1) {
+            } else if ([3,6].indexOf(search[3].length) > -1) {
                 msg['origen'] = search[3].substring(0,3);
                 msg['destino'] = search[3].substring(3);
-	    } else {
+            } else {
                 msg['origen'] = '';
                 msg['destino'] = '';
-	    }
+            }
 
             // Según formato y referencia hora corto/largo
-	    if (search[4].length == 2) {
+            if (search[4].length == 2) {
                 msg['horadia'] = '';
                 msg['referencia'] = search[4];
-	    } else if (search[4].length == 3) {
+            } else if (search[4].length == 3) {
                 msg['horadia'] = search[4].substring(0,3);
                 msg['referencia'] = '';
-	    } else if (search[4].length == 5) {
+            } else if (search[4].length == 5) {
                 msg['horadia'] = search[4].substring(0,3);
                 msg['referencia'] = search[4].substring(3);
-	    } else if (search[4].length == 6) {
+            } else if (search[4].length == 6) {
                 msg['horadia'] = search[4].substring(0,6);
                 msg['referencia'] = '';
             } else if (search[4].length == 8) {
@@ -661,30 +661,30 @@
             salida += "<i>Prioridad:</i>\t " + msg['prioridad'] + "<br>";
         }
 
-	// Comprobar una o dos torres
+        // Comprobar una o dos torres
         if (msg['origen'] && msg['destino']) {
-	    if ((msg['origen'] + msg['destino']).length == 6) {
+            if ((msg['origen'] + msg['destino']).length == 6) {
                 salida += "<i>Torre origen:</i>\t " + msg['origen'] + "<br>";
                 salida += "<i>Torre destino:</i>\t " + msg['destino'] + "<br>";
-	    } else if ((msg['origen'] + msg['destino']).length == 4) {
+            } else if ((msg['origen'] + msg['destino']).length == 4) {
                 salida += "<i>Com. origen:</i>\t " + msg['origen'] + "<br>";
                 salida += "<i>Com. destino:</i>\t " + msg['destino'] + "<br>";
-	    }
-	} else {
+            }
+        } else {
             if (!msg['destino']) {
-		tsimple =  msg['origen'];
-	    }
+                tsimple =  msg['origen'];
+            }
             if (!msg['origen']) {
-		tsimple =  msg['destino'];
-	    }
-	    
-	    if (tsimple) {
- 	        if (tsimple.length == 3) {
+                tsimple =  msg['destino'];
+            }
+
+            if (tsimple) {
+                if (tsimple.length == 3) {
                     salida += "<i>Torre:</i>\t\t " + tsimple + "<br>";
-	        } else if (tsimple.length == 2) {
+                } else if (tsimple.length == 2) {
                    salida += "<i>Comandancia:</i>\t " + tsimple + "<br>";
-		}
-	    }
+                }
+            }
         }
 
         if (msg['horadia'].length == 3) {
@@ -693,15 +693,15 @@
             salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ' [';
             switch (true) {
                 case fchora >= 75:
-		    salida += (fchora - 75).toString().padStart(2, '0') + ':45'; break;
+                    salida += (fchora - 75).toString().padStart(2, '0') + ':45'; break;
                 case fchora >= 50:
-		    salida += (fchora - 50).toString().padStart(2, '0') + ':30'; break;
+                    salida += (fchora - 50).toString().padStart(2, '0') + ':30'; break;
                 case fchora >= 25:
-		    salida += (fchora - 25).toString().padStart(2, '0') + ':15'; break;
+                    salida += (fchora - 25).toString().padStart(2, '0') + ':15'; break;
                 case fchora >= 0:
-		    salida += fchora.toString().padStart(2, '0') + ':00'; 
+                    salida += fchora.toString().padStart(2, '0') + ':00'; 
             }
-	    salida += "] ?" + msg['horadia'].substring(2,3) + "<br>";
+            salida += "] ?" + msg['horadia'].substring(2,3) + "<br>";
         } else if (msg['horadia'].length == 6) {
             salida += "<i>Hora y Día:</i>\t " + msg['horadia'].substring(0,2) + ':' + msg['horadia'].substring(2,4) + ' ' + msg['horadia'].substring(4,6) + "<br>";
         }
