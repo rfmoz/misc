@@ -156,7 +156,7 @@
                 <tr>
                     <td>Tipo:</td>
                     <td onmouseover="desc('tipo')" onmouseout="desc()"><select id="mrecep" onchange="txtformat()">
-                        <option value="0">0 - Ordinario</option>
+                        <option value="0">0 - General</option>
                         <option value="2">2 - Serv. Interno</option>
                         <option value="3">3 - Vigilancia</option>
                         <option value="5">5 - Reanudar Trans.</option>
@@ -187,7 +187,7 @@
                 <tr id="opprio">
                     <td>Prioridad:</td>
                     <td onmouseover="desc('prioridad')" onmouseout="desc()"><select id="mprio">
-                        <option value="0">0 - Normal</option>
+                        <option value="0">0 - Ordinario</option>
                         <option value="4">4 - Urgente</option>
                         <option value="8">8 - Urgent&iacute;simo</option>
                         </select>
@@ -244,7 +244,7 @@
 	    document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
-		  <li><b>Ordinario:</b> &nbsp;&nbsp;Mensaje de comunicación habitual.</li>\
+		  <li><b>General:</b> &nbsp;&nbsp;Mensaje de comunicación habitual.</li>\
 		  <li><b>Servicio interno:</b> &nbsp;&nbsp;Indicaciones de servicio entre torres.</li>\
 		  <li><b>Vigilancia:</b> &nbsp;&nbsp;Controlar y mantener la atención sobre la línea.</li>\
 		  <li><b>Reanudar transmisión:</b> &nbsp;&nbsp;Retomar la transmisión de un mensaje interrumpido en una torre.</li>\
@@ -272,8 +272,8 @@
 	    document.getElementById("desc").style.display = "inline-block";
 		txt = '\
 		 <ul>\
-		  <li><b>Normal:</b> &nbsp;&nbsp;Transmisión habitual.</li>\
-		  <li><b>Urgente:</b> &nbsp;&nbsp;Con preferencia de paso sobre normal.</li>\
+		  <li><b>Ordinario:</b> &nbsp;&nbsp;Transmisión habitual.</li>\
+		  <li><b>Urgente:</b> &nbsp;&nbsp;Con preferencia de paso sobre ordinario.</li>\
 		  <li><b>Urgentísimo:</b> &nbsp;&nbsp;Tiene máxima preferencia sobre el resto.</li>\
 		</ul>';
 	} else if ( x == 'hora' ) {
@@ -388,7 +388,7 @@
 
         switch (msg['tipo']) {
             case '0':
-            case '2':  // Servicio ordinario o interno
+            case '2':  // Servicio general o interno
                 // Recorrer los digitos del mensaje para codificar cada uno
                 var cipert = '';
                 for (let i = 0; i < msg['mensaje'].length; i++) {
@@ -631,7 +631,7 @@
         var salida = '<hr>';
 
         switch (msg['tipo']) {
-            case '0': salida += "<i>Tipo:</i>\t\t 0 - Ordinario<br>"; break;
+            case '0': salida += "<i>Tipo:</i>\t\t 0 - General<br>"; break;
             case '2': salida += "<i>Tipo:</i>\t\t 2 - Servicio Interno<br>"; break;
             case '3': salida += "<i>Tipo:</i>\t\t 3 - Vigilancia<br>"; break;
             case '5': salida += "<i>Tipo:</i>\t\t 5 - Reanudar transmisión<br>"; break;

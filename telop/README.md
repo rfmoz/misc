@@ -10,7 +10,7 @@ Telop (TELégrafoÓPtico) - Utilidad para codificar y descodificar mensajes de t
 ```
 $ telop --mensaje 'Telegrama de prueba'
 --------------------------------------------------------------------------------
-Tipo:		 0 Telegrama ordinario
+Tipo:		 0 Telegrama general
 Prioridad:	 0
 T. Origen:	 001
 T. Destino:	 052
@@ -28,7 +28,7 @@ Mensaje:	 0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0
 ```
 $ telop --mensaje '0/0x1052/2310x80x/042/5x1421x41/627102x10/971314972/52730141x/10/0'
 --------------------------------------------------------------------------------
-Tipo:		 0 Telegrama ordinario
+Tipo:		 0 Telegrama general
 Prioridad:	 0
 T. Origen:	 001
 T. Destino:	 052
@@ -44,7 +44,7 @@ Mensaje:	 Telegrama de prueba
 
 ### Ejemplos de  cada tipo de mensaje
 
-**0 - Ordinario**
+**0 - General**
 
 Mensaje habitual. Su contenido era cifrado y se enviaba entre comandancias, normalmente situadas en capital de provincia.
 
@@ -58,7 +58,7 @@ Cuando es recibido por una torre, ya sea la de destino o alguna intermedia, se d
 
 **2 - Servicio interno**
 
-Similar a un mensaje ordinario, pero utilizado sólo para indicaciones de servicio entre cualquier operario de torre.
+Similar a un mensaje general, pero utilizado sólo para indicaciones de servicio entre cualquier operario de torre.
 
 - Mensaje interno de la torre '001' (por defecto) a la '045' con formato de fecha breve:
     > telop -t 2 -d 45 -b -m 'Texto ejemplo'
@@ -88,7 +88,7 @@ Aviso para indicar la continuación de un mensaje detenido en cualquier torre in
 
 **6 - Acuse de recibo**
 
-Confirmar la recepción de un mensaje, ordinario o de servicio interno, junto con el motivo que lo provoca.
+Confirmar la recepción de un mensaje, general o de servicio interno, junto con el motivo que lo provoca.
 
 - Recepción correcta de mensaje con referencia '12' desde la torre '040' a la torre '001':
     > telop -t 6 -o 40 -d 1 -r 12
@@ -139,9 +139,9 @@ usage: telop [-h] [-p {0,4,8}] [-t {0,2,3,5,6,9}] [--incd {0,1,2,3,4}]
 optional arguments:
   -h, --help            show this help message and exit
   -p {0,4,8}, --prioridad {0,4,8}
-                        prioridad -> 0-normal | 4-urgente | 8-urgentísimo
+                        prioridad -> 0-ordinario | 4-urgente | 8-urgentísimo
   -t {0,2,3,5,6,9}, --tipo {0,2,3,5,6,9}
-                        tipo de servicio -> 0-ordinaro | 2-interno |
+                        tipo de servicio -> 0-general | 2-interno |
                         3-vigilancia | 5-reanudar transmisión | 6-acuse recibo
                         | 9-rectificar
   --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
@@ -217,7 +217,7 @@ A/B/___C__/___D____/E
 --------------------- A tipo de servicio(1)
 
 
-  0/0x10x5/2341040x/013/252730141/1x0/0 -> Mensaje ordinario
+  0/0x10x5/2341040x/013/252730141/1x0/0 -> Mensaje general
   |    |       |     |   \         /  |
   |    |       |     |    \       /   - B prioridad(1)
   |    |       |     |     ------------ - novenales de mensaje
@@ -345,11 +345,11 @@ En el resultado de este código telegráfico, destacan los siguientes títulos d
 
 El formato de mensaje resulta de interpretar y estandarizar la información anteriormente citada, teniendo como base la Instrucción de 1850. Cada tipo de mensaje tiene sus particularidades, las cuales se detallan a continuación:
 
-- *Ordinario / Sin indicación de servicio*: 
+- *General / Sin indicación de servicio*: 
   Se separan los dígitos de novenales entre arriadas. Se puede considerar equivalente al indicado en la instrucción de 1850.
 
 - *Comunicación interna / Servicio interior*: 
-  Según las indicaciones de la instrucción militar de 1849, normalizando fecha, añadiendo referencia y número de novenales. Así se puede confiar en la integridad de los mensajes y gestionar incidencias de manera eficaz, de igual modo que con el tipo ordinario.
+  Según las indicaciones de la instrucción militar de 1849, normalizando fecha, añadiendo referencia y número de novenales. Así se puede confiar en la integridad de los mensajes y gestionar las incidencias de manera eficaz, de igual modo que con el tipo general.
 
 - *Vigilancia / Vigilancia entre extremos de línea y recepción de las mismas*: 
   Olivé indica dos tipos de vigilancias, una con hora y otra con nº de torres. La instrucción militar confirma ese formato. Su normalización agrupa ambos valores en un único mensaje, adaptándose así también al formato general.

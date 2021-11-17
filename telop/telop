@@ -26,9 +26,9 @@ def get_arguments(msg, lencript):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'],
-                        help='prioridad -> 0-normal | 4-urgente | 8-urgentísimo')
+                        help='prioridad -> 0-ordinario | 4-urgente | 8-urgentísimo')
     parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '5', '6', '9'],
-                        help='tipo de servicio -> 0-ordinaro | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo | 9-rectificar')
+                        help='tipo de servicio -> 0-general | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo | 9-rectificar')
     parser.add_argument('--incd', default=msg['incd'], action='store', type=str, choices=['0', '1', '2', '3', '4'],
                         help='incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
@@ -143,7 +143,7 @@ def encffx(arg, ciphert, tipo=False):
 def zcodif_codificar(arg, msg, lencript):
     '''codificar mensaje'''
 
-    if msg['tipo'] in ('0', '2'):  # Servicio ordinario o interno
+    if msg['tipo'] in ('0', '2'):  # Servicio general o interno
         #   0/0x10x5/232x040x/0x6/757575/0
         # 2/0x10x5/232x040x/0x6/757575
 
@@ -384,7 +384,7 @@ def imprimir(arg, msg):
 
     else:
         print('-' * 80)
-        if msg['tipo'] == '0': print(f"Tipo:\t\t 0 - Ordinario")
+        if msg['tipo'] == '0': print(f"Tipo:\t\t 0 - General")
         if msg['tipo'] == '2': print(f"Tipo:\t\t 2 - Servicio Interno")
         if msg['tipo'] == '3': print(f"Tipo:\t\t 3 - Vigilancia")
         if msg['tipo'] == '5': print(f"Tipo:\t\t 5 - Reanudar Transmisión")
