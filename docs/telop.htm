@@ -159,7 +159,7 @@
                         <option value="0">0 - General</option>
                         <option value="2">2 - Serv. Interno</option>
                         <option value="3">3 - Vigilancia</option>
-                        <option value="5">5 - Reanudar Trans.</option>
+                        <option value="5">5 - Continuación</option>
                         <option value="6">6 - Acuse de Recibo</option>
                         <option value="9">9 - Rectificar</option>
                         </select>
@@ -247,7 +247,7 @@
 		  <li><b>General:</b> &nbsp;&nbsp;Mensaje de comunicación habitual.</li>\
 		  <li><b>Servicio interno:</b> &nbsp;&nbsp;Indicaciones de servicio entre torres.</li>\
 		  <li><b>Vigilancia:</b> &nbsp;&nbsp;Controlar y mantener la atención sobre la línea.</li>\
-		  <li><b>Reanudar transmisión:</b> &nbsp;&nbsp;Retomar la transmisión de un mensaje interrumpido en una torre.</li>\
+		  <li><b>Continuación:</b> &nbsp;&nbsp;Retomar la transmisión de un mensaje interrumpido en una torre.</li>\
 		  <li><b>Acuse de recibo:</b> &nbsp;&nbsp;Confirmar la recepción de un mensaje junto con el motivo que lo provoca.</li>\
 		  <li><b>Rectificar:</b> &nbsp;&nbsp;Solicitar anulación o retransmisión de un mensaje.</li>\
 		</ul>';
@@ -315,7 +315,7 @@
                 document.getElementById("opprio").style.display = "none";
                 document.getElementById("opref").style.display = "none";
             }
-            // Mostrar opciones Reanudar
+            // Mostrar opciones Continuación
             if ( document.getElementById("mrecep").options[mrecep.selectedIndex].value == 5 ) {
                 document.getElementById("ophora").style.display = "none";
                 document.getElementById("optdst").style.display = "none";
@@ -434,7 +434,7 @@
                 sufijo = '/' + msg['incd'];
                 break;
 
-            case '5':  // Reanudar transmisión
+            case '5':  // Continuación
                 var prefijo = msg['tipo'] + '/';
                 msg['horadia'] = '';
                 msg['destino'] = '0';
@@ -634,7 +634,7 @@
             case '0': salida += "<i>Tipo:</i>\t\t 0 - General<br>"; break;
             case '2': salida += "<i>Tipo:</i>\t\t 2 - Servicio Interno<br>"; break;
             case '3': salida += "<i>Tipo:</i>\t\t 3 - Vigilancia<br>"; break;
-            case '5': salida += "<i>Tipo:</i>\t\t 5 - Reanudar transmisión<br>"; break;
+            case '5': salida += "<i>Tipo:</i>\t\t 5 - Continuación<br>"; break;
             case '6': salida += "<i>Tipo:</i>\t\t 6 - Acuse de recibo<br>";
                 switch (msg['incd']) {
                     case '00':

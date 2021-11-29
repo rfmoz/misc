@@ -28,7 +28,7 @@ def get_arguments(msg, lencript):
     parser.add_argument('-p', '--prioridad', default=msg['prioridad'], action='store', type=str, choices=['0', '4', '8'],
                         help='prioridad -> 0-ordinario | 4-urgente | 8-urgentísimo')
     parser.add_argument('-t', '--tipo', default=msg['tipo'], action='store', type=str, choices=['0', '2', '3', '5', '6', '9'],
-                        help='tipo de servicio -> 0-general | 2-interno | 3-vigilancia | 5-reanudar transmisión | 6-acuse recibo | 9-rectificar')
+                        help='tipo de servicio -> 0-general | 2-interno | 3-vigilancia | 5-continuación | 6-acuse recibo | 9-rectificar')
     parser.add_argument('--incd', default=msg['incd'], action='store', type=str, choices=['0', '1', '2', '3', '4'],
                         help='incidencia en acuse -> 1-niebla | 2-ausencia | 3-ocupada | 4-avería')
     parser.add_argument('-o', '--origen', default=msg['origen'], action='store', type=int, metavar='origen', help='torre de origen')
@@ -197,7 +197,7 @@ def zcodif_codificar(arg, msg, lencript):
                 msg['incd'] = '00'
             sufijo = '/' + msg['incd']
 
-        elif msg['tipo'] == '5':  # Reanudar transmisión
+        elif msg['tipo'] == '5':  # Continuar transmisión
             # 5/4/0x1/0x
             # 5/4/0x1/0x
             msg['horadia'] = ''
@@ -387,7 +387,7 @@ def imprimir(arg, msg):
         if msg['tipo'] == '0': print(f"Tipo:\t\t 0 - General")
         if msg['tipo'] == '2': print(f"Tipo:\t\t 2 - Servicio Interno")
         if msg['tipo'] == '3': print(f"Tipo:\t\t 3 - Vigilancia")
-        if msg['tipo'] == '5': print(f"Tipo:\t\t 5 - Reanudar Transmisión")
+        if msg['tipo'] == '5': print(f"Tipo:\t\t 5 - Continuación")
         if msg['tipo'] == '6':
             print(f"Tipo:\t\t 6 - Acuse de recibo")
             if msg['incd'] == '00':

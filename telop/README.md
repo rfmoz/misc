@@ -78,9 +78,9 @@ Para confirmar su recepción se devuelve otro mensaje de vigilancia indicando la
     > telop -t 3 -o 7 -d 1 -c
 
 
-**5 - Reanudar transmisión**
+**5 - Continuación**
 
-Aviso para indicar la continuación de un mensaje detenido en cualquier torre intermedia, habitualmente por causas meteorológicas o cruce con otra comunicación en curso de mayor prioridad.
+Aviso para indicar la reanudación de un mensaje detenido en cualquier torre intermedia, habitualmente por causas meteorológicas o cruce con otra comunicación en curso de mayor prioridad.
 
 - Retomar la transmisión del mensaje con torre de origen '009' y refrencia '43':
     > telop -t 5 -o 9 -r 43
@@ -142,7 +142,7 @@ optional arguments:
                         prioridad -> 0-ordinario | 4-urgente | 8-urgentísimo
   -t {0,2,3,5,6,9}, --tipo {0,2,3,5,6,9}
                         tipo de servicio -> 0-general | 2-interno |
-                        3-vigilancia | 5-reanudar transmisión | 6-acuse recibo
+                        3-vigilancia | 5-continuación | 6-acuse recibo
                         | 9-rectificar
   --incd {0,1,2,3,4}    incidencia en acuse -> 1-niebla | 2-ausencia |
                         3-ocupada | 4-avería
@@ -252,7 +252,7 @@ A/B/___C__/___D____/E
 | -------------------- B prioridad(1)
 ---------------------- A tipo de servicio(1)
 
-5/0/0x1   /03 -> Reanudar transmisión
+5/0/0x1   /03 -> Continuación
 | |    |   |
 | |    |   |
 | |    |   -- D referencia(2)
