@@ -326,63 +326,7 @@ A/B/___C__/___D____/E
 
 ### Interpretación del original
 
-En el resultado de este código telegráfico, destacan los siguientes títulos de referencia:
-
-- *Historia de la telegrafía óptica en España. Sebastián Olivé Roig. 1990*: 
-  Sobresaliente obra sobre la telegrafía óptica es España. Imprescindible para conocer tanto el contexto como los detalles del sistema. El autor aporta su interpretación del código de transmisión, fundada sobre documentos y telegramas originales. Excelente base sobre la que articular el resto de información.
-
-- *Instrucción general para el servicio de transmisión. José María Mathé. 1850*: 
-  Documento elemental del sistema de transmisión. Se define la estructura de los mensajes, la marcha de las comunicaciones, las confirmaciones, cómo actuar ante problemas en la transmisión, uso de la bola y reglas genarales. Permite reconstruir la lógica de transmisión, aunque llevado a la práctica se evidencian lagunas abiertas a distintas interpretaciones.
-
-- *Instrucción general para los torreros en el servicio telegráfico. Manuel Varela y Limia. 1846*: 
-  Documento previo a la Instrucción General de Mathé del que apenas quedan algunas hojas sueltas. Parece un proyecto aún por concretar, los números se dejan sin rellenar. Las indicaciones involucran más el uso de la bola, aparentemente de una manera menos clara. Algunos artículos complementan las indicaciones del documento posterior de Mathé, otros indican maniobras diferentes.
-
-- *Telégrafos militares : instrucción para los torreros y cartilla de servicio interior y señales particulares. José Maria Mathé. 1849*: 
-  Se puede considerar el antecesor directo de la Instrución General escrita también por Mathé, de hecho, algunos artículos son copias. Aunque el aparato militar empleado dispone de menos combinaciones, son equivalentes y el fundamento de trabajo es similar. Proporciona otra prespectiva del sistema y complementa bastantes indicaciones. 
-
-- *Tratado de telegrafía y nociones suficientes de la posta. Suárez Saavedra, Antonino. 1880*: 
-  Compendio de la evolución telegráfica, reúne en varios apartados los detalles relacionados con este sistema. Aporta algunos detalles del periodo final de funcionamiento, lo que evidencia la evolución del código.
-
-El formato de mensaje resulta de interpretar y estandarizar la información anteriormente citada, teniendo como base la Instrucción de 1850. Cada tipo de mensaje tiene sus particularidades, las cuales se detallan a continuación:
-
-- *General / Sin indicación de servicio*: 
-  Se separan los dígitos de novenales entre arriadas. Se puede considerar equivalente al indicado en la instrucción de 1850.
-
-- *Comunicación interna / Servicio interior*: 
-  Según las indicaciones de la instrucción militar de 1849, normalizando fecha, añadiendo referencia y número de novenales. Así se puede confiar en la integridad de los mensajes y gestionar las incidencias de manera eficaz, de igual modo que con el tipo general.
-
-- *Vigilancia / Vigilancia entre extremos de línea y recepción de las mismas*: 
-  Olivé indica dos tipos de vigilancias, una con hora y otra con nº de torres. La instrucción militar confirma ese formato. Su normalización agrupa ambos valores en un único mensaje, adaptándose así también al formato general.
-
-- *Vigilancia entre comandancias*: 
-  No hay ninguna referencia más que en la enumeración de 1850. Se podría sutitir por el formato propuesto de vigilancia, pero con indicación de comandancia. No implementado.
-
-- *Acuse de recibo / Recepción de despachos*: 
-  Según indicación en la instrucción de 1850, se modifica la posición del nº de registro para mantenerlo en el lugar correspondiente, se añaden los minutos a la hora y se separa convenienemente con arriadas. El resto es equivalente.
-
-- *Reanudar transmisión / Continuación*: 
-  Según indicación en la instrucción de 1850, se modifica la posición de prioridad para mantenerla en el lugar correspondiente. El resto es equivalente.
-
-- *Rectificar*: 
-  Se indica someramente al final de la instrucción de 1850 sin detalles particulares, tampoco hay más referencias en el resto de documentos. Su implementación se subordina al formato general de la manera más lógica, con el objetivo de mostrar la existencia de este tipo de mensaje.
-
-Hay varias modificaciones que tuvieron aplicación sobre el formato principal con el objetivo de acortar caracteres. Aunque algunas sólo se empleaban sobre un tipo de mensaje, en esta interpretación se deja libre la modificación sobre cualquiera de ellos. Son las siguientes:
-
-- *Sufijo final de interrupción*: 
-  Mantiene los tres formatos posibles, con hora y día, sólo con hora o sin ese grupo. Hay referencias exactas en la instrucción de 1850 y en Olivé.
-
-- *Formato de hora en cabecera*: 
-  Aunque la instrucción de 1850 documenta una variación de formato horario con precisión a media hora, el tratado de Saavedra de 1880 propone una fórmula para aumentar la precisión a 15 minutos. Olivé confirma su uso en la época final.
-
-- *Formato de torre o comandancia*: 
-  En la época final también confirma Olivé y Saavedra la sustitución del número de torre por el de comandancia, totalmente lógico. Por otra parte, Olivé comenta la indicación única de torre o comandancia cuando el mensaje se origina en el comienzo de línea o va destinado al mismo desde cualquier otro lugar. Mathé igualmente lo registra en los ejemplos manuscritos al final de la instrucción de 1850.
-
-- *Cifrado*: 
-  Se da la opción de encriptar el mensaje con una contraseña, de esta manera el contenido es indescrifrable aún conociendo el diccionario. Viene a ser la equivalencia de la encriptación que se aplicaba sobre los mensajes entre comandancias, de la cual se recoge una indicación al inicio de uno de los diccionarios telegráfios que no se quiso dar conocimiento escrito alguno.
-
-En el transcurso de la transmisión se podían emplear distintas combinaciones del indicador tanto para salvar los posibles problemas internos del mensaje (corregir dígitos erróneos o la extension incorrecta de novenales), como para solventar las causas que podían detener o interrumpir la correcta marcha de un mensaje (el paso de una comunicación superior o interrupcones y su posterior continuación). Al tratarse de indicaciones fuera del formato del mensaje, su implementación no procede.
-
-La última versión de la máquina con las franjas abatibles, indicada por Saavedra, no se llegó a utilizar ni tampoco se conoce las ventajas que venía a aportar. Después de toda esta interpretación del sistema, y conociendo la finalidad de sencillez y eficiencia que regía en su diseño, es posible intuir su evolución de funcionamiento. Quizá la ampliación de signos se orientaba más en el sentido de simplificar combinaciones en situaciones complejas de control, como las interrupciones y continuaciones, que en ampliar los dígitos de transmisión, lo que hubiera requerido una revisión completa del sistema.
+Consultar documento revision_codigo_telegrafo.pdf
 
 
 ### Más información
