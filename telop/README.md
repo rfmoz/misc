@@ -326,7 +326,7 @@ A/B/___C__/___D____/E
 
 ### Interpretación del original
 
-Consultar documento revision_codigo_telegrafo.pdf
+Consultar documento *revision_codigo_telegrafo.pdf*
 
 
 ### Más información
