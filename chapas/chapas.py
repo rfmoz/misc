@@ -154,7 +154,7 @@ def progreso(tirada, velocidad, tiradatot):
     sys.stdout.flush()
     sys.stdout.write("\b" * (ancho + 1))
 
-    for i in range(ancho):
+    for _ in range(ancho):
         time.sleep(velocidad / 50)
         sys.stdout.write("*")
         sys.stdout.flush()
@@ -288,7 +288,7 @@ def asignar_carteras(jgo, resumen):
     return jgo, resumen
 
 
-def asignar_apuestas(jgo, resumen, parejas):
+def asignar_apuestas(jgo, resumen, resultado_parejas):
     """Asignar apuestas"""
 
     # Apuestas [cantidad] * probabilidad
@@ -316,8 +316,8 @@ def asignar_apuestas(jgo, resumen, parejas):
         else:
             resumen[q]['tiradas'] = resumen[q]['tiradas'] + 1  # Contador tiradas
 
-            # Sólo se hacen apuestas si es la primera tirada o si son parejas
-            if parejas < 0:
+            # Si se repite la tirada por no haber salido parejas, no se hace apuesta
+            if resultado_parejas < 0:
                 continue
 
             # Proceso de asignación de apuesta a usuarios reales/virtuales
@@ -419,7 +419,7 @@ def main():
     jreales = []  # Lista de nombres de jugadores reales
     resumen = []  # Lista para resumen final
     seguir_jugando = True  # Para salir del bucle del juego
-    parejas = 0  # Controlar resultado monedas
+    resultado_parejas = 0  # Controlar resultado monedas
 
 
     # Asignar jugadores virtuales
@@ -454,7 +454,7 @@ def main():
                 print('\n¡Hagan sus apuestas!')
 
             # Asignar apuestas
-            jgo, resumen = asignar_apuestas(jgo, resumen, parejas)
+            jgo, resumen = asignar_apuestas(jgo, resumen, resultado_parejas)
             cls()
 
             # Asignar apuesta al baratero
@@ -480,7 +480,7 @@ def main():
 
             # Si las monedas no son iguales, repetir
             if monedas[0] != monedas[1]:
-                parejas = -1
+                resultado_parejas = -1
                 print('\"`-._,-\'\"`-._,-\'     ¡Repetir!     \'-,_.´\"\'-,_.-´\"\n')
 
                 time.sleep(arg.velocidad / 2)  # Tiempo espera
@@ -509,67 +509,50 @@ def main():
                 jgo[-1]['total'] = round(jgo[-1]['cartera'], 1)
 
             else:
-                parejas = 1
                 # Baratero gana si las monedas son iguales
                 if baratero == monedas[0] == monedas[1]:
+                    resultado_parejas = 1
                     print('-- -- -- -- --    ¡Gana Baratero!    -- -- -- -- --\n')
-
-                    time.sleep(arg.velocidad / 2)  # Tiempo espera
-
-                    # Recorrer jugadores para calcular valores
-                    for q, _ in enumerate(jgo):
-
-                        # Contabilizar tirada ganada baratero
-                        # Proceso posterior del for sólo para jugadores
-                        if jgo[q]['nombre'] == 'Baratero':
-                            resumen[-1]['tganadas'] = resumen[-1]['tganadas'] + 1
-                            continue
-
-                        # Contabilizar tiradas perdidas
-                        if jgo[q]['ruina'] != 'Arruinado':
-                            resumen[q]['tperdidas'] = resumen[q]['tperdidas'] + 1
-
-                        # Se resta la apuesta a la cartera de los jugadores
-                        jgo[q]['total'] = round(jgo[q]['cartera'] - jgo[q]['apuesta'], 1)
-
-                        # Sumar todas las apuestas
-                        apuesta_total = apuesta_total + jgo[q]['apuesta']
-
-                    # La suma de las apuestas es la tirada del baratero
-                    jgo[-1]['apuesta'] = apuesta_total
-
-                    # Total del baratero
-                    jgo[-1]['total'] = round(jgo[-1]['cartera'] + apuesta_total, 1)
+                    sitb = 'tganadas'
+                    sitj = 'tperdidas'
                 else:
+                    resultado_parejas = 2
                     print('= = = = = = = =  ¡Ganan Jugadores!  = = = = = = = =\n')
+                    sitb = 'tperdidas'
+                    sitj = 'tganadas'
 
-                    time.sleep(arg.velocidad / 2)  # Tiempo espera
+                time.sleep(arg.velocidad / 2)  # Tiempo espera
 
-                    # Recorrer jugadores para calcular valores
-                    for q, _ in enumerate(jgo):
+                # Recorrer jugadores para calcular valores
+                for q, _ in enumerate(jgo):
 
-                        # Contabilizar tirada perdida baratero
-                        # Proceso posterior del for sólo para jugadores
-                        if jgo[q]['nombre'] == 'Baratero':
-                            resumen[-1]['tperdidas'] = resumen[-1]['tperdidas'] + 1
-                            continue
+                    # Contabilizar tirada ganada/perdida baratero
+                    # Proceso posterior del for sólo para jugadores
+                    if jgo[q]['nombre'] == 'Baratero':
+                        resumen[-1][sitb] = resumen[-1][sitb] + 1
+                        continue
 
-                        # Contabilizar tiradas ganadas
-                        if jgo[q]['ruina'] != 'Arruinado':
-                            resumen[q]['tganadas'] = resumen[q]['tganadas'] + 1
+                    # Contabilizar tiradas ganadas/perdidas
+                    if jgo[q]['ruina'] != 'Arruinado':
+                        resumen[q][sitj] = resumen[q][sitj] + 1
 
-                        # Se suma la apuesta a la cartera de los jugadores
+                    # Se suma/resta la apuesta a la cartera de los jugadores
+                    if resultado_parejas == 1:
+                        jgo[q]['total'] = round(jgo[q]['cartera'] - jgo[q]['apuesta'], 1)
+                    else:
                         jgo[q]['total'] = round(jgo[q]['cartera'] + jgo[q]['apuesta'], 1)
 
-                        # Sumar todas las apuestas
-                        apuesta_total = apuesta_total + jgo[q]['apuesta']
+                    # Sumar todas las apuestas
+                    apuesta_total = apuesta_total + jgo[q]['apuesta']
 
-                    # La suma de las apuestas es la tirada del baratero
-                    jgo[-1]['apuesta'] = round(apuesta_total, 1)
+                # La suma de las apuestas es la tirada del baratero
+                jgo[-1]['apuesta'] = round(apuesta_total, 1)
 
-                    # Total del baratero
+                # Total del baratero
+                if resultado_parejas == 1:
+                    jgo[-1]['total'] = round(jgo[-1]['cartera'] + apuesta_total, 1)
+                else:
                     jgo[-1]['total'] = round(jgo[-1]['cartera'] - apuesta_total, 1)
-
 
                 # Tareas post tirada previas a imprimir tabla
                 for q, _ in enumerate(jgo):
@@ -661,13 +644,13 @@ def main():
                 print('')
                 flush_input()
                 scmb = input("¿Mantener importe de las carteras actuales? (s/n): ")
+                resultado_parejas = 0
                 while scmb.lower() not in ('s', 'n'):
                     flush_input()
                     scmb = input("¿Mantener importe de las carteras actuales? (s/n): ")
                 if scmb == 'n':
                     jgo, resumen = asignar_carteras(jgo, resumen)
                     # Volver a asignar apuestas
-                    parejas = 0
 
             print_linea(tipo=1)
 
