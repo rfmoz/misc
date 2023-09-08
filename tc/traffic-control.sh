@@ -14,10 +14,8 @@ tin1="ifb0"
 # Lan address (without netmask part)
 lan1="192.168.1."
 
-# It's necessary load this module in the kernel for do it
-modprobe ifb numifbs=1
-ip link set dev $tin1 up
-
+# Create input forwarding device
+ip link add dev $tin up type ifb
 
 
 ## Limit outcomming traffic (to internet)
