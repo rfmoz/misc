@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys, os, optparse, logging, random, time
+import sys, os, argparse, logging, random, time
 
 __version__ = '1.0.3'
 
@@ -25,47 +25,17 @@ __version__ = '1.0.3'
 def get_arguments():
     """Leer argumentos"""
 
-    def enable_verbose(*_):
-        """Enable verbose mode"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-j', dest='jugadores', type=int, help='Numero de jugadores virtuales')
+    parser.add_argument('-t', dest='tiradas', type=int, help='Numero de tiradas')
+    parser.add_argument('-r', dest='reales', type=int, help='Numero de jugadores reales')
+    parser.add_argument('-x', dest='velocidad', default=False, action='store_true', help='Juego modo rápido')
+    parser.add_argument('-v', dest='verbose', default=False, action='store_true', help='Verbose')
+
+    arg = parser.parse_args()
+
+    if arg.verbose:
         logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-
-    parser = optparse.OptionParser()
-    parser.add_option(
-        '-j',
-        dest='jugadores',
-        action='store',
-        type='int',
-        help='Numero de jugadores virtuales',
-    )
-    parser.add_option(
-        '-t',
-        dest='tiradas',
-        action='store',
-        type='int',
-        help='Numero de tiradas',
-    )
-    parser.add_option(
-        '-r',
-        dest='reales',
-        action='store',
-        type='int',
-        help='Numero de jugadores reales',
-    )
-    parser.add_option(
-        '-x',
-        dest='velocidad',
-        default=False,
-        action='store_true',
-        help='Juego modo rápido'
-    )
-    parser.add_option(
-        '-v',
-        action='callback',
-        callback=enable_verbose,
-        help='Verbose'
-    )
-
-    arg, _ = parser.parse_args()
 
     # Entrar en modo manual si no se pasan estos argumentos
     if not arg.jugadores or not arg.reales or not arg.tiradas:
@@ -135,7 +105,7 @@ def flush_input():
         import msvcrt
         while msvcrt.kbhit():
             msvcrt.getch()
-    except:
+    except Exception:
         logging.info('Sin flush_input')
 
 
@@ -258,7 +228,7 @@ def asignar_carteras(jgo, resumen):
         resumen[q]['repetidas'] = 0
 
         # Asignar a usuarios virtuales
-        if jgo[q]['virtual'] is True:
+        if jgo[q]['virtual']:
 
             if jgo[q]['nombre'] == 'Baratero':
                 tmpbcartera = float(random.choice(bcartera))
@@ -321,7 +291,7 @@ def asignar_apuestas(jgo, resumen, resultado_parejas):
                 continue
 
             # Proceso de asignación de apuesta a usuarios reales/virtuales
-            if jgo[q]['virtual'] is False:
+            if not jgo[q]['virtual']:
 
                 # Leer apuesta de jugador real
                 while True:
@@ -342,7 +312,7 @@ def asignar_apuestas(jgo, resumen, resultado_parejas):
             if tir > jgo[q]['cartera']:
                 logging.info(' - Apuesta tirada mayor que la cartera')
 
-                if jgo[q]['virtual'] is False:
+                if not jgo[q]['virtual']:
 
                     # Leer apuesta de jugador real
                     while tir > jgo[q]['cartera']:
@@ -400,7 +370,7 @@ def asignar_nreal(jugadorr, jgo, jreales, resumen):
                         print('\nERROR: Nombre repetido, introduce otro nombre')
                         jrepetido = True
 
-                if jrepetido is False:
+                if not jrepetido:
                     jreales.append(rnombre)
                     break
 
@@ -439,7 +409,7 @@ def main():
     jgo, resumen = asignar_carteras(jgo, resumen)
 
     # Repetir juego hasta que se diga lo contrario
-    while seguir_jugando is True:
+    while seguir_jugando:
 
         # Proceso de tirada...
         for tirada in range(1, arg.tiradas + 1):
@@ -542,7 +512,7 @@ def main():
                     resumen[q]['cartfinal'] = jgo[q]['total']
     
                     # Total juego es la perdida o ganancia entre la cartera inicial y la final
-                    resumen[q]['totaljuego'] = format(resumen[q]['cartfinal'] - resumen[q]['cartinicial'], '+.01f')
+                    resumen[q]['totaljuego'] = format(resumen[q]['cartfinal'] - resumen[q]['cartinicial'], '+.1f')
    
                 # Imprimir tabla del juego
                 print_tabla(jgo, tipo='juego')
@@ -554,7 +524,7 @@ def main():
 
                     # Avisar a jugadores reales que se acaban de arruinar
                     if (jgo[q]['cartera'] != 0) and (jgo[q]['total'] <= 0):
-                        if jgo[q]['virtual'] is False:
+                        if not jgo[q]['virtual']:
                             print('¡Te has arruinado ' + jgo[q]['nombre'] + '!')
                             print('')
                             flush_input()
